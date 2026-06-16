@@ -1,7 +1,7 @@
 "use client";
 
 import { clsx } from "clsx";
-import type { Brand } from "@/lib/mock-data";
+import type { Brand } from "@biz11/lib/mock-data";
 
 type BrandFilterProps = {
   brands: Brand[];

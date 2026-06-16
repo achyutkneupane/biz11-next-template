@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
-import { ProductCard } from "@/components/ui/ProductCard";
-import { getTopProducts } from "@/lib/mock-data";
+import { Button } from "@biz11/components/ui/Button";
+import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { getTopProducts } from "@biz11/lib/mock-data";
 
 export default function LandingPage() {
   const topProducts = getTopProducts();

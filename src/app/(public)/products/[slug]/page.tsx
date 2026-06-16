@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductBySlug, products } from "@/lib/mock-data";
-import { Button } from "@/components/ui/Button";
-import { ProductCard } from "@/components/ui/ProductCard";
+import { getProductBySlug, products } from "@biz11/lib/mock-data";
+import { Button } from "@biz11/components/ui/Button";
+import { ProductCard } from "@biz11/components/ui/ProductCard";
 
 export default async function ProductDetailPage({
   params,

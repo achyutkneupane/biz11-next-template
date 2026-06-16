@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { clsx } from "clsx";
-import type { Product } from "@/lib/mock-data";
+import type { Product } from "@biz11/lib/mock-data";
 
 type ProductCardProps = {
   product: Product;

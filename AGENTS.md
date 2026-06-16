@@ -34,14 +34,12 @@ npm run lint     # eslint (ESLint 10, NOT next lint)
 
 **Important:** There are two `.agents/rules/` files that define the architecture:
 
-1. **`folder-structure.md`** — prescribes a `src/`-based architecture with strict separation of global vs route-specific logic. This is the *target* structure.
-2. **`frontend-guideline.md`** — describes a root-level structure `src/` dir. And `app/`, `lib/`, `types/`, `components/`, `hooks/` inside it.
+1. **`folder-structure.md`** — prescribes a `src/`-based architecture with strict separation of global vs route-specific logic. This is the active structure.
+2. **`frontend-guideline.md`** — also describes structure under `src/` dir.
 
-**When creating new files/directories, prefer `folder-structure.md` conventions (under `src/`).** The root-level layout is the starting point; migrate toward the `src/` architecture as the app grows.
+All code goes under `src/`. Import using `@biz11/*` alias (e.g., `@biz11/components/ui/Button`).
 
-The path alias `@biz11/*` already resolves to `./src/*`, so imports from `src/` work immediately once the directory exists.
-
-### Target structure (`folder-structure.md`)
+### Structure (`folder-structure.md`)
 
 ```
 .
@@ -129,6 +127,18 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons, react-toastify)
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See `atomic-semantics-commits` skill.
+
+## Current State
+
+- 8 commits. `src/` directory active with `(public)` route group built
+- **Landing page** (`/`): Hero with headline/subtitle + top products grid
+- **Product listing** (`/products`): Sidebar filters (recursive category tree + brand checkboxes), mobile filter drawer, active filter pills
+- **Product detail** (`/products/[slug]`): Breadcrumbs, image + info pane, specs table, add-to-cart button, related products
+- **Cart drawer**: Slide-over panel from navbar cart icon with line items and totals
+- **Shared components**: `Button` (5 variants), `Input`, `ProductCard`
+- **Mock data** in `src/lib/mock-data.ts`: 12 products, 5 brands, 3 categories (nested)
+- No auth, no dashboard, no API integration yet
+- Proxy/middleware not implemented
 
 ## References
 

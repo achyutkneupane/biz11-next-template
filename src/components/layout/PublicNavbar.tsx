@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useState } from "react";
 import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
-import { CartDrawer } from "@/components/layout/CartDrawer";
+import { CartDrawer } from "@biz11/components/layout/CartDrawer";
 
 const navLinks = [
   { href: "/", label: "Home" },

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { clsx } from "clsx";
 import { HiChevronRight, HiChevronDown } from "react-icons/hi2";
-import type { Category } from "@/lib/mock-data";
+import type { Category } from "@biz11/lib/mock-data";
 
 type CategoryTreeProps = {
   categories: Category[];

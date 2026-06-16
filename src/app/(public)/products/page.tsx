@@ -2,10 +2,10 @@
 
 import { useState, useMemo } from "react";
 import { HiOutlineAdjustmentsHorizontal, HiOutlineXMark } from "react-icons/hi2";
-import { ProductCard } from "@/components/ui/ProductCard";
-import { CategoryTree } from "@/components/layout/CategoryTree";
-import { BrandFilter } from "@/components/layout/BrandFilter";
-import { categories, brands, products } from "@/lib/mock-data";
+import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { CategoryTree } from "@biz11/components/layout/CategoryTree";
+import { BrandFilter } from "@biz11/components/layout/BrandFilter";
+import { categories, brands, products } from "@biz11/lib/mock-data";
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();

@@ -3,7 +3,7 @@
 import { useEffect, useCallback } from "react";
 import { clsx } from "clsx";
 import { HiOutlineXMark } from "react-icons/hi2";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@biz11/components/ui/Button";
 
 type CartItem = {
   id: number;
