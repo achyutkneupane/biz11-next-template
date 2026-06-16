@@ -83,7 +83,7 @@ Full reference in `.agents/rules/frontend-guideline.md`. Key facts:
 Sanctum plain-text tokens. No refresh mechanism. Store in httpOnly cookie or memory (never localStorage in production). Auth endpoints (`login`, `logout`, `me`) don't need `X-BIZID`.
 
 ### Endpoints
-`POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `GET /brands`, `GET /categories`, `GET /products`, `GET /products/{product}/skus`.
+Read [api.json](.agents/rules/api-docs.json) for OpenApi JSON format.
 
 ### Data layer
 - Server Component `fetch()` for read-only page data
@@ -127,18 +127,6 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons, react-toastify)
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See `atomic-semantics-commits` skill.
-
-## Current State
-
-- 8 commits. `src/` directory active with `(public)` route group built
-- **Landing page** (`/`): Hero with headline/subtitle + top products grid
-- **Product listing** (`/products`): Sidebar filters (recursive category tree + brand checkboxes), mobile filter drawer, active filter pills
-- **Product detail** (`/products/[slug]`): Breadcrumbs, image + info pane, specs table, add-to-cart button, related products
-- **Cart drawer**: Slide-over panel from navbar cart icon with line items and totals
-- **Shared components**: `Button` (5 variants), `Input`, `ProductCard`
-- **Mock data** in `src/lib/mock-data.ts`: 12 products, 5 brands, 3 categories (nested)
-- No auth, no dashboard, no API integration yet
-- Proxy/middleware not implemented
 
 ## References
 
