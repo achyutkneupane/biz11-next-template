@@ -16,24 +16,24 @@ export function Button({
   return (
     <button
       className={clsx(
-        "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors duration-200 cursor-pointer",
-        "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+        "inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-wide transition-all duration-200 cursor-pointer",
+        "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
         {
-          "bg-primary text-white hover:bg-primary-dark active:bg-primary-dark":
+          "bg-primary text-white shadow-lg shadow-primary/20 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-primary/30 active:translate-y-0 active:shadow-md":
             variant === "primary",
-          "bg-accent text-white hover:bg-accent-dark active:bg-accent-dark":
+          "bg-accent text-white shadow-lg shadow-accent/20 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-accent/30 active:translate-y-0 active:shadow-md":
             variant === "secondary",
-          "border-2 border-border bg-white text-foreground hover:bg-border-light active:bg-border":
+          "border-2 border-primary-lighter bg-surface text-foreground hover:border-primary hover:bg-primary hover:text-white active:bg-primary-light":
             variant === "outline",
-          "text-foreground hover:bg-border-light active:bg-border":
+          "text-muted hover:bg-border-light hover:text-foreground active:bg-border":
             variant === "ghost",
-          "bg-danger text-white hover:bg-red-600 active:bg-red-700":
+          "bg-danger text-white shadow-lg shadow-danger/20 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0":
             variant === "danger",
         },
         {
-          "h-9 px-3 text-sm": size === "sm",
-          "h-11 px-5 text-sm": size === "md",
-          "h-13 px-7 text-base": size === "lg",
+          "h-9 px-4 text-xs": size === "sm",
+          "h-12 px-6 text-sm": size === "md",
+          "h-14 px-8 text-base": size === "lg",
         },
         className,
       )}

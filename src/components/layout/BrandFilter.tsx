@@ -1,12 +1,12 @@
 "use client";
 
 import { clsx } from "clsx";
-import type { Brand } from "@biz11/lib/mock-data";
+import type { BrandResource } from "@biz11/Types/Api";
 
 type BrandFilterProps = {
-  brands: Brand[];
+  brands: BrandResource[];
   selectedBrands: string[];
-  onToggle: (slug: string) => void;
+  onToggle: (nanoId: string) => void;
 };
 
 export function BrandFilter({
@@ -16,27 +16,31 @@ export function BrandFilter({
 }: BrandFilterProps) {
   return (
     <div>
-      <h3 className="mb-3 px-3 text-xs font-semibold uppercase tracking-wider text-muted">
+      <h3 className="mb-3 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted">
         Brands
       </h3>
       <div className="space-y-1">
         {brands.map((brand) => {
-          const isChecked = selectedBrands.includes(brand.slug);
+          const isChecked = selectedBrands.includes(brand.nanoId!);
           return (
             <label
-              key={brand.id}
+              key={brand.nanoId}
               className={clsx(
-                "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors duration-200",
+                "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
                 "hover:bg-border-light",
+                isChecked && "bg-accent/5",
               )}
             >
               <input
                 type="checkbox"
                 checked={isChecked}
-                onChange={() => onToggle(brand.slug)}
-                className="h-4 w-4 rounded border-2 border-border text-primary accent-primary focus:ring-primary focus:ring-offset-1"
+                onChange={() => onToggle(brand.nanoId!)}
+                className="h-4 w-4 rounded border-2 border-muted-light text-accent accent-accent focus:ring-accent focus:ring-offset-1"
               />
-              <span className="text-foreground">{brand.name}</span>
+              <span className="flex-1 text-foreground">{brand.name}</span>
+              <span className="text-xs text-muted-light">
+                {brand.productsCount}
+              </span>
             </label>
           );
         })}

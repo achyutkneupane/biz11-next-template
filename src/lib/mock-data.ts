@@ -1,256 +1,562 @@
-export type Category = {
-  id: number;
-  name: string;
-  slug: string;
-  children?: Category[];
-};
+import type {
+  BrandResource,
+  CategoryResource,
+  ProductResource,
+} from "@biz11/Types/Api";
 
-export type Brand = {
-  id: number;
-  name: string;
-  slug: string;
-};
-
-export type Product = {
-  id: number;
-  name: string;
-  slug: string;
-  description: string;
-  price: number;
-  brand: string;
-  brandSlug: string;
-  category: string;
-  categorySlug: string;
-  emoji: string;
-  specs: Record<string, string>;
-};
-
-export const categories: Category[] = [
+export const brands: BrandResource[] = [
   {
-    id: 1,
+    nanoId: "br_techpro",
+    name: "TechPro",
+    slug: "techpro",
+    description: "Premium consumer electronics and accessories.",
+    logoUrl: "",
+    productsCount: 5,
+    createdAt: "2025-01-15T00:00:00Z",
+  },
+  {
+    nanoId: "br_greenleaf",
+    name: "GreenLeaf",
+    slug: "greenleaf",
+    description: "Sustainable and eco-friendly lifestyle products.",
+    logoUrl: "",
+    productsCount: 2,
+    createdAt: "2025-02-10T00:00:00Z",
+  },
+  {
+    nanoId: "br_urbanstyle",
+    name: "UrbanStyle",
+    slug: "urbanstyle",
+    description: "Contemporary fashion for the modern individual.",
+    logoUrl: "",
+    productsCount: 1,
+    createdAt: "2025-03-05T00:00:00Z",
+  },
+  {
+    nanoId: "br_naturehome",
+    name: "NatureHome",
+    slug: "naturehome",
+    description: "Bringing natural elegance into your living space.",
+    logoUrl: "",
+    productsCount: 3,
+    createdAt: "2025-01-20T00:00:00Z",
+  },
+  {
+    nanoId: "br_luxora",
+    name: "Luxora",
+    slug: "luxora",
+    description: "Handcrafted luxury goods for discerning tastes.",
+    logoUrl: "",
+    productsCount: 1,
+    createdAt: "2025-04-01T00:00:00Z",
+  },
+];
+
+export const categories: CategoryResource[] = [
+  {
+    nanoId: "cat_elec",
     name: "Electronics",
     slug: "electronics",
+    description: "Cutting-edge gadgets and devices.",
+    depth: 0,
+    parentId: null,
+    coverUrl: "",
+    productsCount: 5,
     children: [
-      { id: 4, name: "Smartphones", slug: "smartphones" },
-      { id: 5, name: "Laptops", slug: "laptops" },
       {
-        id: 6,
+        nanoId: "cat_phones",
+        name: "Smartphones",
+        slug: "smartphones",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 0,
+        children: [],
+        createdAt: null,
+      },
+      {
+        nanoId: "cat_laptops",
+        name: "Laptops",
+        slug: "laptops",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 1,
+        children: [],
+        createdAt: null,
+      },
+      {
+        nanoId: "cat_accessories",
         name: "Accessories",
         slug: "accessories",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 4,
         children: [
-          { id: 10, name: "Audio", slug: "audio" },
-          { id: 11, name: "Chargers", slug: "chargers" },
+          {
+            nanoId: "cat_audio",
+            name: "Audio",
+            slug: "audio",
+            description: null,
+            depth: 2,
+            parentId: null,
+            coverUrl: "",
+            productsCount: 3,
+            children: [],
+            createdAt: null,
+          },
+          {
+            nanoId: "cat_chargers",
+            name: "Chargers",
+            slug: "chargers",
+            description: null,
+            depth: 2,
+            parentId: null,
+            coverUrl: "",
+            productsCount: 0,
+            children: [],
+            createdAt: null,
+          },
         ],
+        createdAt: null,
       },
     ],
+    createdAt: "2025-01-01T00:00:00Z",
   },
   {
-    id: 2,
+    nanoId: "cat_clothing",
     name: "Clothing",
     slug: "clothing",
+    description: "Apparel for every occasion.",
+    depth: 0,
+    parentId: null,
+    coverUrl: "",
+    productsCount: 3,
     children: [
-      { id: 7, name: "Men", slug: "men" },
-      { id: 8, name: "Women", slug: "women" },
+      {
+        nanoId: "cat_men",
+        name: "Men",
+        slug: "men",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 2,
+        children: [],
+        createdAt: null,
+      },
+      {
+        nanoId: "cat_women",
+        name: "Women",
+        slug: "women",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 1,
+        children: [],
+        createdAt: null,
+      },
     ],
+    createdAt: "2025-01-01T00:00:00Z",
   },
   {
-    id: 3,
+    nanoId: "cat_home",
     name: "Home & Garden",
     slug: "home-garden",
+    description: "Everything to make your home beautiful.",
+    depth: 0,
+    parentId: null,
+    coverUrl: "",
+    productsCount: 3,
     children: [
-      { id: 9, name: "Kitchen", slug: "kitchen" },
-      { id: 12, name: "Decor", slug: "decor" },
+      {
+        nanoId: "cat_kitchen",
+        name: "Kitchen",
+        slug: "kitchen",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 2,
+        children: [],
+        createdAt: null,
+      },
+      {
+        nanoId: "cat_decor",
+        name: "Decor",
+        slug: "decor",
+        description: null,
+        depth: 1,
+        parentId: null,
+        coverUrl: "",
+        productsCount: 1,
+        children: [],
+        createdAt: null,
+      },
     ],
+    createdAt: "2025-01-01T00:00:00Z",
   },
 ];
 
-export const brands: Brand[] = [
-  { id: 1, name: "TechPro", slug: "techpro" },
-  { id: 2, name: "GreenLeaf", slug: "greenleaf" },
-  { id: 3, name: "UrbanStyle", slug: "urbanstyle" },
-  { id: 4, name: "NatureHome", slug: "naturehome" },
-  { id: 5, name: "Luxora", slug: "luxora" },
-];
+const techpro = brands[0];
+const greenleaf = brands[1];
+const urbanstyle = brands[2];
+const naturehome = brands[3];
+const luxora = brands[4];
 
-export const products: Product[] = [
+const catAudio = categories[0].children[2].children[0];
+const catLaptops = categories[0].children[1];
+const catMen = categories[1].children[0];
+const catKitchen = categories[2].children[0];
+const catWomen = categories[1].children[1];
+const catDecor = categories[2].children[1];
+
+export const products: ProductResource[] = [
   {
-    id: 1,
+    nanoId: "prod_1",
     name: "Wireless Headphones Pro",
     slug: "wireless-headphones-pro",
-    description: "Premium noise-cancelling wireless headphones with 30-hour battery life and crystal-clear audio.",
-    price: 129.99,
-    brand: "TechPro",
-    brandSlug: "techpro",
-    category: "Audio",
-    categorySlug: "audio",
-    emoji: "\uD83C\uDFA7",
-    specs: { Battery: "30 hours", Driver: "40mm", Bluetooth: "5.3", "Noise Cancelling": "Active" },
+    description:
+      "Premium noise-cancelling wireless headphones with 30-hour battery life, spatial audio, and cloud-soft ear cushions for all-day comfort.",
+    specifications: [
+      { key: "Battery", value: "30 hours" },
+      { key: "Driver", value: "40mm neodymium" },
+      { key: "Bluetooth", value: "5.3" },
+      { key: "Noise Cancelling", value: "Adaptive ANC" },
+      { key: "Weight", value: "250g" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80",
+    brand: techpro,
+    categories: [catAudio, categories[0]],
+    defaultSku: {
+      nanoId: "sku_hp_1",
+      skuCode: "TECH-HP-BLK-001",
+      price: "129.99",
+      quantity: 45,
+    },
+    createdAt: "2025-05-01T00:00:00Z",
   },
   {
-    id: 2,
+    nanoId: "prod_2",
     name: "Smart Watch Series 5",
     slug: "smart-watch-series-5",
-    description: "Advanced fitness tracking, heart rate monitor, and seamless smartphone integration.",
-    price: 249.99,
-    brand: "TechPro",
-    brandSlug: "techpro",
-    category: "Accessories",
-    categorySlug: "accessories",
-    emoji: "\u231A\uFE0F",
-    specs: { Display: "1.5\" AMOLED", Battery: "7 days", Water: "5 ATM", Sensors: "HR, SpO2, GPS" },
+    description:
+      "Advanced fitness tracking with heart rate monitor, SpO2 sensor, built-in GPS, and a vibrant always-on AMOLED display.",
+    specifications: [
+      { key: "Display", value: '1.5" AMOLED' },
+      { key: "Battery", value: "7 days" },
+      { key: "Water Resistance", value: "5 ATM" },
+      { key: "Sensors", value: "HR, SpO2, GPS" },
+      { key: "Compatibility", value: "iOS & Android" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80",
+    brand: techpro,
+    categories: [categories[0].children[2], categories[0]],
+    defaultSku: {
+      nanoId: "sku_sw_1",
+      skuCode: "TECH-SW-S5-001",
+      price: "249.99",
+      quantity: 30,
+    },
+    createdAt: "2025-05-10T00:00:00Z",
   },
   {
-    id: 3,
+    nanoId: "prod_3",
     name: "Organic Cotton T-Shirt",
     slug: "organic-cotton-tshirt",
-    description: "Soft, breathable organic cotton tee. Ethically sourced and available in multiple colors.",
-    price: 34.99,
-    brand: "GreenLeaf",
-    brandSlug: "greenleaf",
-    category: "Men",
-    categorySlug: "men",
-    emoji: "\uD83D\uDC55",
-    specs: { Material: "100% Organic Cotton", Fit: "Regular", Sizes: "S-3XL", Care: "Machine washable" },
+    description:
+      "Sustainably sourced 100% organic cotton tee. Pre-shrunk, enzyme-washed for incredible softness from the first wear.",
+    specifications: [
+      { key: "Material", value: "100% Organic Cotton" },
+      { key: "Fit", value: "Regular" },
+      { key: "Sizes", value: "S — 3XL" },
+      { key: "Weight", value: "180 gsm" },
+      { key: "Care", value: "Machine washable" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600&q=80",
+    brand: greenleaf,
+    categories: [catMen, categories[1]],
+    defaultSku: {
+      nanoId: "sku_ts_1",
+      skuCode: "GL-TEE-ORG-001",
+      price: "34.99",
+      quantity: 120,
+    },
+    createdAt: "2025-04-15T00:00:00Z",
   },
   {
-    id: 4,
+    nanoId: "prod_4",
     name: "Bamboo Cutting Board Set",
     slug: "bamboo-cutting-board-set",
-    description: "Set of 3 organic bamboo cutting boards in assorted sizes. Knife-friendly and sustainable.",
-    price: 42.99,
-    brand: "NatureHome",
-    brandSlug: "naturehome",
-    category: "Kitchen",
-    categorySlug: "kitchen",
-    emoji: "\uD83E\uDDFA",
-    specs: { Material: "Organic Bamboo", Pieces: "3", Sizes: "Small, Medium, Large", Care: "Hand wash" },
+    description:
+      "Set of three organic bamboo cutting boards in graduated sizes. Naturally antimicrobial and gentle on knife blades.",
+    specifications: [
+      { key: "Material", value: "Organic Bamboo" },
+      { key: "Pieces", value: "3" },
+      { key: "Sizes", value: "Small, Medium, Large" },
+      { key: "Care", value: "Hand wash recommended" },
+      { key: "Eco Rating", value: "Plastic-free" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1594226801341-41427b4e5c3e?w=600&q=80",
+    brand: naturehome,
+    categories: [catKitchen, categories[2]],
+    defaultSku: {
+      nanoId: "sku_cb_1",
+      skuCode: "NH-BAM-CB-001",
+      price: "42.99",
+      quantity: 65,
+    },
+    createdAt: "2025-03-20T00:00:00Z",
   },
   {
-    id: 5,
+    nanoId: "prod_5",
     name: "Leather Crossbody Bag",
     slug: "leather-crossbody-bag",
-    description: "Genuine leather crossbody bag with adjustable strap and multiple compartments.",
-    price: 89.99,
-    brand: "Luxora",
-    brandSlug: "luxora",
-    category: "Women",
-    categorySlug: "women",
-    emoji: "\uD83D\uDC5C",
-    specs: { Material: "Genuine Leather", Dimensions: "10\" x 7\" x 3\"", Strap: "Adjustable", Pockets: "5" },
+    description:
+      "Full-grain leather crossbody bag with adjustable strap, magnetic closure, and thoughtfully organized interior pockets.",
+    specifications: [
+      { key: "Material", value: "Full-grain leather" },
+      { key: "Dimensions", value: '10" × 7" × 3"' },
+      { key: "Strap", value: "Adjustable, 45—55 inches" },
+      { key: "Closure", value: "Magnetic snap" },
+      { key: "Pockets", value: "5 interior + 2 exterior" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80",
+    brand: luxora,
+    categories: [catWomen, categories[1]],
+    defaultSku: {
+      nanoId: "sku_cb_2",
+      skuCode: "LUX-LTH-CB-001",
+      price: "89.99",
+      quantity: 20,
+    },
+    createdAt: "2025-06-01T00:00:00Z",
   },
   {
-    id: 6,
+    nanoId: "prod_6",
     name: "Ultrabook 15 Pro",
     slug: "ultrabook-15-pro",
-    description: "Lightweight ultrabook with 15.6\" 4K display, Intel Core i7, and 16GB RAM for professionals.",
-    price: 1299.99,
-    brand: "TechPro",
-    brandSlug: "techpro",
-    category: "Laptops",
-    categorySlug: "laptops",
-    emoji: "\uD83D\uDCBB",
-    specs: { Processor: "Intel Core i7-13700H", RAM: "16GB DDR5", Storage: "512GB SSD", Display: "15.6\" 4K OLED" },
+    description:
+      "Featherlight ultrabook with a stunning 15.6-inch 4K OLED display, Intel Core i7, and all-day battery life.",
+    specifications: [
+      { key: "Processor", value: "Intel Core i7-13700H" },
+      { key: "RAM", value: "16 GB DDR5" },
+      { key: "Storage", value: "512 GB NVMe SSD" },
+      { key: "Display", value: '15.6" 4K OLED' },
+      { key: "Battery", value: "Up to 14 hours" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=600&q=80",
+    brand: techpro,
+    categories: [catLaptops, categories[0]],
+    defaultSku: {
+      nanoId: "sku_ub_1",
+      skuCode: "TECH-UB-PRO-001",
+      price: "1299.99",
+      quantity: 15,
+    },
+    createdAt: "2025-06-10T00:00:00Z",
   },
   {
-    id: 7,
+    nanoId: "prod_7",
     name: "Floral Print Dress",
     slug: "floral-print-dress",
-    description: "Elegant midi dress with a vibrant floral pattern. Perfect for spring and summer occasions.",
-    price: 59.99,
-    brand: "UrbanStyle",
-    brandSlug: "urbanstyle",
-    category: "Women",
-    categorySlug: "women",
-    emoji: "\uD83D\uDC57",
-    specs: { Material: "Polyester Blend", Length: "Midi", Sizes: "XS-XL", Care: "Gentle cycle" },
+    description:
+      "Elegant midi dress with a hand-drawn floral pattern. Lightweight viscose fabric drapes beautifully for any occasion.",
+    specifications: [
+      { key: "Material", value: "Viscose blend" },
+      { key: "Length", value: "Midi" },
+      { key: "Sizes", value: "XS — XL" },
+      { key: "Pattern", value: "Hand-drawn floral" },
+      { key: "Care", value: "Gentle cold wash" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
+    brand: urbanstyle,
+    categories: [catWomen, categories[1]],
+    defaultSku: {
+      nanoId: "sku_fd_1",
+      skuCode: "US-FLO-DR-001",
+      price: "59.99",
+      quantity: 40,
+    },
+    createdAt: "2025-05-20T00:00:00Z",
   },
   {
-    id: 8,
+    nanoId: "prod_8",
     name: "Ceramic Plant Pot Set",
     slug: "ceramic-plant-pot-set",
-    description: "Minimalist ceramic plant pots with drainage holes. Set of 3 in matte earth tones.",
-    price: 34.99,
-    brand: "NatureHome",
-    brandSlug: "naturehome",
-    category: "Decor",
-    categorySlug: "decor",
-    emoji: "\uD83E\uDEB4",
-    specs: { Material: "Glazed Ceramic", Pieces: "3", Diameters: "4\", 5\", 6\"", Drainage: "Yes" },
+    description:
+      "Matte-glazed ceramic pots with drainage holes and bamboo trays. Set of three in warm earth tones.",
+    specifications: [
+      { key: "Material", value: "Glazed ceramic" },
+      { key: "Pieces", value: "3 pots + 3 trays" },
+      { key: "Diameters", value: '4", 5", 6"' },
+      { key: "Finish", value: "Matte earth tones" },
+      { key: "Drainage", value: "Pre-drilled holes" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=600&q=80",
+    brand: naturehome,
+    categories: [catDecor, categories[2]],
+    defaultSku: {
+      nanoId: "sku_pp_1",
+      skuCode: "NH-CER-PP-001",
+      price: "34.99",
+      quantity: 50,
+    },
+    createdAt: "2025-04-01T00:00:00Z",
   },
   {
-    id: 9,
+    nanoId: "prod_9",
     name: "Noise-Cancelling Earbuds",
     slug: "noise-cancelling-earbuds",
-    description: "Compact true wireless earbuds with adaptive noise cancelling and IPX5 water resistance.",
-    price: 79.99,
-    brand: "TechPro",
-    brandSlug: "techpro",
-    category: "Audio",
-    categorySlug: "audio",
-    emoji: "\uD83C\uDFA7",
-    specs: { Battery: "8h (32h case)", Driver: "10mm", Bluetooth: "5.3", Water: "IPX5" },
+    description:
+      "Compact true wireless earbuds with adaptive noise cancelling, IPX5 water resistance, and a pocket-sized charging case.",
+    specifications: [
+      { key: "Battery", value: "8 h (32 h with case)" },
+      { key: "Driver", value: "10 mm custom" },
+      { key: "Bluetooth", value: "5.3" },
+      { key: "Water Resistance", value: "IPX5" },
+      { key: "Case", value: "Wireless charging" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&q=80",
+    brand: techpro,
+    categories: [catAudio, categories[0]],
+    defaultSku: {
+      nanoId: "sku_eb_1",
+      skuCode: "TECH-EB-NC-001",
+      price: "79.99",
+      quantity: 80,
+    },
+    createdAt: "2025-05-25T00:00:00Z",
   },
   {
-    id: 10,
+    nanoId: "prod_10",
     name: "Merino Wool Sweater",
     slug: "merino-wool-sweater",
-    description: "Luxuriously soft merino wool crew neck sweater. Temperature regulating and odor resistant.",
-    price: 89.99,
-    brand: "GreenLeaf",
-    brandSlug: "greenleaf",
-    category: "Men",
-    categorySlug: "men",
-    emoji: "\uD83E\uDDE5",
-    specs: { Material: "100% Merino Wool", Weight: "195 g/m\u00B2", Sizes: "S-3XL", Care: "Hand wash cold" },
+    description:
+      "Luxuriously fine 100% merino wool crew neck. Naturally temperature-regulating, odor-resistant, and impossibly soft.",
+    specifications: [
+      { key: "Material", value: "100% Merino wool" },
+      { key: "Weight", value: "195 g/m²" },
+      { key: "Sizes", value: "S — 3XL" },
+      { key: "Fit", value: "Regular" },
+      { key: "Care", value: "Hand wash cold" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=600&q=80",
+    brand: greenleaf,
+    categories: [catMen, categories[1]],
+    defaultSku: {
+      nanoId: "sku_sw_2",
+      skuCode: "GL-MER-SW-001",
+      price: "89.99",
+      quantity: 35,
+    },
+    createdAt: "2025-04-20T00:00:00Z",
   },
   {
-    id: 11,
+    nanoId: "prod_11",
     name: "Portable Bluetooth Speaker",
     slug: "portable-bluetooth-speaker",
-    description: "Rugged portable speaker with 360-degree sound, 20-hour battery, and built-in power bank.",
-    price: 59.99,
-    brand: "TechPro",
-    brandSlug: "techpro",
-    category: "Audio",
-    categorySlug: "audio",
-    emoji: "\uD83D\uDD0A",
-    specs: { Battery: "20 hours", Output: "30W", Bluetooth: "5.2", Water: "IP67" },
+    description:
+      "Rugged portable speaker delivering room-filling 360-degree sound. Doubles as a power bank for your devices.",
+    specifications: [
+      { key: "Battery", value: "20 hours" },
+      { key: "Output", value: "30 W" },
+      { key: "Bluetooth", value: "5.2" },
+      { key: "Water Resistance", value: "IP67" },
+      { key: "Features", value: "Power bank built-in" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&q=80",
+    brand: techpro,
+    categories: [catAudio, categories[0]],
+    defaultSku: {
+      nanoId: "sku_sp_1",
+      skuCode: "TECH-SP-PT-001",
+      price: "59.99",
+      quantity: 55,
+    },
+    createdAt: "2025-06-05T00:00:00Z",
   },
   {
-    id: 12,
+    nanoId: "prod_12",
     name: "Linen Tablecloth",
     slug: "linen-tablecloth",
-    description: "Stonewashed linen tablecloth with a relaxed, lived-in feel. Available in natural earth tones.",
-    price: 44.99,
-    brand: "NatureHome",
-    brandSlug: "naturehome",
-    category: "Kitchen",
-    categorySlug: "kitchen",
-    emoji: "\uD83E\uDEAA",
-    specs: { Material: "100% Linen", Size: "60\" x 84\"", Colors: "4 earth tones", Care: "Machine washable" },
+    description:
+      "Stonewashed 100% French linen tablecloth. Gets softer with every wash. Available in four natural earth tones.",
+    specifications: [
+      { key: "Material", value: "100% French linen" },
+      { key: "Size", value: '60" × 84"' },
+      { key: "Colors", value: "4 earth tones" },
+      { key: "Weight", value: "Medium, 190 gsm" },
+      { key: "Care", value: "Machine washable" },
+    ],
+    coverUrl:
+      "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=600&q=80",
+    brand: naturehome,
+    categories: [catKitchen, categories[2]],
+    defaultSku: {
+      nanoId: "sku_lt_1",
+      skuCode: "NH-LIN-LT-001",
+      price: "44.99",
+      quantity: 40,
+    },
+    createdAt: "2025-03-25T00:00:00Z",
   },
 ];
 
-export function getProductBySlug(slug: string): Product | undefined {
+export function getProductBySlug(
+  slug: string,
+): ProductResource | undefined {
   return products.find((p) => p.slug === slug);
 }
 
-export function getProductsByCategory(categorySlug: string): Product[] {
-  const categorySlugs = new Set<string>();
-  function collectSlugs(cats: Category[]) {
+export function getFeaturedProducts(): ProductResource[] {
+  return products.filter((p) => ["prod_1", "prod_6", "prod_7", "prod_4", "prod_10", "prod_2"].includes(p.nanoId!));
+}
+
+export function getLatestProducts(): ProductResource[] {
+  return [...products].sort(
+    (a, b) =>
+      new Date(b.createdAt ?? 0).getTime() -
+      new Date(a.createdAt ?? 0).getTime(),
+  );
+}
+
+export function getProductsByBrand(
+  brandNanoId: string | null,
+): ProductResource[] {
+  if (!brandNanoId) return products;
+  return products.filter((p) => p.brand.nanoId === brandNanoId);
+}
+
+export function getProductsByCategory(
+  categoryNanoId: string | null,
+): ProductResource[] {
+  if (!categoryNanoId) return products;
+  const ids = new Set<string>();
+  function collectIds(cats: CategoryResource[]) {
     for (const cat of cats) {
-      categorySlugs.add(cat.slug);
-      if (cat.children) collectSlugs(cat.children);
+      ids.add(cat.nanoId);
+      if (cat.children) collectIds(cat.children);
     }
   }
-  collectSlugs(categories);
-  return products.filter((p) => p.categorySlug === categorySlug);
-}
-
-export function getProductsByBrand(brandSlug: string): Product[] {
-  return products.filter((p) => p.brandSlug === brandSlug);
-}
-
-export function getTopProducts(): Product[] {
-  return products.slice(0, 6);
+  collectIds(categories);
+  return products.filter((p) =>
+    p.categories.some((c) => c.nanoId === categoryNanoId),
+  );
 }

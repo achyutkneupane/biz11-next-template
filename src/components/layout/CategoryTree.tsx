@@ -3,47 +3,47 @@
 import { useState } from "react";
 import { clsx } from "clsx";
 import { HiChevronRight, HiChevronDown } from "react-icons/hi2";
-import type { Category } from "@biz11/lib/mock-data";
+import type { CategoryResource } from "@biz11/Types/Api";
 
 type CategoryTreeProps = {
-  categories: Category[];
-  selectedSlug?: string;
-  onSelect: (slug: string | undefined) => void;
+  categories: CategoryResource[];
+  selectedNanoId?: string;
+  onSelect: (nanoId: string | undefined) => void;
 };
 
 function TreeNode({
   category,
   depth,
-  selectedSlug,
+  selectedNanoId,
   onSelect,
 }: {
-  category: Category;
+  category: CategoryResource;
   depth: number;
-  selectedSlug?: string;
-  onSelect: (slug: string | undefined) => void;
+  selectedNanoId?: string;
+  onSelect: (nanoId: string | undefined) => void;
 }) {
   const [expanded, setExpanded] = useState(depth < 1);
   const hasChildren = category.children && category.children.length > 0;
-  const isSelected = selectedSlug === category.slug;
+  const isSelected = selectedNanoId === category.nanoId;
 
   return (
     <div>
       <button
         onClick={() => {
           if (hasChildren) setExpanded(!expanded);
-          onSelect(category.slug);
+          onSelect(category.nanoId);
         }}
         className={clsx(
-          "flex w-full items-center gap-1.5 rounded-lg px-3 py-2 text-left text-sm transition-colors duration-200 cursor-pointer",
-          "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1",
+          "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
           isSelected
-            ? "bg-primary-light/10 font-medium text-primary"
+            ? "bg-accent/10 font-semibold text-accent"
             : "text-foreground hover:bg-border-light",
         )}
-        style={{ paddingLeft: `${12 + depth * 16}px` }}
+        style={{ paddingLeft: `${12 + depth * 20}px` }}
       >
         {hasChildren && (
-          <span className="shrink-0 text-muted">
+          <span className="shrink-0 text-muted-light">
             {expanded ? (
               <HiChevronDown className="h-3.5 w-3.5" />
             ) : (
@@ -52,16 +52,19 @@ function TreeNode({
           </span>
         )}
         {!hasChildren && <span className="w-3.5 shrink-0" />}
-        {category.name}
+        <span className="flex-1">{category.name}</span>
+        <span className="text-xs text-muted-light">
+          {category.productsCount}
+        </span>
       </button>
       {hasChildren && expanded && (
         <div>
           {category.children!.map((child) => (
             <TreeNode
-              key={child.id}
+              key={child.nanoId}
               category={child}
               depth={depth + 1}
-              selectedSlug={selectedSlug}
+              selectedNanoId={selectedNanoId}
               onSelect={onSelect}
             />
           ))}
@@ -73,23 +76,37 @@ function TreeNode({
 
 export function CategoryTree({
   categories,
-  selectedSlug,
+  selectedNanoId,
   onSelect,
 }: CategoryTreeProps) {
   return (
     <div>
-      <h3 className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-muted">
+      <h3 className="mb-3 px-3 text-xs font-semibold uppercase tracking-[0.12em] text-muted">
         Categories
       </h3>
-      {categories.map((category) => (
-        <TreeNode
-          key={category.id}
-          category={category}
-          depth={0}
-          selectedSlug={selectedSlug}
-          onSelect={onSelect}
-        />
-      ))}
+      <div className="space-y-0.5">
+        <button
+          onClick={() => onSelect(undefined)}
+          className={clsx(
+            "w-full rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            !selectedNanoId
+              ? "bg-accent/10 font-semibold text-accent"
+              : "text-foreground hover:bg-border-light",
+          )}
+        >
+          All Categories
+        </button>
+        {categories.map((category) => (
+          <TreeNode
+            key={category.nanoId}
+            category={category}
+            depth={0}
+            selectedNanoId={selectedNanoId}
+            onSelect={onSelect}
+          />
+        ))}
+      </div>
     </div>
   );
 }
