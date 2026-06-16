@@ -1,75 +1,58 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useCallback, useId } from "react";
 import { clsx } from "clsx";
 import {
   HiOutlineAdjustmentsHorizontal,
   HiOutlineXMark,
   HiOutlineFire,
   HiOutlineClock,
-  HiOutlineArrowTrendingUp as HiOutlineTrendingUp,
+  HiOutlineArrowTrendingUp,
+  HiOutlineMagnifyingGlass,
 } from "react-icons/hi2";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { CategoryTree } from "@biz11/components/layout/CategoryTree";
 import { BrandFilter } from "@biz11/components/layout/BrandFilter";
-import {
-  categories,
-  brands,
-  products,
-  getFeaturedProducts,
-  getLatestProducts,
-  getPopularProducts,
-} from "@biz11/lib/mock-data";
+import { useProducts } from "@biz11/Hooks/products/useProducts";
+import { useCategories } from "@biz11/Hooks/categories/useCategories";
+import { useBrands } from "@biz11/Hooks/brands/useBrands";
+import type { SortMode } from "@biz11/Hooks/products/useProducts";
 
-type SortMode = "featured" | "latest" | "popular";
-
-const sortModes: { key: SortMode; label: string; icon: typeof HiOutlineFire }[] =
-  [
-    { key: "featured", label: "Featured", icon: HiOutlineFire },
-    { key: "latest", label: "Latest", icon: HiOutlineClock },
-    { key: "popular", label: "Popular", icon: HiOutlineTrendingUp },
-  ];
+const sortModes: {
+  key: SortMode;
+  label: string;
+  icon: typeof HiOutlineFire;
+}[] = [
+  { key: "featured", label: "Featured", icon: HiOutlineFire },
+  { key: "latest", label: "Latest", icon: HiOutlineClock },
+  { key: "popular", label: "Popular", icon: HiOutlineArrowTrendingUp },
+];
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("featured");
+  const [search, setSearch] = useState("");
+  const searchId = useId();
 
-  const toggleBrand = (nanoId: string) => {
+  const toggleBrand = useCallback((nanoId: string) => {
     setSelectedBrands((prev) =>
       prev.includes(nanoId)
         ? prev.filter((s) => s !== nanoId)
         : [...prev, nanoId],
     );
-  };
+  }, []);
 
-  const displayProducts = useMemo(() => {
-    const pool = (() => {
-      switch (sortMode) {
-        case "featured":
-          return getFeaturedProducts();
-        case "latest":
-          return getLatestProducts();
-        case "popular":
-          return getPopularProducts();
-      }
-    })();
+  const { data: categories } = useCategories();
+  const { data: brands } = useBrands();
 
-    return pool.filter((p) => {
-      if (
-        selectedCategory &&
-        !p.categories.some((c) => c.nanoId === selectedCategory)
-      )
-        return false;
-      if (
-        selectedBrands.length > 0 &&
-        !selectedBrands.includes(p.brand.nanoId!)
-      )
-        return false;
-      return true;
-    });
-  }, [sortMode, selectedCategory, selectedBrands]);
+  const { data: displayProducts, total } = useProducts({
+    categoryNanoId: selectedCategory,
+    brandNanoIds: selectedBrands,
+    search: search || undefined,
+    sort: sortMode,
+  });
 
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
@@ -85,8 +68,7 @@ export default function ProductsPage() {
             All Products
           </h1>
           <p className="mt-1 text-sm text-muted">
-            {displayProducts.length} product
-            {displayProducts.length !== 1 ? "s" : ""} found
+            {total} product{total !== 1 ? "s" : ""} found
           </p>
         </div>
 
@@ -109,23 +91,9 @@ export default function ProductsPage() {
               </button>
             );
           })}
-          <div className="ml-2 hidden lg:block">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="relative flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md cursor-pointer"
-            >
-              <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
-              Filters
-              {activeFilterCount > 0 && (
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-          </div>
           <button
             onClick={() => setSidebarOpen(true)}
-            className="relative flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md lg:hidden cursor-pointer"
+            className="relative ml-2 flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md cursor-pointer lg:hidden"
           >
             <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
             Filters
@@ -135,6 +103,23 @@ export default function ProductsPage() {
               </span>
             )}
           </button>
+        </div>
+      </div>
+
+      <div className="mb-8">
+        <label htmlFor={searchId} className="sr-only">
+          Search products
+        </label>
+        <div className="relative max-w-md">
+          <HiOutlineMagnifyingGlass className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-light" />
+          <input
+            id={searchId}
+            type="search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search products, brands..."
+            className="h-12 w-full rounded-xl border-2 border-border bg-surface pl-12 pr-4 text-sm text-foreground placeholder:text-muted-light transition-colors duration-200 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          />
         </div>
       </div>
 
@@ -157,24 +142,30 @@ export default function ProductsPage() {
         </aside>
 
         <div className="flex-1">
-          {activeFilterCount > 0 && (
+          {activeFilterCount > 0 || search ? (
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted">Active filters:</span>
+              {search && (
+                <button
+                  onClick={() => setSearch("")}
+                  className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
+                >
+                  Search: &ldquo;{search}&rdquo;
+                  <HiOutlineXMark className="h-3.5 w-3.5" />
+                </button>
+              )}
               {selectedCategory &&
                 (() => {
-                  function findCat(
-                    nanoId: string,
-                    cats: typeof categories,
-                  ): string | undefined {
-                    for (const c of cats) {
+                  function findCat(nanoId: string): string | undefined {
+                    for (const c of categories) {
                       if (c.nanoId === nanoId) return c.name;
                       if (c.children) {
-                        const found = findCat(nanoId, c.children);
+                        const found = findCat(nanoId);
                         if (found) return found;
                       }
                     }
                   }
-                  const name = findCat(selectedCategory, categories);
+                  const name = findCat(selectedCategory);
                   return (
                     <button
                       onClick={() => setSelectedCategory(undefined)}
@@ -202,13 +193,14 @@ export default function ProductsPage() {
                 onClick={() => {
                   setSelectedCategory(undefined);
                   setSelectedBrands([]);
+                  setSearch("");
                 }}
                 className="text-xs font-semibold text-muted transition-colors duration-200 hover:text-foreground cursor-pointer"
               >
                 Clear all
               </button>
             </div>
-          )}
+          ) : null}
 
           {displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
@@ -225,7 +217,7 @@ export default function ProductsPage() {
                 No products found
               </h3>
               <p className="mt-1 text-sm text-muted">
-                Try adjusting your filters to see more results.
+                Try adjusting your search or filters to see more results.
               </p>
             </div>
           )}
