@@ -1,25 +1,62 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { HiOutlineAdjustmentsHorizontal, HiOutlineXMark } from "react-icons/hi2";
+import { clsx } from "clsx";
+import {
+  HiOutlineAdjustmentsHorizontal,
+  HiOutlineXMark,
+  HiOutlineFire,
+  HiOutlineClock,
+  HiOutlineArrowTrendingUp as HiOutlineTrendingUp,
+} from "react-icons/hi2";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { CategoryTree } from "@biz11/components/layout/CategoryTree";
 import { BrandFilter } from "@biz11/components/layout/BrandFilter";
-import { categories, brands, products } from "@biz11/lib/mock-data";
+import {
+  categories,
+  brands,
+  products,
+  getFeaturedProducts,
+  getLatestProducts,
+  getPopularProducts,
+} from "@biz11/lib/mock-data";
+
+type SortMode = "featured" | "latest" | "popular";
+
+const sortModes: { key: SortMode; label: string; icon: typeof HiOutlineFire }[] =
+  [
+    { key: "featured", label: "Featured", icon: HiOutlineFire },
+    { key: "latest", label: "Latest", icon: HiOutlineClock },
+    { key: "popular", label: "Popular", icon: HiOutlineTrendingUp },
+  ];
 
 export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sortMode, setSortMode] = useState<SortMode>("featured");
 
   const toggleBrand = (nanoId: string) => {
     setSelectedBrands((prev) =>
-      prev.includes(nanoId) ? prev.filter((s) => s !== nanoId) : [...prev, nanoId],
+      prev.includes(nanoId)
+        ? prev.filter((s) => s !== nanoId)
+        : [...prev, nanoId],
     );
   };
 
-  const filtered = useMemo(() => {
-    return products.filter((p) => {
+  const displayProducts = useMemo(() => {
+    const pool = (() => {
+      switch (sortMode) {
+        case "featured":
+          return getFeaturedProducts();
+        case "latest":
+          return getLatestProducts();
+        case "popular":
+          return getPopularProducts();
+      }
+    })();
+
+    return pool.filter((p) => {
       if (
         selectedCategory &&
         !p.categories.some((c) => c.nanoId === selectedCategory)
@@ -32,14 +69,14 @@ export default function ProductsPage() {
         return false;
       return true;
     });
-  }, [selectedCategory, selectedBrands]);
+  }, [sortMode, selectedCategory, selectedBrands]);
 
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mb-8 flex items-center justify-between">
+      <div className="mb-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <span className="text-xs font-semibold uppercase tracking-[0.12em] text-accent">
             Browsing
@@ -48,21 +85,57 @@ export default function ProductsPage() {
             All Products
           </h1>
           <p className="mt-1 text-sm text-muted">
-            {filtered.length} product{filtered.length !== 1 ? "s" : ""} found
+            {displayProducts.length} product
+            {displayProducts.length !== 1 ? "s" : ""} found
           </p>
         </div>
-        <button
-          onClick={() => setSidebarOpen(true)}
-          className="relative flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md lg:hidden cursor-pointer"
-        >
-          <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
-          Filters
-          {activeFilterCount > 0 && (
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
-              {activeFilterCount}
-            </span>
-          )}
-        </button>
+
+        <div className="flex items-center gap-2">
+          {sortModes.map((mode) => {
+            const Icon = mode.icon;
+            return (
+              <button
+                key={mode.key}
+                onClick={() => setSortMode(mode.key)}
+                className={clsx(
+                  "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                  sortMode === mode.key
+                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                    : "border border-border bg-surface text-muted hover:border-muted-light hover:text-foreground hover:shadow-sm",
+                )}
+              >
+                <Icon className="h-4 w-4" />
+                {mode.label}
+              </button>
+            );
+          })}
+          <div className="ml-2 hidden lg:block">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="relative flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md cursor-pointer"
+            >
+              <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="relative flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md lg:hidden cursor-pointer"
+          >
+            <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
+            Filters
+            {activeFilterCount > 0 && (
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white">
+                {activeFilterCount}
+              </span>
+            )}
+          </button>
+        </div>
       </div>
 
       <div className="flex gap-10">
@@ -87,30 +160,31 @@ export default function ProductsPage() {
           {activeFilterCount > 0 && (
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="text-sm text-muted">Active filters:</span>
-              {selectedCategory && (() => {
-                function findCat(
-                  nanoId: string,
-                  cats: typeof categories,
-                ): string | undefined {
-                  for (const c of cats) {
-                    if (c.nanoId === nanoId) return c.name;
-                    if (c.children) {
-                      const found = findCat(nanoId, c.children);
-                      if (found) return found;
+              {selectedCategory &&
+                (() => {
+                  function findCat(
+                    nanoId: string,
+                    cats: typeof categories,
+                  ): string | undefined {
+                    for (const c of cats) {
+                      if (c.nanoId === nanoId) return c.name;
+                      if (c.children) {
+                        const found = findCat(nanoId, c.children);
+                        if (found) return found;
+                      }
                     }
                   }
-                }
-                const name = findCat(selectedCategory, categories);
-                return (
-                  <button
-                    onClick={() => setSelectedCategory(undefined)}
-                    className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
-                  >
-                    {name || selectedCategory}
-                    <HiOutlineXMark className="h-3.5 w-3.5" />
-                  </button>
-                );
-              })()}
+                  const name = findCat(selectedCategory, categories);
+                  return (
+                    <button
+                      onClick={() => setSelectedCategory(undefined)}
+                      className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
+                    >
+                      {name || selectedCategory}
+                      <HiOutlineXMark className="h-3.5 w-3.5" />
+                    </button>
+                  );
+                })()}
               {selectedBrands.map((nanoId) => {
                 const brand = brands.find((b) => b.nanoId === nanoId);
                 return (
@@ -136,9 +210,9 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {filtered.length > 0 ? (
+          {displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
-              {filtered.map((product) => (
+              {displayProducts.map((product) => (
                 <ProductCard key={product.nanoId} product={product} />
               ))}
             </div>

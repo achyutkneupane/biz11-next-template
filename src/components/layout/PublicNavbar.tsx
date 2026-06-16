@@ -4,7 +4,9 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
+import { getBusiness } from "@biz11/lib/business-mock";
 
+const business = getBusiness();
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Shop" },
@@ -24,7 +26,7 @@ export function PublicNavbar() {
             href="/"
             className="text-2xl font-black tracking-tight text-primary"
           >
-            Biz<span className="text-accent">11</span>
+            {business.name}<span className="text-accent">11</span>
           </Link>
 
           <nav className="hidden items-center gap-8 sm:flex">

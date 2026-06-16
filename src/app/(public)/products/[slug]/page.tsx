@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProductBySlug, products } from "@biz11/lib/mock-data";
-import { Button } from "@biz11/components/ui/Button";
+import { getBusiness, formatPrice } from "@biz11/lib/business-mock";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { AddToCartSection } from "@biz11/components/layout/AddToCartSection";
 
 export default async function ProductDetailPage({
   params,
@@ -11,6 +12,7 @@ export default async function ProductDetailPage({
 }) {
   const { slug } = await params;
   const product = getProductBySlug(slug);
+  const business = getBusiness();
 
   if (!product) notFound();
 
@@ -40,9 +42,7 @@ export default async function ProductDetailPage({
           Products
         </Link>
         <span className="mx-2 text-muted-light">/</span>
-        <span className="font-semibold text-primary">
-          {product.name}
-        </span>
+        <span className="font-semibold text-primary">{product.name}</span>
       </nav>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
@@ -76,28 +76,16 @@ export default async function ProductDetailPage({
           </div>
 
           <p className="text-4xl font-black text-primary">
-            ${product.defaultSku.price}
+            {formatPrice(product.defaultSku.price, business.currency)}
           </p>
 
-          <p className="leading-relaxed text-muted">
-            {product.description}
-          </p>
+          <p className="leading-relaxed text-muted">{product.description}</p>
 
-          <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 shadow-sm">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-              </svg>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-foreground">
-                {product.defaultSku.quantity > 0
-                  ? `In Stock (${product.defaultSku.quantity} available)`
-                  : "Out of Stock"}
-              </p>
-              <p className="text-xs text-muted">SKU: {product.defaultSku.skuCode}</p>
-            </div>
-          </div>
+          <AddToCartSection
+            price={product.defaultSku.price}
+            quantity={product.defaultSku.quantity}
+            skuCode={product.defaultSku.skuCode}
+          />
 
           {product.specifications && product.specifications.length > 0 && (
             <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
@@ -118,15 +106,6 @@ export default async function ProductDetailPage({
               </dl>
             </div>
           )}
-
-          <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-            <Button variant="primary" size="lg" className="flex-1">
-              Add to Cart &mdash; ${product.defaultSku.price}
-            </Button>
-            <Button variant="outline" size="lg" className="flex-1">
-              Add to Wishlist
-            </Button>
-          </div>
         </div>
       </div>
 

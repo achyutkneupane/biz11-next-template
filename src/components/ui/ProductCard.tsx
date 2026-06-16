@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { ProductResource } from "@biz11/Types/Api";
+import { formatPrice, getBusiness } from "@biz11/lib/business-mock";
+
+const currency = getBusiness().currency;
 
 type ProductCardProps = {
   product: ProductResource;
@@ -46,7 +49,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
         </p>
         <div className="mt-auto flex items-center justify-between pt-3">
           <span className="text-xl font-bold tracking-tight text-primary">
-            ${product.defaultSku.price}
+            {formatPrice(product.defaultSku.price, currency)}
           </span>
           <span className="rounded-full bg-accent/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
             {product.categories[0]?.name}

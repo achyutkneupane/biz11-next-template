@@ -537,6 +537,12 @@ export function getLatestProducts(): ProductResource[] {
   );
 }
 
+export function getPopularProducts(): ProductResource[] {
+  return [...products].sort(
+    (a, b) => a.defaultSku.quantity - b.defaultSku.quantity,
+  );
+}
+
 export function getProductsByBrand(
   brandNanoId: string | null,
 ): ProductResource[] {
