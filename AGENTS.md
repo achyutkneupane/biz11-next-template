@@ -129,3 +129,9 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons, react-toastify)
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See `atomic-semantics-commits` skill.
+
+## References
+
+- [Frontend guideline](./.agents/rules/frontend-guideline.md)
+- [Folder Structure](./.agents/rules/folder-structure.md)
+- [Skills](./.agents/skills)
