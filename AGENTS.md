@@ -128,6 +128,23 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons, react-toastify)
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See `atomic-semantics-commits` skill.
 
+## Current State
+
+- All code under `src/` with `(public)` route group active
+- **Landing page** (`/`): Hero with headline + featured products grid
+- **Product listing** (`/products`): Search bar, Featured/Latest/Popular sort toggle, sidebar filters (category tree + brand checkboxes), mobile filter drawer
+- **Product detail** (`/products/[slug]`): Image, brand/categories, price, description, +/- quantity (min 1 / max stock), specs table, Add to Cart, related products
+- **Cart drawer**: Slide-over panel accessible from navbar cart icon
+- **Search**: Filters products by name, brand, and description text
+- **Shared components**: `Button` (5 variants), `Input`, `ProductCard`, `QuantityInput`
+- **Layout**: PublicNavbar, Footer, CartDrawer
+- **Filtering**: CategoryTree (recursive, collapsible), BrandFilter (checkbox list)
+- **Mock data**: 12 products across 5 brands, 3 category groups (nested), business info
+- **Hooks** (`src/Hooks/`): `useBusiness`, `useBrands`, `useCategories`, `useProducts`, `useProduct`, `useRelatedProducts` — structured for future TanStack Query migration
+- **Types** (`src/Types/`): `Api.ts` + `Response.ts` — exact shapes from OpenAPI spec
+- **No auth**, **no dashboard**, **no API integration** yet
+- **Proxy/middleware**: Not implemented
+
 ## References
 
 - [Frontend guideline](./.agents/rules/frontend-guideline.md)
