@@ -16,7 +16,8 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      disabled={disabled}
+      aria-disabled={disabled || undefined}
+      tabIndex={disabled ? -1 : undefined}
       className={clsx(
         "inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-wide transition-all duration-200 cursor-pointer",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
