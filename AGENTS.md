@@ -139,6 +139,8 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons,
   react-toastify)
+- **Component size:** Extract sub-components when they manage their own state or form a distinct visual section.
+  Route-colocated sub-components use `_ComponentName.tsx` prefix. Each component file should tell one clear story.
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See
   `atomic-semantics-commits` skill.
 

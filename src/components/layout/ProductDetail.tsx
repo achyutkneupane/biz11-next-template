@@ -1,27 +1,26 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { clsx } from "clsx";
-import Link from "next/link";
-import { useBusiness } from "@biz11/Hooks/useBusiness";
+import { useState } from "react";
 import { useProduct, useRelatedProducts } from "@biz11/Hooks/products/useProducts";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
+import { formatPrice } from "@biz11/lib/helpers";
+import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
+import { SpecificationsTable } from "@biz11/components/ui/SpecificationsTable";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { ProductImageGallery } from "@biz11/components/layout/ProductImageGallery";
+import { SkuSelector } from "@biz11/components/layout/SkuSelector";
 import { AddToCartSection } from "@biz11/components/layout/AddToCartSection";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
-import { formatPrice } from "@biz11/lib/helpers";
-import type { SkuResource } from "@biz11/Types/Api";
 
-function getSkuImages(sku: SkuResource): string[] {
-  return [sku.coverUrl, ...(sku.gallery ?? [])];
-}
-
-function SkuLabel({ sku }: { sku: SkuResource }) {
-  if (sku.variantAttributes && Object.keys(sku.variantAttributes).length > 0) {
-    return <>{Object.values(sku.variantAttributes).join(" / ")}</>;
+function buildSpecs(product: any, sku: any) {
+  if (product.specifications && product.specifications.length > 0) {
+    return product.specifications;
   }
-  return <>{sku.skuCode}</>;
+  if (sku?.variantAttributes) {
+    return Object.entries(sku.variantAttributes).map(([k, v]) => ({ key: k, value: v }));
+  }
+  return null;
 }
 
 export function ProductDetail({ slug }: { slug: string }) {
@@ -34,19 +33,6 @@ export function ProductDetail({ slug }: { slug: string }) {
   const [selectedSkuIndex, setSelectedSkuIndex] = useState(0);
   const activeSku = skus[selectedSkuIndex];
 
-  const allImages = useMemo(() => {
-    if (!activeSku) return [];
-    return getSkuImages(activeSku);
-  }, [activeSku]);
-
-  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const selectedImage = allImages[selectedImageIndex] ?? "";
-
-  const handleSkuChange = (index: number) => {
-    setSelectedSkuIndex(index);
-    setSelectedImageIndex(0);
-  };
-
   if (isLoading) return <ProductDetailSkeleton />;
 
   if (!product) {
@@ -57,60 +43,29 @@ export function ProductDetail({ slug }: { slug: string }) {
     );
   }
 
+  const specs = buildSpecs(product, activeSku);
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <nav className="mb-8 text-sm">
-        <Link href="/" className="font-medium text-muted transition-colors duration-200 hover:text-primary">
-          Home
-        </Link>
-        <span className="mx-2 text-muted-light">/</span>
-        <Link href="/products" className="font-medium text-muted transition-colors duration-200 hover:text-primary">
-          Products
-        </Link>
-        <span className="mx-2 text-muted-light">/</span>
-        <span className="font-semibold text-primary">{product.name}</span>
-      </nav>
+      <Breadcrumbs
+        items={[
+          { label: "Home", href: "/" },
+          { label: "Products", href: "/products" },
+          { label: product.name },
+        ]}
+      />
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div className="space-y-4">
-          <div className="relative aspect-square overflow-hidden rounded-3xl border border-border bg-border-light shadow-lg">
-            <img
-              src={selectedImage || product.coverUrl}
-              alt={product.name}
-              className="h-full w-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
-          </div>
-          {allImages.length > 1 && (
-            <div className="flex gap-3 overflow-x-auto pb-2">
-              {allImages.map((url, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedImageIndex(i)}
-                  className={clsx(
-                    "h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 cursor-pointer",
-                    i === selectedImageIndex
-                      ? "border-accent ring-1 ring-accent"
-                      : "border-border hover:border-muted-light",
-                  )}
-                >
-                  <img src={url} alt="" className="h-full w-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <ProductImageGallery sku={activeSku} productName={product.name} productCoverUrl={product.coverUrl} />
 
         <div className="flex flex-col gap-6">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.12em] text-accent">
               {product.brand.name}
             </span>
-            <h1 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-              {product.name}
-            </h1>
+            <h1 className="mt-1 text-3xl font-black text-primary sm:text-4xl">{product.name}</h1>
             <div className="mt-3 flex flex-wrap gap-2">
-              {product.categories.map((cat) => (
+              {product.categories.map((cat: any) => (
                 <span key={cat.nanoId ?? cat.slug} className="rounded-full bg-border-light px-3.5 py-1 text-xs font-medium text-muted">
                   {cat.name}
                 </span>
@@ -124,90 +79,23 @@ export function ProductDetail({ slug }: { slug: string }) {
 
           <p className="leading-relaxed text-muted">{product.description}</p>
 
-          {skus.length > 1 && (
-            <div>
-              <p className="mb-3 text-sm font-semibold text-foreground">
-                Options
-              </p>
-              <div className="flex flex-wrap gap-3">
-                {skus.map((sku, i) => {
-                  const inStock = sku.quantity > 0;
-                  const selected = i === selectedSkuIndex;
-                  return (
-                    <button
-                      key={sku.nanoId ?? sku.skuCode}
-                      onClick={() => handleSkuChange(i)}
-                      className={clsx(
-                        "rounded-xl border-2 px-5 py-3 text-left text-sm transition-all duration-200 cursor-pointer",
-                        "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
-                        selected
-                          ? "border-accent bg-accent/5 shadow-sm"
-                          : "border-border bg-surface hover:border-muted-light hover:shadow-sm",
-                        !inStock && "opacity-50",
-                      )}
-                    >
-                      <span className="font-semibold text-foreground">
-                        <SkuLabel sku={sku} />
-                      </span>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="font-bold text-primary">
-                          {formatPrice(sku.price, currency)}
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+          <SkuSelector
+            skus={skus}
+            selectedIndex={selectedSkuIndex}
+            currency={currency}
+            onChange={setSelectedSkuIndex}
+          />
 
           <AddToCartSection
             nanoId={product.nanoId ?? ""}
             name={product.name}
             price={activeSku?.price ?? "0"}
-            coverUrl={selectedImage || product.coverUrl}
+            coverUrl={product.coverUrl}
             skuCode={activeSku?.skuCode ?? ""}
             quantity={activeSku?.quantity ?? 0}
           />
 
-          {(() => {
-            const rows: { key: string; value: string }[] = [];
-
-            if (product.specifications && Array.isArray(product.specifications)) {
-              for (const s of product.specifications) {
-                const rec = s as Record<string, unknown>;
-                if (typeof rec.key === "string" && typeof rec.value === "string") {
-                  rows.push({ key: rec.key, value: rec.value });
-                }
-              }
-            }
-
-            if (activeSku?.variantAttributes) {
-              for (const [k, v] of Object.entries(activeSku.variantAttributes)) {
-                if (!rows.some((r) => r.key === k)) {
-                  rows.push({ key: k, value: v });
-                }
-              }
-            }
-
-            if (rows.length === 0) return null;
-
-            return (
-              <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-                <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
-                  Specifications
-                </h3>
-                <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                  {rows.map((row, i) => (
-                    <div key={i}>
-                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{row.key}</dt>
-                      <dd className="mt-0.5 text-sm font-medium text-foreground">{row.value}</dd>
-                    </div>
-                  ))}
-                </dl>
-              </div>
-            );
-          })()}
+          {specs && <SpecificationsTable items={specs} />}
         </div>
       </div>
 
@@ -220,7 +108,7 @@ export function ProductDetail({ slug }: { slug: string }) {
             <h2 className="mt-1 text-2xl font-black text-primary">Related Products</h2>
           </div>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {related.map((p) => (
+            {related.map((p: any) => (
               <ProductCard key={p.nanoId} product={p} />
             ))}
           </div>
