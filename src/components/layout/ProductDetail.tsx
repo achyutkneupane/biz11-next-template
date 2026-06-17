@@ -171,20 +171,37 @@ export function ProductDetail({ slug }: { slug: string }) {
           />
 
           {(() => {
-            const specs =
-              product.specifications && product.specifications.length > 0
-                ? product.specifications
-                : activeSku?.variantAttributes && Object.keys(activeSku.variantAttributes).length > 0
-                  ? Object.entries(activeSku.variantAttributes).map(([k, v]) => ({ key: k, value: v }))
-                  : null;
-            if (!specs) return null;
+            const result: { key: string; value: string }[] = [];
+            const seen = new Set<string>();
+
+            if (product.specifications && Array.isArray(product.specifications)) {
+              for (const s of product.specifications) {
+                const k = String((s as any).key ?? "");
+                if (k && !seen.has(k)) {
+                  seen.add(k);
+                  result.push({ key: k, value: String((s as any).value ?? "") });
+                }
+              }
+            }
+
+            if (activeSku?.variantAttributes && typeof activeSku.variantAttributes === "object" && !Array.isArray(activeSku.variantAttributes)) {
+              for (const [k, v] of Object.entries(activeSku.variantAttributes)) {
+                if (k && !seen.has(k)) {
+                  seen.add(k);
+                  result.push({ key: k, value: String(v) });
+                }
+              }
+            }
+
+            if (result.length === 0) return null;
+
             return (
               <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
                 <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
                   Specifications
                 </h3>
                 <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                  {specs.map((spec: any, i: number) => (
+                  {result.map((spec, i) => (
                     <div key={i}>
                       <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{spec.key}</dt>
                       <dd className="mt-0.5 text-sm font-medium text-foreground">{spec.value}</dd>
