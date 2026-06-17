@@ -136,7 +136,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           <p className="mb-5 text-xs text-muted-light">
             Shipping and taxes calculated at checkout
           </p>
-          <Link href={items.length > 0 ? "/checkout" : "#"}>
+          <Link href={items.length > 0 ? "/checkout" : "#"} onClick={onClose}>
             <Button
               variant="primary"
               size="lg"
