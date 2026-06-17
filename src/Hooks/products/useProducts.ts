@@ -5,11 +5,11 @@ import { useStore } from "@biz11/store";
 import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import type { ProductResource } from "@biz11/Types/Api";
 
-export type SortMode = "featured" | "latest" | "popular";
+export type SortMode = "featured" | "latest";
 
 export type ProductFilters = {
-  categoryId?: number;
   brandId?: number;
+  categoryId?: number;
   search?: string;
   sort?: SortMode;
 };
@@ -33,60 +33,30 @@ function clientSideFilter(
   return result;
 }
 
-export function useFeaturedProducts() {
+export function useFeaturedProducts(cursor?: string) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
   return useQuery({
-    queryKey: ["products", "featured"],
+    queryKey: ["products", "featured", cursor],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products/featured", {
-        params: { perPage: 12 },
+        params: { perPage: 12, cursor },
       }),
     enabled: isBizLoaded,
   });
 }
 
-export function useLatestProducts() {
+export function useLatestProducts(cursor?: string) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
   return useQuery({
-    queryKey: ["products", "latest"],
+    queryKey: ["products", "latest", cursor],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products/latest", {
-        params: { perPage: 12 },
+        params: { perPage: 12, cursor },
       }),
     enabled: isBizLoaded,
   });
-}
-
-export function useProducts(filters: ProductFilters) {
-  const isBizLoaded = useStore(selectIsBizLoaded);
-
-  const allProducts = useQuery({
-    queryKey: ["products", "list", { brandId: filters.brandId, categoryId: filters.categoryId }],
-    queryFn: () =>
-      apiGet<ProductResource[]>("/v1/products", {
-        params: {
-          brand_id: filters.brandId,
-          category_id: filters.categoryId,
-          perPage: 50,
-        },
-      }),
-    enabled: isBizLoaded,
-  });
-
-  const filtered = useMemo(() => {
-    if (!allProducts.data?.data) return [];
-    return clientSideFilter(allProducts.data.data, filters);
-  }, [allProducts.data, filters.search]);
-
-  return {
-    data: filtered,
-    total: filtered.length,
-    featured: allProducts.data?.data ?? [],
-    isLoading: allProducts.isLoading,
-    error: allProducts.error,
-  };
 }
 
 export function useProduct(slug: string) {

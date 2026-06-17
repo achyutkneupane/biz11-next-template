@@ -8,6 +8,8 @@ import {
   HiOutlineFire,
   HiOutlineClock,
   HiOutlineMagnifyingGlass,
+  HiOutlineChevronLeft,
+  HiOutlineChevronRight,
 } from "react-icons/hi2";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@biz11/components/Skeletons/ProductGridSkeleton";
@@ -18,7 +20,6 @@ import { BrandFilter } from "@biz11/components/layout/BrandFilter";
 import {
   useFeaturedProducts,
   useLatestProducts,
-  useProducts,
 } from "@biz11/Hooks/products/useProducts";
 import { useCategories } from "@biz11/Hooks/categories/useCategories";
 import { useBrands } from "@biz11/Hooks/brands/useBrands";
@@ -39,13 +40,15 @@ export default function ProductsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("featured");
   const [search, setSearch] = useState("");
+  const [cursor, setCursor] = useState<string | undefined>();
+  const [cursorHistory, setCursorHistory] = useState<string[]>([]);
   const searchId = useId();
 
   const { data: catsData, isLoading: catsLoading } = useCategories();
   const { data: brandsData, isLoading: brandsLoading } = useBrands();
 
-  const featuredQuery = useFeaturedProducts();
-  const latestQuery = useLatestProducts();
+  const featuredQuery = useFeaturedProducts(cursor);
+  const latestQuery = useLatestProducts(cursor);
 
   const pool = useMemo(() => {
     const source =
@@ -83,6 +86,28 @@ export default function ProductsPage() {
     return result;
   }, [pool, selectedCategory, selectedBrands, search]);
 
+  const activeQuery = sortMode === "latest" ? latestQuery : featuredQuery;
+  const meta = activeQuery.data?.meta;
+
+  const handleSortChange = (mode: SortMode) => {
+    setSortMode(mode);
+    setCursor(undefined);
+    setCursorHistory([]);
+  };
+
+  const handleNext = () => {
+    if (meta?.nextCursor) {
+      setCursorHistory((prev) => [...prev, cursor ?? ""]);
+      setCursor(meta.nextCursor);
+    }
+  };
+
+  const handlePrev = () => {
+    const prev = cursorHistory[cursorHistory.length - 1];
+    setCursorHistory((prev) => prev.slice(0, -1));
+    setCursor(prev || undefined);
+  };
+
   const toggleBrand = useCallback((nanoId: string) => {
     setSelectedBrands((prev) =>
       prev.includes(nanoId)
@@ -90,6 +115,9 @@ export default function ProductsPage() {
         : [...prev, nanoId],
     );
   }, []);
+
+  const from = meta ? (cursorHistory.length * (meta.perPage || 12)) + 1 : 1;
+  const to = from + activeQuery.data?.data?.length! - 1;
 
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
@@ -118,7 +146,7 @@ export default function ProductsPage() {
             return (
               <button
                 key={mode.key}
-                onClick={() => setSortMode(mode.key)}
+                onClick={() => handleSortChange(mode.key)}
                 className={clsx(
                   "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer",
                   sortMode === mode.key
@@ -253,11 +281,47 @@ export default function ProductsPage() {
           {isLoading ? (
             <ProductGridSkeleton count={6} />
           ) : displayProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
-              {displayProducts.map((product) => (
-                <ProductCard key={product.nanoId ?? product.slug} product={product} />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+                {displayProducts.map((product) => (
+                  <ProductCard key={product.nanoId ?? product.slug} product={product} />
+                ))}
+              </div>
+
+              <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
+                <p className="text-sm text-muted">
+                  Showing {from}&ndash;{to}
+                </p>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handlePrev}
+                    disabled={cursorHistory.length === 0}
+                    className={clsx(
+                      "flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all duration-200",
+                      cursorHistory.length === 0
+                        ? "border-border text-muted-light cursor-not-allowed"
+                        : "border-border bg-surface text-foreground hover:border-muted-light hover:shadow-sm cursor-pointer",
+                    )}
+                  >
+                    <HiOutlineChevronLeft className="h-4 w-4" />
+                    Previous
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={!meta?.hasMore}
+                    className={clsx(
+                      "flex h-10 items-center gap-2 rounded-xl border px-4 text-sm font-semibold transition-all duration-200",
+                      !meta?.hasMore
+                        ? "border-border text-muted-light cursor-not-allowed"
+                        : "border-border bg-surface text-foreground hover:border-muted-light hover:shadow-sm cursor-pointer",
+                    )}
+                  >
+                    Next
+                    <HiOutlineChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center py-24 text-center">
               <div className="mb-5 rounded-2xl border border-border bg-surface p-6 shadow-sm">
