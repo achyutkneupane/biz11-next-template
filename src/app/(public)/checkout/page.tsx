@@ -26,13 +26,6 @@ export default function CheckoutPage() {
           Home
         </Link>
         <span className="mx-2 text-muted-light">/</span>
-        <Link
-          href="/products"
-          className="font-medium text-muted transition-colors duration-200 hover:text-primary"
-        >
-          Products
-        </Link>
-        <span className="mx-2 text-muted-light">/</span>
         <span className="font-semibold text-primary">Checkout</span>
       </nav>
 
