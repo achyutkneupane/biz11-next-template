@@ -31,7 +31,7 @@ function TreeNode({
       <button
         onClick={() => {
           if (hasChildren) setExpanded(!expanded);
-          if (category.nanoId) onSelect(category.nanoId);
+          onSelect(category.nanoId ?? category.slug);
         }}
         className={clsx(
           "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",

@@ -69,7 +69,9 @@ export default function ProductsPage() {
 
     if (selectedCategory) {
       result = result.filter((p) =>
-        p.categories.some((c) => c.nanoId === selectedCategory),
+        p.categories.some((c) =>
+          c.nanoId === selectedCategory || c.slug === selectedCategory
+        ),
       );
     }
 
@@ -244,11 +246,11 @@ export default function ProductsPage() {
               )}
               {selectedCategory &&
                 (() => {
-                  function findCat(nanoId: string, list: typeof catsData): string | undefined {
+                  function findCat(id: string, list: typeof catsData): string | undefined {
                     for (const c of list) {
-                      if (c.nanoId === nanoId) return c.name;
+                      if (c.nanoId === id || c.slug === id) return c.name;
                       if (c.children) {
-                        const found = findCat(nanoId, c.children);
+                        const found = findCat(id, c.children);
                         if (found) return found;
                       }
                     }
