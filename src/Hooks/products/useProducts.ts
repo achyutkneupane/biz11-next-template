@@ -5,7 +5,7 @@ import { useStore } from "@biz11/store";
 import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import type { ProductResource } from "@biz11/Types/Api";
 
-export type SortMode = "featured" | "latest";
+export type SortMode = "all" | "featured" | "latest";
 
 export type ProductFilters = {
   brandId?: number;
@@ -53,6 +53,19 @@ export function useLatestProducts(cursor?: string) {
     queryKey: ["products", "latest", cursor],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products/latest", {
+        params: { perPage: 12, cursor },
+      }),
+    enabled: isBizLoaded,
+  });
+}
+
+export function useAllProducts(cursor?: string) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
+  return useQuery({
+    queryKey: ["products", "all", cursor],
+    queryFn: () =>
+      apiGet<ProductResource[]>("/v1/products", {
         params: { perPage: 12, cursor },
       }),
     enabled: isBizLoaded,

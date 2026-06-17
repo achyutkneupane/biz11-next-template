@@ -18,6 +18,7 @@ import { BrandFilterSkeleton } from "@biz11/components/Skeletons/BrandFilterSkel
 import { CategoryTree } from "@biz11/components/layout/CategoryTree";
 import { BrandFilter } from "@biz11/components/layout/BrandFilter";
 import {
+  useAllProducts,
   useFeaturedProducts,
   useLatestProducts,
 } from "@biz11/Hooks/products/useProducts";
@@ -28,8 +29,9 @@ import type { SortMode } from "@biz11/Hooks/products/useProducts";
 const sortModes: {
   key: SortMode;
   label: string;
-  icon: typeof HiOutlineFire;
+  icon: typeof HiOutlineFire | typeof HiOutlineClock;
 }[] = [
+  { key: "all", label: "All", icon: HiOutlineFire },
   { key: "featured", label: "Featured", icon: HiOutlineFire },
   { key: "latest", label: "Latest", icon: HiOutlineClock },
 ];
@@ -38,7 +40,7 @@ export default function ProductsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string | undefined>();
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [sortMode, setSortMode] = useState<SortMode>("featured");
+  const [sortMode, setSortMode] = useState<SortMode>("all");
   const [search, setSearch] = useState("");
   const [cursor, setCursor] = useState<string | undefined>();
   const [cursorHistory, setCursorHistory] = useState<string[]>([]);
@@ -47,16 +49,20 @@ export default function ProductsPage() {
   const { data: catsData, isLoading: catsLoading } = useCategories();
   const { data: brandsData, isLoading: brandsLoading } = useBrands();
 
-  const featuredQuery = useFeaturedProducts(cursor);
-  const latestQuery = useLatestProducts(cursor);
+  const allQuery = useAllProducts(sortMode === "all" ? cursor : undefined);
+  const featuredQuery = useFeaturedProducts(sortMode === "featured" ? cursor : undefined);
+  const latestQuery = useLatestProducts(sortMode === "latest" ? cursor : undefined);
 
   const pool = useMemo(() => {
-    const source =
-      sortMode === "latest"
-        ? (latestQuery.data?.data ?? [])
-        : (featuredQuery.data?.data ?? []);
-    return source;
-  }, [sortMode, featuredQuery.data, latestQuery.data]);
+    switch (sortMode) {
+      case "latest":
+        return latestQuery.data?.data ?? [];
+      case "featured":
+        return featuredQuery.data?.data ?? [];
+      default:
+        return allQuery.data?.data ?? [];
+    }
+  }, [sortMode, allQuery.data, featuredQuery.data, latestQuery.data]);
 
   const displayProducts = useMemo(() => {
     let result = pool;
@@ -86,7 +92,10 @@ export default function ProductsPage() {
     return result;
   }, [pool, selectedCategory, selectedBrands, search]);
 
-  const activeQuery = sortMode === "latest" ? latestQuery : featuredQuery;
+  const activeQuery =
+    sortMode === "latest" ? latestQuery :
+    sortMode === "featured" ? featuredQuery :
+    allQuery;
   const meta = activeQuery.data?.meta;
 
   const handleSortChange = (mode: SortMode) => {
@@ -122,7 +131,10 @@ export default function ProductsPage() {
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
 
-  const isLoading = sortMode === "latest" ? latestQuery.isLoading : featuredQuery.isLoading;
+  const isLoading =
+    sortMode === "latest" ? latestQuery.isLoading :
+    sortMode === "featured" ? featuredQuery.isLoading :
+    allQuery.isLoading;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
