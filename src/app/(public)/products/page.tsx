@@ -156,16 +156,16 @@ export default function ProductsPage() {
               )}
               {selectedCategory &&
                 (() => {
-                  function findCat(nanoId: string): string | undefined {
-                    for (const c of categories) {
+                  function findCat(nanoId: string, list: typeof categories): string | undefined {
+                    for (const c of list) {
                       if (c.nanoId === nanoId) return c.name;
                       if (c.children) {
-                        const found = findCat(nanoId);
+                        const found = findCat(nanoId, c.children);
                         if (found) return found;
                       }
                     }
                   }
-                  const name = findCat(selectedCategory);
+                  const name = findCat(selectedCategory, categories);
                   return (
                     <button
                       onClick={() => setSelectedCategory(undefined)}
