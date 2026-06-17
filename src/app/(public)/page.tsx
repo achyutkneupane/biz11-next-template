@@ -19,7 +19,7 @@ export default function LandingPage() {
       <section className="relative overflow-hidden bg-gradient-to-b from-primary to-primary-light">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_#CA8A04_0%,_transparent_50%)] opacity-20" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_#CA8A04_0%,_transparent_50%)] opacity-10" />
-        <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
+        <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-8 px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
           <span className="inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
             {content.hero.eyebrow}
           </span>
@@ -71,9 +71,9 @@ export default function LandingPage() {
             <span className="text-lg leading-none">&rarr;</span>
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
           {latest.map((product) => (
-            <ProductCard key={product.nanoId} product={product} variant="compact" />
+            <ProductCard key={product.nanoId} product={product} variant="default" />
           ))}
         </div>
       </section>
@@ -100,9 +100,9 @@ export default function LandingPage() {
               <span className="text-lg leading-none">&rarr;</span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {popular.map((product) => (
-              <ProductCard key={product.nanoId} product={product} variant="compact" />
+              <ProductCard key={product.nanoId} product={product} variant="default" />
             ))}
           </div>
         </div>
@@ -134,9 +134,9 @@ export default function LandingPage() {
                 <span className="text-lg leading-none">&rarr;</span>
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {catProducts.map((product) => (
-                <ProductCard key={product.nanoId} product={product} variant="compact" />
+                <ProductCard key={product.nanoId} product={product} variant="default" />
               ))}
             </div>
           </section>
