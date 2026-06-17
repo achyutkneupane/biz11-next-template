@@ -1,4 +1,3 @@
-import type { PaginationMeta } from "@biz11/Types/Response";
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken } from "@biz11/store/business/selectors";
 
@@ -42,7 +41,7 @@ function getHeaders(authenticated = true): Record<string, string> {
 export async function apiGet<T>(
   path: string,
   options?: { params?: Record<string, string | number | undefined>; authenticated?: boolean },
-): Promise<{ data: T; meta?: PaginationMeta }> {
+): Promise<{ data: T; meta?: { nextCursor?: string; prevCursor?: string; perPage: number; hasMore: boolean; total?: number } }> {
   const url = resolveUrl(path);
 
   if (options?.params) {

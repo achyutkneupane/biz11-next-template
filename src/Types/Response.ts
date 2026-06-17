@@ -3,7 +3,7 @@ export interface PaginationMeta {
   prevCursor: string | null;
   perPage: number;
   hasMore: boolean;
-  total: number;
+  total?: number;
 }
 
 export interface DataResponse<T> {

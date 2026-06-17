@@ -128,7 +128,7 @@ export default function ProductsPage() {
   }, []);
 
   const from = meta ? (cursorHistory.length * (meta.perPage || 12)) + 1 : 1;
-  const to = meta ? Math.min(from + (activeQuery.data?.data?.length ?? 0) - 1, meta.total) : 0;
+  const to = from + activeQuery.data?.data?.length! - 1;
 
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
@@ -304,7 +304,7 @@ export default function ProductsPage() {
 
               <div className="mt-10 flex items-center justify-between border-t border-border pt-6">
                 <p className="text-sm text-muted">
-                  Showing {from}&ndash;{to}
+                  {from}&ndash;{to} of {meta?.total ?? to}
                 </p>
                 <div className="flex items-center gap-3">
                   <button
