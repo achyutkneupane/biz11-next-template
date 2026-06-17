@@ -174,37 +174,30 @@ export function ProductDetail({ slug }: { slug: string }) {
             quantity={activeSku?.quantity ?? 0}
           />
 
-          {activeSku?.variantAttributes && Object.keys(activeSku.variantAttributes).length > 0 && (
-            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
-                Variant Details
-              </h3>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                {Object.entries(activeSku.variantAttributes).map(([key, value]) => (
-                  <div key={key}>
-                    <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{key}</dt>
-                    <dd className="mt-0.5 text-sm font-medium text-foreground">{value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
-
-          {product.specifications && product.specifications.length > 0 && (
-            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
-              <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
-                Specifications
-              </h3>
-              <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                {product.specifications.map((spec: any, i: number) => (
-                  <div key={i}>
-                    <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{spec.key}</dt>
-                    <dd className="mt-0.5 text-sm font-medium text-foreground">{spec.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
+          {(() => {
+            const specs =
+              product.specifications && product.specifications.length > 0
+                ? product.specifications
+                : activeSku?.variantAttributes && Object.keys(activeSku.variantAttributes).length > 0
+                  ? Object.entries(activeSku.variantAttributes).map(([k, v]) => ({ key: k, value: v }))
+                  : null;
+            if (!specs) return null;
+            return (
+              <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+                <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
+                  Specifications
+                </h3>
+                <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+                  {specs.map((spec: any, i: number) => (
+                    <div key={i}>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{spec.key}</dt>
+                      <dd className="mt-0.5 text-sm font-medium text-foreground">{spec.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            );
+          })()}
         </div>
       </div>
 
