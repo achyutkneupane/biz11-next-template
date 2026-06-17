@@ -203,7 +203,7 @@ export default function ProductsPage() {
           ) : null}
 
           {displayProducts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-4">
               {displayProducts.map((product) => (
                 <ProductCard key={product.nanoId} product={product} />
               ))}

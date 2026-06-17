@@ -7,10 +7,12 @@ import {
   getPopularProducts,
   getProductsByCategory,
 } from "@biz11/lib/mock-data";
+import { getLandingContent } from "@biz11/lib/content-mock";
 
 export default function LandingPage() {
-  const latest = getLatestProducts().slice(0, 6);
-  const popular = getPopularProducts().slice(0, 6);
+  const content = getLandingContent();
+  const latest = getLatestProducts().slice(0, 8);
+  const popular = getPopularProducts().slice(0, 8);
 
   return (
     <div>
@@ -19,16 +21,15 @@ export default function LandingPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_#CA8A04_0%,_transparent_50%)] opacity-10" />
         <div className="relative mx-auto flex max-w-7xl flex-col items-center gap-6 px-4 py-24 text-center sm:px-6 sm:py-32 lg:px-8">
           <span className="inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-white/80 backdrop-blur-sm">
-            Multi-tenant e-commerce platform
+            {content.hero.eyebrow}
           </span>
           <h1 className="max-w-3xl text-4xl font-black tracking-tight text-white sm:text-5xl lg:text-6xl">
-            Discover products that
+            {content.hero.headline}
             <br />
-            <span className="text-accent">elevate your everyday</span>
+            <span className="text-accent">{content.hero.highlight}</span>
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl">
-            Biz11 connects you with curated products from trusted brands
-            worldwide. Shop smarter, live better.
+            {content.hero.subtitle}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/products">
@@ -53,26 +54,26 @@ export default function LandingPage() {
         <div className="mb-12 flex items-end justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-              Latest
+              {content.sections.latest.label}
             </span>
             <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-              New Arrivals
+              {content.sections.latest.title}
             </h2>
             <p className="mt-1 text-sm text-muted">
-              Fresh from our catalog
+              {content.sections.latest.subtitle}
             </p>
           </div>
           <Link
             href="/products"
             className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
           >
-            View all
+            {content.sections.latest.cta}
             <span className="text-lg leading-none">&rarr;</span>
           </Link>
         </div>
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {latest.map((product) => (
-            <ProductCard key={product.nanoId} product={product} />
+            <ProductCard key={product.nanoId} product={product} variant="compact" />
           ))}
         </div>
       </section>
@@ -82,33 +83,33 @@ export default function LandingPage() {
           <div className="mb-12 flex items-end justify-between">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-                Popular
+                {content.sections.popular.label}
               </span>
               <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-                Most Wanted
+                {content.sections.popular.title}
               </h2>
               <p className="mt-1 text-sm text-muted">
-                Trending products right now
+                {content.sections.popular.subtitle}
               </p>
             </div>
             <Link
               href="/products?sort=popular"
               className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
             >
-              View all
+              {content.sections.popular.cta}
               <span className="text-lg leading-none">&rarr;</span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {popular.map((product) => (
-              <ProductCard key={product.nanoId} product={product} />
+              <ProductCard key={product.nanoId} product={product} variant="compact" />
             ))}
           </div>
         </div>
       </section>
 
       {categories.map((cat) => {
-        const catProducts = getProductsByCategory(cat.nanoId).slice(0, 6);
+        const catProducts = getProductsByCategory(cat.nanoId).slice(0, 8);
         if (catProducts.length === 0) return null;
 
         return (
@@ -119,7 +120,7 @@ export default function LandingPage() {
                   {cat.name}
                 </span>
                 <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-                  {cat.description || `Shop ${cat.name}`}
+                  {cat.description}
                 </h2>
                 <p className="mt-1 text-sm text-muted">
                   {cat.productsCount} product{cat.productsCount !== 1 ? "s" : ""}
@@ -133,9 +134,9 @@ export default function LandingPage() {
                 <span className="text-lg leading-none">&rarr;</span>
               </Link>
             </div>
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {catProducts.map((product) => (
-                <ProductCard key={product.nanoId} product={product} />
+                <ProductCard key={product.nanoId} product={product} variant="compact" />
               ))}
             </div>
           </section>
@@ -145,18 +146,16 @@ export default function LandingPage() {
       <section className="border-t border-border bg-gradient-to-b from-surface to-background py-20 text-center">
         <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-            Ready to explore?
+            {content.sections.cta.eyebrow}
           </span>
           <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-            Everything you need, all in one place
+            {content.sections.cta.title}
           </h2>
-          <p className="mt-2 text-muted">
-            Browse our full catalog of curated products from trusted brands.
-          </p>
+          <p className="mt-2 text-muted">{content.sections.cta.subtitle}</p>
           <div className="mt-8 flex items-center justify-center gap-4">
             <Link href="/products">
               <Button variant="primary" size="lg">
-                Browse All Products
+                {content.sections.cta.buttonLabel}
               </Button>
             </Link>
           </div>
