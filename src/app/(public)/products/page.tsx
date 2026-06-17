@@ -31,8 +31,8 @@ export default function ProductsPage() {
   const [cursorHistory, setCursorHistory] = useState<string[]>([]);
   const searchId = useId();
 
-  const { data: catsData, isLoading: catsLoading } = useCategories();
-  const { data: brandsData, isLoading: brandsLoading } = useBrands();
+  const { data: catsData, isLoading: catsLoading, isPending: catsPending } = useCategories();
+  const { data: brandsData, isLoading: brandsLoading, isPending: brandsPending } = useBrands();
 
   const allQuery = useAllProducts(sortMode === "all" ? cursor : undefined);
   const featuredQuery = useFeaturedProducts(sortMode === "featured" ? cursor : undefined);
@@ -123,11 +123,11 @@ export default function ProductsPage() {
       <div className="flex gap-10">
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-24 space-y-8">
-            {catsLoading ? <CategoryTreeSkeleton /> : (
+            {(catsPending || catsLoading) ? <CategoryTreeSkeleton /> : (
               <CategoryTree categories={catsData} selectedNanoId={selectedCategory} onSelect={setSelectedCategory} />
             )}
             <div className="border-t border-border pt-8">
-              {brandsLoading ? <BrandFilterSkeleton /> : (
+              {(brandsPending || brandsLoading) ? <BrandFilterSkeleton /> : (
                 <BrandFilter brands={brandsData} selectedBrands={selectedBrands} onToggle={toggleBrand} />
               )}
             </div>

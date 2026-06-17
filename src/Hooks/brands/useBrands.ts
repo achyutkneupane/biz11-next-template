@@ -19,6 +19,8 @@ export function useBrands() {
   return {
     data: query.data?.data ?? [],
     isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
     error: query.error,
   };
 }
@@ -35,6 +37,8 @@ export function useBrand(slug: string | null) {
   return {
     data: query.data?.data ?? null,
     isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
     error: query.error,
   };
 }

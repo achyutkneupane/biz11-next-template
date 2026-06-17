@@ -1,10 +1,12 @@
 "use client";
 
 import {useState} from "react";
+import {notFound} from "next/navigation";
 import {useProduct, useRelatedProducts} from "@biz11/Hooks/products/useProducts";
 import {useStore} from "@biz11/store";
 import {selectCurrency} from "@biz11/store/business/selectors";
 import {formatPrice} from "@biz11/lib/helpers";
+import {ApiError} from "@biz11/lib/api-client";
 import {Breadcrumbs} from "@biz11/components/ui/Breadcrumbs";
 import {SpecificationsTable} from "@biz11/components/ui/SpecificationsTable";
 import {ProductCard} from "@biz11/components/ui/ProductCard";
@@ -20,7 +22,7 @@ const buildSpecs = (specifications: Specifications) => {
 }
 
 export function ProductDetail({slug}: { slug: string }) {
-	const {data: productData, isLoading} = useProduct(slug);
+	const {data: productData, isLoading, isPending, isError, error} = useProduct(slug);
 	const product = productData?.data ?? null;
 	const {data: related} = useRelatedProducts(product);
 	const currency = useStore(selectCurrency);
@@ -29,14 +31,27 @@ export function ProductDetail({slug}: { slug: string }) {
 	const [selectedSkuIndex, setSelectedSkuIndex] = useState(0);
 	const activeSku = skus[selectedSkuIndex];
 
-	if (isLoading) return <ProductDetailSkeleton/>;
+	if (isPending || isLoading) return <ProductDetailSkeleton/>;
 
-	if (!product) {
+	if (isError) {
+		if (error instanceof ApiError && error.status === 404) {
+			notFound();
+		}
 		return (
-			<div className="flex items-center justify-center py-24">
-				<p className="text-muted">Product not found</p>
+			<div className="flex flex-col items-center justify-center py-24 text-center">
+				<div className="mb-5 rounded-2xl border border-border bg-surface p-6 shadow-sm">
+					<span className="text-5xl">!</span>
+				</div>
+				<h2 className="text-xl font-bold text-primary">Something went wrong</h2>
+				<p className="mt-1 text-sm text-muted">
+					{error instanceof ApiError ? error.detail : "Failed to load product. Please try again."}
+				</p>
 			</div>
 		);
+	}
+
+	if (!product) {
+		notFound();
 	}
 
 	const productSpecs = buildSpecs(product.specifications);

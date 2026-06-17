@@ -16,6 +16,8 @@ export function useCategories() {
   return {
     data: query.data?.data ?? [],
     isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
     error: query.error,
   };
 }
@@ -32,6 +34,8 @@ export function useCategory(slug: string | null) {
   return {
     data: query.data?.data ?? null,
     isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
     error: query.error,
   };
 }

@@ -75,8 +75,8 @@ export default function LandingPage() {
             <span className="text-lg leading-none">&rarr;</span>
           </Link>
         </div>
-        {latestQuery.isLoading ? (
-          <ProductGridSkeleton count={6} />
+        {(latestQuery.isPending || latestQuery.isLoading) ? (
+            <ProductGridSkeleton count={6} />
         ) : (
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {latestProducts.map((product) => (
@@ -108,7 +108,7 @@ export default function LandingPage() {
               <span className="text-lg leading-none">&rarr;</span>
             </Link>
           </div>
-          {featuredQuery.isLoading ? (
+          {(featuredQuery.isPending || featuredQuery.isLoading) ? (
             <ProductGridSkeleton count={6} />
           ) : (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
