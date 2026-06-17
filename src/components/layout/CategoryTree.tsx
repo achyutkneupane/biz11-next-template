@@ -24,14 +24,14 @@ function TreeNode({
 }) {
   const [expanded, setExpanded] = useState(depth < 1);
   const hasChildren = category.children && category.children.length > 0;
-  const isSelected = selectedNanoId === category.nanoId;
+  const isSelected = category.nanoId != null && selectedNanoId === category.nanoId;
 
   return (
     <div>
       <button
         onClick={() => {
           if (hasChildren) setExpanded(!expanded);
-          onSelect(category.nanoId);
+          if (category.nanoId) onSelect(category.nanoId);
         }}
         className={clsx(
           "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",
@@ -61,7 +61,7 @@ function TreeNode({
         <div>
           {category.children!.map((child) => (
             <TreeNode
-              key={child.nanoId}
+              key={child.nanoId ?? child.slug}
               category={child}
               depth={depth + 1}
               selectedNanoId={selectedNanoId}
@@ -99,7 +99,7 @@ export function CategoryTree({
         </button>
         {categories.map((category) => (
           <TreeNode
-            key={category.nanoId}
+            key={category.nanoId ?? category.slug}
             category={category}
             depth={0}
             selectedNanoId={selectedNanoId}

@@ -16,7 +16,7 @@ export interface BrandResource {
 }
 
 export interface CategoryResource {
-  nanoId: string;
+  nanoId: string | null;
   name: string;
   slug: string;
   description: string | null;
@@ -44,8 +44,18 @@ export interface ProductResource {
   coverUrl: string;
   brand: BrandResource;
   categories: CategoryResource[];
-  defaultSku: DefaultSku;
+  defaultSku?: DefaultSku;
+  skus?: SkuResource[];
   createdAt: string | null;
+}
+
+export function getDefaultSku(product: ProductResource): DefaultSku {
+  if (product.skus && product.skus.length > 0) {
+    const s = product.skus[0];
+    return { nanoId: s.nanoId, skuCode: s.skuCode, price: s.price, quantity: s.quantity };
+  }
+  if (product.defaultSku) return product.defaultSku;
+  return { nanoId: null, skuCode: "", price: "0", quantity: 0 };
 }
 
 export interface SkuResource {
@@ -54,7 +64,7 @@ export interface SkuResource {
   barcode: string | null;
   price: string;
   quantity: number;
-  variantAttributes: unknown[] | null;
+  variantAttributes: Record<string, string> | null;
   coverUrl: string;
   gallery: string[];
   createdAt: string | null;

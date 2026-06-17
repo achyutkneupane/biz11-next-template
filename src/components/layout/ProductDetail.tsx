@@ -5,6 +5,7 @@ import { useBusiness } from "@biz11/Hooks/useBusiness";
 import { useProduct, useRelatedProducts } from "@biz11/Hooks/products/useProducts";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
+import { getDefaultSku } from "@biz11/Types/Api";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { AddToCartSection } from "@biz11/components/layout/AddToCartSection";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
@@ -53,13 +54,24 @@ export function ProductDetail({ slug }: { slug: string }) {
       </nav>
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div className="relative aspect-square overflow-hidden rounded-3xl border border-border bg-border-light shadow-lg">
-          <img
-            src={product.coverUrl}
-            alt={product.name}
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+        <div className="space-y-4">
+          <div className="relative aspect-square overflow-hidden rounded-3xl border border-border bg-border-light shadow-lg">
+            <img
+              src={product.coverUrl}
+              alt={product.name}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
+          </div>
+          {product.skus?.[0]?.gallery && product.skus[0].gallery.length > 0 && (
+            <div className="flex gap-3 overflow-x-auto pb-2">
+              {product.skus[0].gallery.map((url, i) => (
+                <div key={i} className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-border">
+                  <img src={url} alt="" className="h-full w-full object-cover" />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-6">
@@ -83,7 +95,7 @@ export function ProductDetail({ slug }: { slug: string }) {
           </div>
 
           <p className="text-4xl font-black text-primary">
-            {formatPrice(product.defaultSku.price, currency)}
+            {formatPrice(getDefaultSku(product).price, currency)}
           </p>
 
           <p className="leading-relaxed text-muted">{product.description}</p>
@@ -91,11 +103,31 @@ export function ProductDetail({ slug }: { slug: string }) {
           <AddToCartSection
             nanoId={product.nanoId ?? ""}
             name={product.name}
-            price={product.defaultSku.price}
+            price={getDefaultSku(product).price}
             coverUrl={product.coverUrl}
-            skuCode={product.defaultSku.skuCode}
-            quantity={product.defaultSku.quantity}
+            skuCode={getDefaultSku(product).skuCode}
+            quantity={getDefaultSku(product).quantity}
           />
+
+          {product.skus?.[0]?.variantAttributes && (
+            <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
+              <h3 className="mb-4 text-sm font-bold tracking-wide text-primary">
+                Variant Details
+              </h3>
+              <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
+                {Object.entries(product.skus[0].variantAttributes).map(([key, value]) => (
+                  <div key={key}>
+                    <dt className="text-xs font-semibold uppercase tracking-wider text-muted">
+                      {key}
+                    </dt>
+                    <dd className="mt-0.5 text-sm font-medium text-foreground">
+                      {value}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
 
           {product.specifications && product.specifications.length > 0 && (
             <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">

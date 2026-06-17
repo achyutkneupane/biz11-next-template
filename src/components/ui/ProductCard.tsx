@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { ProductResource } from "@biz11/Types/Api";
+import { getDefaultSku } from "@biz11/Types/Api";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
 
@@ -86,7 +87,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
               variant === "compact" ? "text-base" : "text-xl",
             )}
           >
-            {formatPrice(product.defaultSku.price, currency)}
+            {formatPrice(getDefaultSku(product).price, currency)}
           </span>
           <span
             className={clsx(

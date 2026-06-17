@@ -127,7 +127,7 @@ export default function LandingPage() {
         if (catProducts.length === 0) return null;
 
         return (
-          <section key={cat.nanoId} className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <section key={cat.nanoId ?? cat.slug} className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
             <div className="mb-12 flex items-end justify-between">
               <div>
                 <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
