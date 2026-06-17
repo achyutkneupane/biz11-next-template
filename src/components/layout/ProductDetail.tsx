@@ -7,6 +7,7 @@ import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { AddToCartSection } from "@biz11/components/layout/AddToCartSection";
+import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
 
 function formatPrice(price: string, currency: string): string {
   const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
@@ -14,10 +15,14 @@ function formatPrice(price: string, currency: string): string {
 }
 
 export function ProductDetail({ slug }: { slug: string }) {
-  const { data: productData } = useProduct(slug);
+  const { data: productData, isLoading } = useProduct(slug);
   const product = productData?.data ?? null;
   const { data: related } = useRelatedProducts(product);
   const currency = useStore(selectCurrency);
+
+  if (isLoading) {
+    return <ProductDetailSkeleton />;
+  }
 
   if (!product) {
     return (

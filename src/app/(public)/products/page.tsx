@@ -10,6 +10,9 @@ import {
   HiOutlineMagnifyingGlass,
 } from "react-icons/hi2";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { ProductGridSkeleton } from "@biz11/components/Skeletons/ProductGridSkeleton";
+import { CategoryTreeSkeleton } from "@biz11/components/Skeletons/CategoryTreeSkeleton";
+import { BrandFilterSkeleton } from "@biz11/components/Skeletons/BrandFilterSkeleton";
 import { CategoryTree } from "@biz11/components/layout/CategoryTree";
 import { BrandFilter } from "@biz11/components/layout/BrandFilter";
 import {
@@ -38,8 +41,8 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const searchId = useId();
 
-  const { data: catsData } = useCategories();
-  const { data: brandsData } = useBrands();
+  const { data: catsData, isLoading: catsLoading } = useCategories();
+  const { data: brandsData, isLoading: brandsLoading } = useBrands();
 
   const featuredQuery = useFeaturedProducts();
   const latestQuery = useLatestProducts();
@@ -163,17 +166,25 @@ export default function ProductsPage() {
       <div className="flex gap-10">
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-24 space-y-8">
-            <CategoryTree
-              categories={catsData}
-              selectedNanoId={selectedCategory}
-              onSelect={setSelectedCategory}
-            />
-            <div className="border-t border-border pt-8">
-              <BrandFilter
-                brands={brandsData}
-                selectedBrands={selectedBrands}
-                onToggle={toggleBrand}
+            {catsLoading ? (
+              <CategoryTreeSkeleton />
+            ) : (
+              <CategoryTree
+                categories={catsData}
+                selectedNanoId={selectedCategory}
+                onSelect={setSelectedCategory}
               />
+            )}
+            <div className="border-t border-border pt-8">
+              {brandsLoading ? (
+                <BrandFilterSkeleton />
+              ) : (
+                <BrandFilter
+                  brands={brandsData}
+                  selectedBrands={selectedBrands}
+                  onToggle={toggleBrand}
+                />
+              )}
             </div>
           </div>
         </aside>
@@ -240,9 +251,7 @@ export default function ProductsPage() {
           ) : null}
 
           {isLoading ? (
-            <div className="flex items-center justify-center py-24">
-              <p className="text-sm text-muted">Loading products...</p>
-            </div>
+            <ProductGridSkeleton count={6} />
           ) : displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
               {displayProducts.map((product) => (

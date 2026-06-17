@@ -3,18 +3,19 @@
 import Link from "next/link";
 import { Button } from "@biz11/components/ui/Button";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
+import { ProductGridSkeleton } from "@biz11/components/Skeletons/ProductGridSkeleton";
 import { useFeaturedProducts, useLatestProducts } from "@biz11/Hooks/products/useProducts";
 import { useCategories } from "@biz11/Hooks/categories/useCategories";
 import { useBusiness } from "@biz11/Hooks/useBusiness";
 
 export default function LandingPage() {
   const business = useBusiness();
-  const { data: featured } = useFeaturedProducts();
-  const { data: latest } = useLatestProducts();
+  const featuredQuery = useFeaturedProducts();
+  const latestQuery = useLatestProducts();
   const { data: cats } = useCategories();
 
-  const latestProducts = (latest?.data ?? []).slice(0, 8);
-  const featuredProducts = (featured?.data ?? []).slice(0, 8);
+  const latestProducts = (latestQuery.data?.data ?? []).slice(0, 8);
+  const featuredProducts = (featuredQuery.data?.data ?? []).slice(0, 8);
 
   return (
     <div>
@@ -53,18 +54,50 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {latestProducts.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mb-12 flex items-end justify-between">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
+              Latest
+            </span>
+            <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
+              New Arrivals
+            </h2>
+            <p className="mt-1 text-sm text-muted">
+              Fresh from our catalog
+            </p>
+          </div>
+          <Link
+            href="/products"
+            className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
+          >
+            View all
+            <span className="text-lg leading-none">&rarr;</span>
+          </Link>
+        </div>
+        {latestQuery.isLoading ? (
+          <ProductGridSkeleton count={6} />
+        ) : (
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {latestProducts.map((product) => (
+              <ProductCard key={product.nanoId ?? product.slug} product={product} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="border-t border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="mb-12 flex items-end justify-between">
             <div>
               <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-                Latest
+                Featured
               </span>
               <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-                New Arrivals
+                Featured Products
               </h2>
               <p className="mt-1 text-sm text-muted">
-                Fresh from our catalog
+                Our curated picks for you
               </p>
             </div>
             <Link
@@ -75,48 +108,20 @@ export default function LandingPage() {
               <span className="text-lg leading-none">&rarr;</span>
             </Link>
           </div>
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {latestProducts.map((product) => (
-              <ProductCard key={product.nanoId ?? product.slug} product={product} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {featuredProducts.length > 0 && (
-        <section className="border-t border-border bg-surface">
-          <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-            <div className="mb-12 flex items-end justify-between">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-                  Featured
-                </span>
-                <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-                  Featured Products
-                </h2>
-                <p className="mt-1 text-sm text-muted">
-                  Our curated picks for you
-                </p>
-              </div>
-              <Link
-                href="/products"
-                className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
-              >
-                View all
-                <span className="text-lg leading-none">&rarr;</span>
-              </Link>
-            </div>
+          {featuredQuery.isLoading ? (
+            <ProductGridSkeleton count={6} />
+          ) : (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {featuredProducts.map((product) => (
                 <ProductCard key={product.nanoId ?? product.slug} product={product} />
               ))}
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
 
       {cats.filter((c) => c.productsCount > 0).map((cat) => {
-        const catProducts = (featured?.data ?? [])
+        const catProducts = (featuredQuery.data?.data ?? [])
           .filter((p) => p.categories.some((c2) => c2.nanoId === cat.nanoId))
           .slice(0, 6);
         if (catProducts.length === 0) return null;
