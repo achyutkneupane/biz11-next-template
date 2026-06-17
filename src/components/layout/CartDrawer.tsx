@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useCallback } from "react";
 import { clsx } from "clsx";
 import { HiOutlineXMark, HiOutlineTrash } from "react-icons/hi2";
@@ -135,14 +136,16 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           <p className="mb-5 text-xs text-muted-light">
             Shipping and taxes calculated at checkout
           </p>
-          <Button
-            variant="primary"
-            size="lg"
-            className="w-full"
-            disabled={items.length === 0}
-          >
-            Checkout &mdash; {formatPrice(subtotal.toFixed(2), currency)}
-          </Button>
+          <Link href={items.length > 0 ? "/checkout" : "#"}>
+            <Button
+              variant="primary"
+              size="lg"
+              className="w-full"
+              disabled={items.length === 0}
+            >
+              Checkout &mdash; {formatPrice(subtotal.toFixed(2), currency)}
+            </Button>
+          </Link>
         </div>
       </div>
     </>
