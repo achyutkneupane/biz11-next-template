@@ -1,19 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { ProductResource } from "@biz11/Types/Api";
-import { formatPrice, getBusiness } from "@biz11/lib/business-mock";
+import { useStore } from "@biz11/store";
+import { selectCurrency } from "@biz11/store/business/selectors";
 
-const currency = getBusiness().currency;
+function formatPrice(price: string, currency: string): string {
+  const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
+  return `${symbols[currency] || "$"}${price}`;
+}
 
 type ProductCardProps = {
   product: ProductResource;
   variant?: "default" | "featured" | "compact";
 };
 
-export function ProductCard({
-  product,
-  variant = "default",
-}: ProductCardProps) {
+export function ProductCard({ product, variant = "default" }: ProductCardProps) {
+  const currency = useStore(selectCurrency);
+
   return (
     <Link
       href={`/products/${product.slug}`}

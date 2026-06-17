@@ -6,13 +6,17 @@ import { Button } from "@biz11/components/ui/Button";
 import { Input } from "@biz11/components/ui/Input";
 import { useStore } from "@biz11/store";
 import { selectCartItems, selectCartSubtotal } from "@biz11/store/cart/selectors";
-import { getBusiness } from "@biz11/lib/business-mock";
-import { formatPrice } from "@biz11/lib/business-mock";
+import { selectCurrency } from "@biz11/store/business/selectors";
+
+function formatPrice(price: string, currency: string): string {
+  const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
+  return `${symbols[currency] || "$"}${price}`;
+}
 
 export default function CheckoutPage() {
   const items = useStore(selectCartItems);
   const subtotal = useStore(selectCartSubtotal);
-  const currency = getBusiness().currency;
+  const currency = useStore(selectCurrency);
   const shipping = 12.99;
   const total = subtotal + shipping;
 

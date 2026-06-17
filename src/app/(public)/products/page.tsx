@@ -1,19 +1,22 @@
 "use client";
 
-import { useState, useCallback, useId } from "react";
+import { useState, useCallback, useId, useMemo } from "react";
 import { clsx } from "clsx";
 import {
   HiOutlineAdjustmentsHorizontal,
   HiOutlineXMark,
   HiOutlineFire,
   HiOutlineClock,
-  HiOutlineArrowTrendingUp,
   HiOutlineMagnifyingGlass,
 } from "react-icons/hi2";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { CategoryTree } from "@biz11/components/layout/CategoryTree";
 import { BrandFilter } from "@biz11/components/layout/BrandFilter";
-import { useProducts } from "@biz11/Hooks/products/useProducts";
+import {
+  useFeaturedProducts,
+  useLatestProducts,
+  useProducts,
+} from "@biz11/Hooks/products/useProducts";
 import { useCategories } from "@biz11/Hooks/categories/useCategories";
 import { useBrands } from "@biz11/Hooks/brands/useBrands";
 import type { SortMode } from "@biz11/Hooks/products/useProducts";
@@ -25,7 +28,6 @@ const sortModes: {
 }[] = [
   { key: "featured", label: "Featured", icon: HiOutlineFire },
   { key: "latest", label: "Latest", icon: HiOutlineClock },
-  { key: "popular", label: "Popular", icon: HiOutlineArrowTrendingUp },
 ];
 
 export default function ProductsPage() {
@@ -36,6 +38,48 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const searchId = useId();
 
+  const { data: catsData } = useCategories();
+  const { data: brandsData } = useBrands();
+
+  const featuredQuery = useFeaturedProducts();
+  const latestQuery = useLatestProducts();
+
+  const pool = useMemo(() => {
+    const source =
+      sortMode === "latest"
+        ? (latestQuery.data?.data ?? [])
+        : (featuredQuery.data?.data ?? []);
+    return source;
+  }, [sortMode, featuredQuery.data, latestQuery.data]);
+
+  const displayProducts = useMemo(() => {
+    let result = pool;
+
+    if (selectedCategory) {
+      result = result.filter((p) =>
+        p.categories.some((c) => c.nanoId === selectedCategory),
+      );
+    }
+
+    if (selectedBrands.length > 0) {
+      result = result.filter((p) =>
+        selectedBrands.includes(p.brand.nanoId!),
+      );
+    }
+
+    if (search) {
+      const q = search.toLowerCase();
+      result = result.filter(
+        (p) =>
+          p.name.toLowerCase().includes(q) ||
+          p.brand.name.toLowerCase().includes(q) ||
+          p.description?.toLowerCase().includes(q),
+      );
+    }
+
+    return result;
+  }, [pool, selectedCategory, selectedBrands, search]);
+
   const toggleBrand = useCallback((nanoId: string) => {
     setSelectedBrands((prev) =>
       prev.includes(nanoId)
@@ -44,18 +88,10 @@ export default function ProductsPage() {
     );
   }, []);
 
-  const { data: categories } = useCategories();
-  const { data: brands } = useBrands();
-
-  const { data: displayProducts, total } = useProducts({
-    categoryNanoId: selectedCategory,
-    brandNanoIds: selectedBrands,
-    search: search || undefined,
-    sort: sortMode,
-  });
-
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
+
+  const isLoading = sortMode === "latest" ? latestQuery.isLoading : featuredQuery.isLoading;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
@@ -68,7 +104,8 @@ export default function ProductsPage() {
             All Products
           </h1>
           <p className="mt-1 text-sm text-muted">
-            {total} product{total !== 1 ? "s" : ""} found
+            {displayProducts.length} product
+            {displayProducts.length !== 1 ? "s" : ""} found
           </p>
         </div>
 
@@ -127,13 +164,13 @@ export default function ProductsPage() {
         <aside className="hidden w-64 shrink-0 lg:block">
           <div className="sticky top-24 space-y-8">
             <CategoryTree
-              categories={categories}
+              categories={catsData}
               selectedNanoId={selectedCategory}
               onSelect={setSelectedCategory}
             />
             <div className="border-t border-border pt-8">
               <BrandFilter
-                brands={brands}
+                brands={brandsData}
                 selectedBrands={selectedBrands}
                 onToggle={toggleBrand}
               />
@@ -156,7 +193,7 @@ export default function ProductsPage() {
               )}
               {selectedCategory &&
                 (() => {
-                  function findCat(nanoId: string, list: typeof categories): string | undefined {
+                  function findCat(nanoId: string, list: typeof catsData): string | undefined {
                     for (const c of list) {
                       if (c.nanoId === nanoId) return c.name;
                       if (c.children) {
@@ -165,7 +202,7 @@ export default function ProductsPage() {
                       }
                     }
                   }
-                  const name = findCat(selectedCategory, categories);
+                  const name = findCat(selectedCategory, catsData);
                   return (
                     <button
                       onClick={() => setSelectedCategory(undefined)}
@@ -177,7 +214,7 @@ export default function ProductsPage() {
                   );
                 })()}
               {selectedBrands.map((nanoId) => {
-                const brand = brands.find((b) => b.nanoId === nanoId);
+                const brand = brandsData.find((b) => b.nanoId === nanoId);
                 return (
                   <button
                     key={nanoId}
@@ -202,7 +239,11 @@ export default function ProductsPage() {
             </div>
           ) : null}
 
-          {displayProducts.length > 0 ? (
+          {isLoading ? (
+            <div className="flex items-center justify-center py-24">
+              <p className="text-sm text-muted">Loading products...</p>
+            </div>
+          ) : displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
               {displayProducts.map((product) => (
                 <ProductCard key={product.nanoId} product={product} />
@@ -243,7 +284,7 @@ export default function ProductsPage() {
             </div>
             <div className="space-y-8">
               <CategoryTree
-                categories={categories}
+                categories={catsData}
                 selectedNanoId={selectedCategory}
                 onSelect={(nanoId) => {
                   setSelectedCategory(nanoId);
@@ -252,7 +293,7 @@ export default function ProductsPage() {
               />
               <div className="border-t border-border pt-8">
                 <BrandFilter
-                  brands={brands}
+                  brands={brandsData}
                   selectedBrands={selectedBrands}
                   onToggle={toggleBrand}
                 />

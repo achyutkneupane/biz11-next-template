@@ -6,11 +6,15 @@ export interface CartAction {
   removeItem: (nanoId: string) => void;
   updateQuantity: (nanoId: string, quantity: number) => void;
   clearCart: () => void;
+  setCartItems: (items: CartItem[]) => void;
 }
 
-export const createCartSlice: StateCreator<CartState & CartAction, [], [], CartAction> = (
-  set,
-) => ({
+export const createCartSlice: StateCreator<
+  CartState & CartAction,
+  [],
+  [],
+  CartAction
+> = (set) => ({
   addItem: (item) =>
     set((state) => {
       const existing = state.items.find((i) => i.nanoId === item.nanoId);
@@ -36,4 +40,5 @@ export const createCartSlice: StateCreator<CartState & CartAction, [], [], CartA
       ),
     })),
   clearCart: () => set({ items: [] }),
+  setCartItems: (items) => set({ items }),
 });

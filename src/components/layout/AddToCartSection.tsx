@@ -3,8 +3,13 @@
 import { useState } from "react";
 import { Button } from "@biz11/components/ui/Button";
 import { QuantityInput } from "@biz11/components/ui/QuantityInput";
-import { formatPrice, getBusiness } from "@biz11/lib/business-mock";
 import { useStore } from "@biz11/store";
+import { selectCurrency } from "@biz11/store/business/selectors";
+
+function formatPrice(price: string, currency: string): string {
+  const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
+  return `${symbols[currency] || "$"}${price}`;
+}
 
 type AddToCartSectionProps = {
   nanoId: string;
@@ -18,24 +23,14 @@ type AddToCartSectionProps = {
 export function AddToCartSection(props: AddToCartSectionProps) {
   const [qty, setQty] = useState(1);
   const addItem = useStore((s) => s.addItem);
-  const currency = getBusiness().currency;
+  const currency = useStore(selectCurrency);
 
   return (
     <>
       <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 shadow-sm">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent">
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-            />
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
           </svg>
         </div>
         <div>
@@ -50,9 +45,7 @@ export function AddToCartSection(props: AddToCartSectionProps) {
 
       {props.quantity > 0 && (
         <div className="flex items-center gap-4">
-          <span className="text-sm font-semibold text-foreground">
-            Quantity:
-          </span>
+          <span className="text-sm font-semibold text-foreground">Quantity:</span>
           <QuantityInput max={props.quantity} onChange={setQty} />
         </div>
       )}

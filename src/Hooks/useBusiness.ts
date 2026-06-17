@@ -1,14 +1,20 @@
-import { useMemo } from "react";
-import { getBusiness, formatPrice } from "@biz11/lib/business-mock";
-import type { BusinessResource } from "@biz11/Types/Api";
+import { useStore } from "@biz11/store";
+import {
+  selectBusinessName,
+  selectCurrency,
+  selectIsBizLoaded,
+} from "@biz11/store/business/selectors";
 
 export function useBusiness() {
-  const data = useMemo<BusinessResource>(() => getBusiness(), []);
+  const name = useStore(selectBusinessName);
+  const currency = useStore(selectCurrency);
+  const isLoaded = useStore(selectIsBizLoaded);
 
   return {
-    data,
-    formatPrice: (price: string) => formatPrice(price, data.currency),
-    isLoading: false,
+    name,
+    currency,
+    isLoaded,
+    isLoading: !isLoaded,
     error: null,
   };
 }
