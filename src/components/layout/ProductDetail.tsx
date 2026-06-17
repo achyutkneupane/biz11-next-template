@@ -171,29 +171,26 @@ export function ProductDetail({ slug }: { slug: string }) {
           />
 
           {(() => {
-            const result: { key: string; value: string }[] = [];
-            const seen = new Set<string>();
+            const rows: { key: string; value: string }[] = [];
 
             if (product.specifications && Array.isArray(product.specifications)) {
               for (const s of product.specifications) {
-                const k = String((s as any).key ?? "");
-                if (k && !seen.has(k)) {
-                  seen.add(k);
-                  result.push({ key: k, value: String((s as any).value ?? "") });
+                const rec = s as Record<string, unknown>;
+                if (typeof rec.key === "string" && typeof rec.value === "string") {
+                  rows.push({ key: rec.key, value: rec.value });
                 }
               }
             }
 
-            if (activeSku?.variantAttributes && typeof activeSku.variantAttributes === "object" && !Array.isArray(activeSku.variantAttributes)) {
+            if (activeSku?.variantAttributes) {
               for (const [k, v] of Object.entries(activeSku.variantAttributes)) {
-                if (k && !seen.has(k)) {
-                  seen.add(k);
-                  result.push({ key: k, value: String(v) });
+                if (!rows.some((r) => r.key === k)) {
+                  rows.push({ key: k, value: v });
                 }
               }
             }
 
-            if (result.length === 0) return null;
+            if (rows.length === 0) return null;
 
             return (
               <div className="rounded-2xl border border-border bg-surface p-6 shadow-sm">
@@ -201,10 +198,10 @@ export function ProductDetail({ slug }: { slug: string }) {
                   Specifications
                 </h3>
                 <dl className="grid grid-cols-2 gap-x-6 gap-y-3">
-                  {result.map((spec, i) => (
+                  {rows.map((row, i) => (
                     <div key={i}>
-                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{spec.key}</dt>
-                      <dd className="mt-0.5 text-sm font-medium text-foreground">{spec.value}</dd>
+                      <dt className="text-xs font-semibold uppercase tracking-wider text-muted">{row.key}</dt>
+                      <dd className="mt-0.5 text-sm font-medium text-foreground">{row.value}</dd>
                     </div>
                   ))}
                 </dl>
