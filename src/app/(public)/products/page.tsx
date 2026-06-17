@@ -128,7 +128,7 @@ export default function ProductsPage() {
   }, []);
 
   const from = meta ? (cursorHistory.length * (meta.perPage || 12)) + 1 : 1;
-  const to = from + activeQuery.data?.data?.length! - 1;
+  const to = meta ? Math.min(from + (activeQuery.data?.data?.length ?? 0) - 1, meta.total) : 0;
 
   const activeFilterCount =
     (selectedCategory ? 1 : 0) + selectedBrands.length;
