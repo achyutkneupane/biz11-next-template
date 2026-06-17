@@ -140,16 +140,17 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           <p className="mb-5 text-xs text-muted-light">
             Shipping and taxes calculated at checkout
           </p>
-          <Link href={items.length > 0 ? "/checkout" : "#"} onClick={onClose}>
-            <Button
-              variant="primary"
-              size="lg"
-              className="w-full"
-              disabled={items.length === 0}
-            >
+          {items.length > 0 ? (
+            <Link href="/checkout" onClick={onClose}>
+              <Button variant="primary" size="lg" className="w-full">
+                Checkout &mdash; {formatPrice(subtotal.toFixed(2), currency)}
+              </Button>
+            </Link>
+          ) : (
+            <Button variant="primary" size="lg" className="w-full" disabled>
               Checkout &mdash; {formatPrice(subtotal.toFixed(2), currency)}
             </Button>
-          </Link>
+          )}
         </div>
       </div>
     </>
