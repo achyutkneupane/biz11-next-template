@@ -15,7 +15,8 @@ import {ProductDetailSkeleton} from "@biz11/components/Skeletons/ProductDetailSk
 import {Specifications} from "@biz11/Types/Api";
 
 const buildSpecs = (specifications: Specifications) => {
-	return Object.entries(specifications).map(([k, v]) => ({key: k, value: v}));
+	const entries = Object.entries(specifications);
+	return entries.length > 0 ? entries.map(([k, v]) => ({key: k, value: v})) : null;
 }
 
 export function ProductDetail({slug}: { slug: string }) {
@@ -76,8 +77,6 @@ export function ProductDetail({slug}: { slug: string }) {
 
 					<p className="leading-relaxed text-muted">{product.description}</p>
 
-					{productSpecs && <SpecificationsTable items={productSpecs}/>}
-
 					<SkuSelector
 						skus={skus}
 						selectedIndex={selectedSkuIndex}
@@ -93,6 +92,8 @@ export function ProductDetail({slug}: { slug: string }) {
 						skuCode={activeSku?.skuCode ?? ""}
 						quantity={activeSku?.quantity ?? 0}
 					/>
+
+					{productSpecs && <SpecificationsTable items={productSpecs} />}
 					{skuSpecs && <SpecificationsTable items={skuSpecs} title="SKU Variants" />}
 				</div>
 			</div>
