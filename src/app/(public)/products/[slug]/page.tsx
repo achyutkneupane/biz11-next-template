@@ -82,9 +82,12 @@ export default async function ProductDetailPage({
           <p className="leading-relaxed text-muted">{product.description}</p>
 
           <AddToCartSection
+            nanoId={product.nanoId ?? ""}
+            name={product.name}
             price={product.defaultSku.price}
-            quantity={product.defaultSku.quantity}
+            coverUrl={product.coverUrl}
             skuCode={product.defaultSku.skuCode}
+            quantity={product.defaultSku.quantity}
           />
 
           {product.specifications && product.specifications.length > 0 && (

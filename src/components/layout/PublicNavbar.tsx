@@ -6,6 +6,8 @@ import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icon
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
 import { getBusiness } from "@biz11/lib/business-mock";
 import { getNavLinks } from "@biz11/lib/content-mock";
+import { useStore } from "@biz11/store";
+import { selectCartCount } from "@biz11/store/cart/selectors";
 
 const business = getBusiness();
 const navLinks = getNavLinks();
@@ -13,6 +15,7 @@ const navLinks = getNavLinks();
 export function PublicNavbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const cartCount = useStore(selectCartCount);
 
   const toggleCart = useCallback(() => setCartOpen((v) => !v), []);
 
@@ -46,9 +49,11 @@ export function PublicNavbar() {
               aria-label="Open shopping cart"
             >
               <HiOutlineShoppingBag className="h-5 w-5" />
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-sm">
-                3
-              </span>
+              {cartCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-white shadow-sm">
+                  {cartCount}
+                </span>
+              )}
             </button>
 
             <button

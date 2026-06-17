@@ -4,19 +4,20 @@ import { useState } from "react";
 import { Button } from "@biz11/components/ui/Button";
 import { QuantityInput } from "@biz11/components/ui/QuantityInput";
 import { formatPrice, getBusiness } from "@biz11/lib/business-mock";
+import { useStore } from "@biz11/store";
 
 type AddToCartSectionProps = {
+  nanoId: string;
+  name: string;
   price: string;
-  quantity: number;
+  coverUrl: string;
   skuCode: string;
+  quantity: number;
 };
 
-export function AddToCartSection({
-  price,
-  quantity,
-  skuCode,
-}: AddToCartSectionProps) {
+export function AddToCartSection(props: AddToCartSectionProps) {
   const [qty, setQty] = useState(1);
+  const addItem = useStore((s) => s.addItem);
   const currency = getBusiness().currency;
 
   return (
@@ -39,20 +40,20 @@ export function AddToCartSection({
         </div>
         <div>
           <p className="text-sm font-semibold text-foreground">
-            {quantity > 0
-              ? `In Stock (${quantity} available)`
+            {props.quantity > 0
+              ? `In Stock (${props.quantity} available)`
               : "Out of Stock"}
           </p>
-          <p className="text-xs text-muted">SKU: {skuCode}</p>
+          <p className="text-xs text-muted">SKU: {props.skuCode}</p>
         </div>
       </div>
 
-      {quantity > 0 && (
+      {props.quantity > 0 && (
         <div className="flex items-center gap-4">
           <span className="text-sm font-semibold text-foreground">
             Quantity:
           </span>
-          <QuantityInput max={quantity} onChange={setQty} />
+          <QuantityInput max={props.quantity} onChange={setQty} />
         </div>
       )}
 
@@ -61,10 +62,20 @@ export function AddToCartSection({
           variant="primary"
           size="lg"
           className="flex-1"
-          disabled={quantity === 0}
+          disabled={props.quantity === 0}
+          onClick={() =>
+            addItem({
+              nanoId: props.nanoId,
+              name: props.name,
+              price: props.price,
+              quantity: qty,
+              coverUrl: props.coverUrl,
+              skuCode: props.skuCode,
+            })
+          }
         >
           Add to Cart &mdash;{" "}
-          {formatPrice((parseFloat(price) * qty).toFixed(2), currency)}
+          {formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}
         </Button>
         <Button variant="outline" size="lg" className="flex-1">
           Add to Wishlist
