@@ -4,8 +4,7 @@
 
 - **Next.js 16** with `bun` package manager
 - **Tailwind CSS v4** (`@tailwindcss/postcss`)
-- **TypeScript** strict mode, path alias `@/*` → `./*`
-- **No `src/` directory** — place code at project root
+- **TypeScript** strict mode, path alias `@biz11/*` → `./src/*`
 - **No component library** — BYO or build from scratch
 - **No testing framework** installed yet
 

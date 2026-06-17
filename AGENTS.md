@@ -34,14 +34,13 @@ npm run lint     # eslint (ESLint 10, NOT next lint)
 
 **Important:** There are two `.agents/rules/` files that define the architecture:
 
-1. **`folder-structure.md`** — prescribes a `src/`-based architecture with strict separation of global vs route-specific logic. This is the *target* structure.
-2. **`frontend-guideline.md`** — describes a root-level structure `src/` dir. And `app/`, `lib/`, `types/`, `components/`, `hooks/` inside it.
+1. **`folder-structure.md`** — prescribes a `src/`-based architecture with strict separation of global vs route-specific
+   logic. This is the active structure.
+2. **`frontend-guideline.md`** — also describes structure under `src/` dir.
 
-**When creating new files/directories, prefer `folder-structure.md` conventions (under `src/`).** The root-level layout is the starting point; migrate toward the `src/` architecture as the app grows.
+All code goes under `src/`. Import using `@biz11/*` alias (e.g., `@biz11/components/ui/Button`).
 
-The path alias `@biz11/*` already resolves to `./src/*`, so imports from `src/` work immediately once the directory exists.
-
-### Target structure (`folder-structure.md`)
+### Structure (`folder-structure.md`)
 
 ```
 .
@@ -78,28 +77,37 @@ src/
 Full reference in `.agents/rules/frontend-guideline.md`. Key facts:
 
 ### Two-phase consumption
+
 1. **Bootstrap** — `GET /api/v1/business` (no auth, host-based tenant resolution). Returns `nanoId`.
 2. **Authenticated** — all other endpoints. Every request needs `Authorization: Bearer {token}` + `X-BIZID: {nanoId}`.
 
 ### Auth flow
-Sanctum plain-text tokens. No refresh mechanism. Store in httpOnly cookie or memory (never localStorage in production). Auth endpoints (`login`, `logout`, `me`) don't need `X-BIZID`.
+
+Sanctum plain-text tokens. No refresh mechanism. Store in httpOnly cookie or memory (never localStorage in production).
+Auth endpoints (`login`, `logout`, `me`) don't need `X-BIZID`.
 
 ### Endpoints
-`POST /auth/login`, `POST /auth/logout`, `GET /auth/me`, `GET /brands`, `GET /categories`, `GET /products`, `GET /products/{product}/skus`.
+
+Read [api.json](.agents/rules/api-docs.json) for OpenApi JSON format.
 
 ### Data layer
+
 - Server Component `fetch()` for read-only page data
 - Server Actions for mutations (`app/*/actions.ts`)
 - TanStack Query v5 for client-side data fetching/mutations
 - Use `'use cache'` / `cacheLife()` / `cacheTag()` for reusable cached data
 
 ### Pagination
-Cursor-based on all list endpoints. Request: `?cursor=...&perPage=50`. Response: `{ data: [...], meta: { nextCursor, prevCursor, perPage, hasMore } }`.
+
+Cursor-based on all list endpoints. Request: `?cursor=...&perPage=50`. Response:
+`{ data: [...], meta: { nextCursor, prevCursor, perPage, hasMore } }`.
 
 ### Error format
+
 RFC 9457 Problem Details: `{ type, title, status, detail }`.
 
 ### Resource shapes
+
 Business, Brand, Category (recursive children), Product, Sku — all typed in `frontend-guideline.md` section 3.3.
 
 ## Skills (load from `.agents/skills/`)
@@ -115,11 +123,13 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 | `web-design-guidelines`         | Before shipping UI — compliance checker                                                   |
 | `writing-guidelines`            | Writing docs or prose                                                                     |
 | `atomic-semantics-commits`      | Every commit — strict conventional commit format                                          |
+| `zustand`	                      | For global state management                                                               | 
 
 ## Coding Standards
 
 - **Components:** PascalCase files (e.g., `DashboardSidebar.tsx`, `Button.tsx`)
-- **Hooks:** camelCase with `use` prefix (e.g., `usePagination.ts`). Note: the target directory is `src/Hooks/` (capital H).
+- **Hooks:** camelCase with `use` prefix (e.g., `usePagination.ts`). Note: the target directory is `src/Hooks/` (capital
+  H).
 - **Types:** Always import from `src/Types/`. Never use `any`. API responses typed via `src/Types/Response.ts`
 - **Validation:** Centralize in `src/Schema/` (Zod)
 - **Global/root hooks:** API wrappers like `useApiQuery`, `useApiMutation` at root of `src/Hooks/`
@@ -127,5 +137,33 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Shared components:** Flat or max 1 level deep in `src/components/`
 - **Route-specific components:** Colocated in the route folder, NOT in global `components/`
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
-- **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons, react-toastify)
-- **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See `atomic-semantics-commits` skill.
+- **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons,
+  react-toastify)
+- **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See
+  `atomic-semantics-commits` skill.
+
+## Current State
+
+- All code under `src/` with `(public)` route group active
+- **Landing page** (`/`): Hero with headline + featured products grid
+- **Product listing** (`/products`): Search bar, Featured/Latest/Popular sort toggle, sidebar filters (category tree +
+  brand checkboxes), mobile filter drawer
+- **Product detail** (`/products/[slug]`): Image, brand/categories, price, description, +/- quantity (min 1 / max
+  stock), specs table, Add to Cart, related products
+- **Cart drawer**: Slide-over panel accessible from navbar cart icon
+- **Search**: Filters products by name, brand, and description text
+- **Shared components**: `Button` (5 variants), `Input`, `ProductCard`, `QuantityInput`
+- **Layout**: PublicNavbar, Footer, CartDrawer
+- **Filtering**: CategoryTree (recursive, collapsible), BrandFilter (checkbox list)
+- **Mock data**: 12 products across 5 brands, 3 category groups (nested), business info
+- **Hooks** (`src/Hooks/`): `useBusiness`, `useBrands`, `useCategories`, `useProducts`, `useProduct`,
+  `useRelatedProducts` — structured for future TanStack Query migration
+- **Types** (`src/Types/`): `Api.ts` + `Response.ts` — exact shapes from OpenAPI spec
+- **No auth**, **no dashboard**, **no API integration** yet
+- **Proxy/middleware**: Not implemented
+
+## References
+
+- [Frontend guideline](./.agents/rules/frontend-guideline.md)
+- [Folder Structure](./.agents/rules/folder-structure.md)
+- [Skills](./.agents/skills)
