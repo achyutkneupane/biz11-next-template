@@ -5,10 +5,7 @@ import { Button } from "@biz11/components/ui/Button";
 import { QuantityInput } from "@biz11/components/ui/QuantityInput";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
-
-function formatPrice(price: string, currency: string): string {
-  return `${currency || "NPR"} ${price}`;
-}
+import { formatPrice } from "@biz11/lib/helpers";
 
 type AddToCartSectionProps = {
   nanoId: string;

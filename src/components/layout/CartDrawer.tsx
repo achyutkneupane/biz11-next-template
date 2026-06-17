@@ -9,11 +9,7 @@ import { QuantityInput } from "@biz11/components/ui/QuantityInput";
 import { useStore } from "@biz11/store";
 import { selectCartItems, selectCartSubtotal } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
-
-function formatPrice(price: string, currency: string): string {
-  const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
-  return `${symbols[currency] || "$"}${price}`;
-}
+import { formatPrice } from "@biz11/lib/helpers";
 
 type CartDrawerProps = {
   open: boolean;

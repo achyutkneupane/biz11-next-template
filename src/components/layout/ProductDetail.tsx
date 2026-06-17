@@ -10,12 +10,8 @@ import { selectCurrency } from "@biz11/store/business/selectors";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { AddToCartSection } from "@biz11/components/layout/AddToCartSection";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
+import { formatPrice } from "@biz11/lib/helpers";
 import type { SkuResource } from "@biz11/Types/Api";
-
-function formatPrice(price: string, currency: string): string {
-  const symbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
-  return `${symbols[currency] || "$"}${price}`;
-}
 
 function getSkuImages(sku: SkuResource): string[] {
   return [sku.coverUrl, ...(sku.gallery ?? [])];
