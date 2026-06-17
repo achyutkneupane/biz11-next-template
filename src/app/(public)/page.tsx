@@ -77,7 +77,7 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {latestProducts.map((product) => (
-              <ProductCard key={product.nanoId} product={product} />
+              <ProductCard key={product.nanoId ?? product.slug} product={product} />
             ))}
           </div>
         </section>
@@ -108,7 +108,7 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {featuredProducts.map((product) => (
-                <ProductCard key={product.nanoId} product={product} />
+                <ProductCard key={product.nanoId ?? product.slug} product={product} />
               ))}
             </div>
           </div>
@@ -145,7 +145,7 @@ export default function LandingPage() {
             </div>
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
               {catProducts.map((product) => (
-                <ProductCard key={product.nanoId} product={product} />
+                <ProductCard key={product.nanoId ?? product.slug} product={product} />
               ))}
             </div>
           </section>

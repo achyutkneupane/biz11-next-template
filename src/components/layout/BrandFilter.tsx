@@ -21,10 +21,11 @@ export function BrandFilter({
       </h3>
       <div className="space-y-1">
         {brands.map((brand) => {
-          const isChecked = selectedBrands.includes(brand.nanoId!);
+          const id = brand.nanoId ?? brand.slug;
+          const isChecked = selectedBrands.includes(id);
           return (
             <label
-              key={brand.nanoId}
+              key={id}
               className={clsx(
                 "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
                 "hover:bg-border-light",
@@ -34,7 +35,7 @@ export function BrandFilter({
               <input
                 type="checkbox"
                 checked={isChecked}
-                onChange={() => onToggle(brand.nanoId!)}
+                onChange={() => onToggle(id)}
                 className="h-4 w-4 rounded border-2 border-muted-light text-accent accent-accent focus:ring-accent focus:ring-offset-1"
               />
               <span className="flex-1 text-foreground">{brand.name}</span>

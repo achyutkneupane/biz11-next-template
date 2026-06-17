@@ -68,7 +68,7 @@ export function ProductDetail({ slug }: { slug: string }) {
             <div className="mt-3 flex flex-wrap gap-2">
               {product.categories.map((cat) => (
                 <span
-                  key={cat.nanoId}
+                  key={cat.nanoId ?? cat.slug}
                   className="rounded-full bg-border-light px-3.5 py-1 text-xs font-medium text-muted"
                 >
                   {cat.name}

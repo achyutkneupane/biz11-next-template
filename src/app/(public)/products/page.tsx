@@ -246,7 +246,7 @@ export default function ProductsPage() {
           ) : displayProducts.length > 0 ? (
             <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
               {displayProducts.map((product) => (
-                <ProductCard key={product.nanoId} product={product} />
+                <ProductCard key={product.nanoId ?? product.slug} product={product} />
               ))}
             </div>
           ) : (
