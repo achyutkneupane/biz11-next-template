@@ -35,12 +35,14 @@ export interface DefaultSku {
   quantity: number;
 }
 
+export type Specifications = Record<string, string>;
+
 export interface ProductResource {
   nanoId: string | null;
   name: string;
   slug: string;
   description: string | null;
-  specifications: unknown[] | null;
+  specifications: Specifications;
   coverUrl: string;
   brand: BrandResource;
   categories: CategoryResource[];
@@ -64,7 +66,7 @@ export interface SkuResource {
   barcode: string | null;
   price: string;
   quantity: number;
-  variantAttributes: Record<string, string> | null;
+  variantAttributes: Specifications;
   coverUrl: string;
   gallery: string[];
   createdAt: string | null;
