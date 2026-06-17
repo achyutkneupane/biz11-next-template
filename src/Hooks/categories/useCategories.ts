@@ -1,9 +1,9 @@
 import { useMemo } from "react";
-import { categories } from "@biz11/lib/mock-data";
+import { getCategories } from "@biz11/lib/mock-data";
 import type { CategoryResource } from "@biz11/Types/Api";
 
 export function useCategories() {
-  const data = useMemo<CategoryResource[]>(() => categories, []);
+  const data = useMemo<CategoryResource[]>(() => getCategories(), []);
 
   return { data, isLoading: false, error: null };
 }
@@ -20,7 +20,7 @@ export function useCategory(nanoId: string | null) {
         }
       }
     }
-    return find(categories);
+    return find(getCategories());
   }, [nanoId]);
 
   return { data, isLoading: false, error: null };

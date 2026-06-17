@@ -554,15 +554,27 @@ export function getProductsByCategory(
   categoryNanoId: string | null,
 ): ProductResource[] {
   if (!categoryNanoId) return products;
-  const ids = new Set<string>();
-  function collectIds(cats: CategoryResource[]) {
-    for (const cat of cats) {
-      ids.add(cat.nanoId);
-      if (cat.children) collectIds(cat.children);
-    }
-  }
-  collectIds(categories);
   return products.filter((p) =>
     p.categories.some((c) => c.nanoId === categoryNanoId),
   );
+}
+
+function countProductsForCategory(nanoId: string): number {
+  return products.filter((p) =>
+    p.categories.some((c) => c.nanoId === nanoId),
+  ).length;
+}
+
+function patchCategoryCounts(cats: CategoryResource[]): CategoryResource[] {
+  return cats.map((cat) => ({
+    ...cat,
+    productsCount: countProductsForCategory(cat.nanoId),
+    children: cat.children ? patchCategoryCounts(cat.children) : cat.children,
+  }));
+}
+
+const categoriesWithCounts = patchCategoryCounts(categories);
+
+export function getCategories(): CategoryResource[] {
+  return categoriesWithCounts;
 }

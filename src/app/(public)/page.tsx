@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Button } from "@biz11/components/ui/Button";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import {
-  categories,
+  getCategories,
   getLatestProducts,
   getPopularProducts,
   getProductsByCategory,
@@ -108,7 +108,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {categories.map((cat) => {
+      {getCategories().map((cat) => {
         const catProducts = getProductsByCategory(cat.nanoId).slice(0, 8);
         if (catProducts.length === 0) return null;
 
