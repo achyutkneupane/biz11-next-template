@@ -11,10 +11,12 @@ export function Button({
   size = "md",
   className,
   children,
+  disabled,
   ...props
 }: ButtonProps) {
   return (
     <button
+      disabled={disabled}
       className={clsx(
         "inline-flex items-center justify-center gap-2 rounded-xl font-semibold tracking-wide transition-all duration-200 cursor-pointer",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
@@ -35,6 +37,7 @@ export function Button({
           "h-12 px-6 text-sm": size === "md",
           "h-14 px-8 text-base": size === "lg",
         },
+        disabled && "opacity-50 pointer-events-none",
         className,
       )}
       {...props}
