@@ -27,22 +27,6 @@ export function AddToCartSection(props: AddToCartSectionProps) {
 
   return (
     <>
-      <div className="flex items-center gap-3 rounded-2xl border border-border bg-surface p-4 shadow-sm">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent/10 text-accent">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-          </svg>
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-foreground">
-            {props.quantity > 0
-              ? `In Stock (${props.quantity} available)`
-              : "Out of Stock"}
-          </p>
-          <p className="text-xs text-muted">SKU: {props.skuCode}</p>
-        </div>
-      </div>
-
       {props.quantity > 0 && (
         <div className="flex items-center gap-4">
           <span className="text-sm font-semibold text-foreground">Quantity:</span>

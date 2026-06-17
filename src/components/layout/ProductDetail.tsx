@@ -157,14 +157,6 @@ export function ProductDetail({ slug }: { slug: string }) {
                         <span className="font-bold text-primary">
                           {formatPrice(sku.price, currency)}
                         </span>
-                        {inStock ? (
-                          <span className="flex items-center gap-1 text-xs text-success">
-                            <span className="h-1.5 w-1.5 rounded-full bg-success" />
-                            In Stock
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted">Out of Stock</span>
-                        )}
                       </div>
                     </button>
                   );
