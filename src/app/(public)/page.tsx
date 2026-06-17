@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { Button } from "@biz11/components/ui/Button";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
-import { getFeaturedProducts } from "@biz11/lib/mock-data";
+import {
+  categories,
+  getLatestProducts,
+  getPopularProducts,
+  getProductsByCategory,
+} from "@biz11/lib/mock-data";
 
 export default function LandingPage() {
-  const featured = getFeaturedProducts();
+  const latest = getLatestProducts().slice(0, 6);
+  const popular = getPopularProducts().slice(0, 6);
 
   return (
     <div>
@@ -47,13 +53,13 @@ export default function LandingPage() {
         <div className="mb-12 flex items-end justify-between">
           <div>
             <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
-              Curated selection
+              Latest
             </span>
             <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
-              Featured Products
+              New Arrivals
             </h2>
-            <p className="mt-2 text-muted">
-              Our most popular picks this season
+            <p className="mt-1 text-sm text-muted">
+              Fresh from our catalog
             </p>
           </div>
           <Link
@@ -64,11 +70,96 @@ export default function LandingPage() {
             <span className="text-lg leading-none">&rarr;</span>
           </Link>
         </div>
-
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((product) => (
+          {latest.map((product) => (
             <ProductCard key={product.nanoId} product={product} />
           ))}
+        </div>
+      </section>
+
+      <section className="border-t border-border bg-surface">
+        <div className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+          <div className="mb-12 flex items-end justify-between">
+            <div>
+              <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
+                Popular
+              </span>
+              <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
+                Most Wanted
+              </h2>
+              <p className="mt-1 text-sm text-muted">
+                Trending products right now
+              </p>
+            </div>
+            <Link
+              href="/products?sort=popular"
+              className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
+            >
+              View all
+              <span className="text-lg leading-none">&rarr;</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {popular.map((product) => (
+              <ProductCard key={product.nanoId} product={product} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {categories.map((cat) => {
+        const catProducts = getProductsByCategory(cat.nanoId).slice(0, 6);
+        if (catProducts.length === 0) return null;
+
+        return (
+          <section key={cat.nanoId} className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+            <div className="mb-12 flex items-end justify-between">
+              <div>
+                <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
+                  {cat.name}
+                </span>
+                <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
+                  {cat.description || `Shop ${cat.name}`}
+                </h2>
+                <p className="mt-1 text-sm text-muted">
+                  {cat.productsCount} product{cat.productsCount !== 1 ? "s" : ""}
+                </p>
+              </div>
+              <Link
+                href={`/products?category=${cat.nanoId}`}
+                className="hidden items-center gap-1 text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:flex"
+              >
+                Browse {cat.name}
+                <span className="text-lg leading-none">&rarr;</span>
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              {catProducts.map((product) => (
+                <ProductCard key={product.nanoId} product={product} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
+
+      <section className="border-t border-border bg-gradient-to-b from-surface to-background py-20 text-center">
+        <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+          <span className="text-xs font-semibold uppercase tracking-[0.15em] text-accent">
+            Ready to explore?
+          </span>
+          <h2 className="mt-1 text-3xl font-black text-primary sm:text-4xl">
+            Everything you need, all in one place
+          </h2>
+          <p className="mt-2 text-muted">
+            Browse our full catalog of curated products from trusted brands.
+          </p>
+          <div className="mt-8 flex items-center justify-center gap-4">
+            <Link href="/products">
+              <Button variant="primary" size="lg">
+                Browse All Products
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
     </div>
