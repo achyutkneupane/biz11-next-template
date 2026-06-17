@@ -1,7 +1,13 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken } from "@biz11/store/business/selectors";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost/api";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
+
+function resolveUrl(path: string): URL {
+  const base = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
+  const clean = path.startsWith("/") ? path.slice(1) : path;
+  return new URL(clean, base);
+}
 
 export class ApiError extends Error {
   constructor(
@@ -36,7 +42,7 @@ export async function apiGet<T>(
   path: string,
   options?: { params?: Record<string, string | number | undefined>; authenticated?: boolean },
 ): Promise<{ data: T; meta?: { nextCursor?: string; prevCursor?: string; perPage: number; hasMore: boolean } }> {
-  const url = new URL(path, BASE_URL);
+  const url = resolveUrl(path);
 
   if (options?.params) {
     Object.entries(options.params).forEach(([key, value]) => {
@@ -67,7 +73,7 @@ export async function apiPost<T>(
   body?: unknown,
   options?: { authenticated?: boolean },
 ): Promise<{ data: T }> {
-  const url = new URL(path, BASE_URL);
+  const url = resolveUrl(path);
 
   const res = await fetch(url.toString(), {
     method: "POST",
@@ -92,7 +98,7 @@ export async function apiPatch<T>(
   body: unknown,
   options?: { authenticated?: boolean },
 ): Promise<{ data: T }> {
-  const url = new URL(path, BASE_URL);
+  const url = resolveUrl(path);
 
   const res = await fetch(url.toString(), {
     method: "PATCH",
@@ -116,7 +122,7 @@ export async function apiDelete(
   path: string,
   options?: { authenticated?: boolean },
 ): Promise<void> {
-  const url = new URL(path, BASE_URL);
+  const url = resolveUrl(path);
 
   const res = await fetch(url.toString(), {
     method: "DELETE",

@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { apiGet } from "@biz11/lib/api-client";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import type { ProductResource } from "@biz11/Types/Api";
 
 export type SortMode = "featured" | "latest" | "popular";
@@ -18,18 +20,6 @@ function clientSideFilter(
 ): ProductResource[] {
   let result = products;
 
-  if (filters.categoryId) {
-    result = result.filter((p) =>
-      p.categories.some((c) => c.nanoId === String(filters.categoryId)),
-    );
-  }
-
-  if (filters.brandId) {
-    result = result.filter(
-      (p) => p.brand.nanoId === String(filters.brandId),
-    );
-  }
-
   if (filters.search) {
     const q = filters.search.toLowerCase();
     result = result.filter(
@@ -44,26 +34,34 @@ function clientSideFilter(
 }
 
 export function useFeaturedProducts() {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   return useQuery({
     queryKey: ["products", "featured"],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products/featured", {
         params: { perPage: 12 },
       }),
+    enabled: isBizLoaded,
   });
 }
 
 export function useLatestProducts() {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   return useQuery({
     queryKey: ["products", "latest"],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products/latest", {
         params: { perPage: 12 },
       }),
+    enabled: isBizLoaded,
   });
 }
 
 export function useProducts(filters: ProductFilters) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   const allProducts = useQuery({
     queryKey: ["products", "list", { brandId: filters.brandId, categoryId: filters.categoryId }],
     queryFn: () =>
@@ -74,6 +72,7 @@ export function useProducts(filters: ProductFilters) {
           perPage: 50,
         },
       }),
+    enabled: isBizLoaded,
   });
 
   const filtered = useMemo(() => {
@@ -91,20 +90,25 @@ export function useProducts(filters: ProductFilters) {
 }
 
 export function useProduct(slug: string) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   return useQuery({
     queryKey: ["product", slug],
     queryFn: () => apiGet<ProductResource>(`/v1/products/${slug}`),
+    enabled: isBizLoaded,
   });
 }
 
 export function useRelatedProducts(product: ProductResource | null) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   const allProducts = useQuery({
     queryKey: ["products", "list"],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products", {
         params: { perPage: 50 },
       }),
-    enabled: !!product,
+    enabled: !!product && isBizLoaded,
   });
 
   return useMemo(() => {
