@@ -2,10 +2,10 @@ import { QuantityInput } from "@biz11/components/ui/QuantityInput";
 import { HiOutlineTrash } from "react-icons/hi2";
 
 type CartItemRowProps = {
-  coverUrl: string;
-  name: string;
+  coverUrl: string | null;
+  productName: string;
   skuCode: string;
-  price: string;
+  subtotal: string;
   quantity: number;
   formatPrice: (p: string) => string;
   onUpdateQuantity: (qty: number) => void;
@@ -13,24 +13,24 @@ type CartItemRowProps = {
 };
 
 export function CartItemRow({
-  coverUrl, name, skuCode, price, quantity, formatPrice, onUpdateQuantity, onRemove,
+  coverUrl, productName, skuCode, subtotal, quantity, formatPrice, onUpdateQuantity, onRemove,
 }: CartItemRowProps) {
   return (
     <div className="flex items-center gap-4 border-b border-border-light py-5 last:border-none">
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-border-light">
-        <img src={coverUrl} alt={name} className="h-full w-full object-cover" />
+        {coverUrl && <img src={coverUrl} alt={productName} className="h-full w-full object-cover" />}
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-foreground truncate">{name}</p>
+        <p className="text-sm font-semibold text-foreground truncate">{productName}</p>
         <p className="mt-1.5 text-xs text-muted">{skuCode}</p>
         <div className="mt-2 flex items-center gap-3">
           <QuantityInput value={quantity} max={999} onChange={onUpdateQuantity} />
-          <p className="text-base font-bold text-accent">{formatPrice((parseFloat(price) * quantity).toFixed(2))}</p>
+          <p className="text-base font-bold text-accent">{formatPrice(subtotal)}</p>
         </div>
       </div>
       <button onClick={onRemove}
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-light transition-colors duration-200 hover:bg-border-light hover:text-danger cursor-pointer"
-        aria-label={`Remove ${name}`}
+        aria-label={`Remove ${productName}`}
       >
         <HiOutlineTrash className="h-4 w-4" />
       </button>
