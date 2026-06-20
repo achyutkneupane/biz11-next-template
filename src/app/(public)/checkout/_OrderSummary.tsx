@@ -2,16 +2,25 @@
 
 import { Button } from "@biz11/components/ui/Button";
 import { useStore } from "@biz11/store";
-import { selectCartItems, selectCartSubtotal } from "@biz11/store/cart/selectors";
+import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
+import { useCart } from "@biz11/Hooks/cart/useCart";
+import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
 
 export function _OrderSummary() {
-  const items = useStore(selectCartItems);
-  const subtotal = useStore(selectCartSubtotal);
+  const { data: cartData } = useCart();
+  const checkout = useCheckout();
   const currency = useStore(selectCurrency);
+
+  const items = cartData?.data ?? useStore(selectCartItems);
+  const subtotal = items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
   const shipping = 12.99;
   const total = subtotal + shipping;
+
+  const handlePlaceOrder = () => {
+    checkout.mutate(undefined);
+  };
 
   return (
     <div className="sticky top-24 rounded-2xl border border-border bg-surface p-6 shadow-sm">
@@ -22,16 +31,16 @@ export function _OrderSummary() {
           <p className="text-sm text-muted">Your cart is empty</p>
         ) : (
           items.map((item) => (
-            <div key={item.nanoId} className="flex items-center gap-3 border-b border-border-light pb-4 last:border-none last:pb-0">
+            <div key={item.id} className="flex items-center gap-3 border-b border-border-light pb-4 last:border-none last:pb-0">
               <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-border-light">
-                <img src={item.coverUrl} alt={item.name} className="h-full w-full object-cover" />
+                {item.coverUrl && <img src={item.coverUrl} alt={item.productName} className="h-full w-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground truncate">{item.name}</p>
+                <p className="text-sm font-semibold text-foreground truncate">{item.productName}</p>
                 <p className="text-xs text-muted">Qty: {item.quantity}</p>
               </div>
               <p className="text-sm font-bold text-foreground">
-                {formatPrice((parseFloat(item.price) * item.quantity).toFixed(2), currency)}
+                {formatPrice(item.subtotal, currency)}
               </p>
             </div>
           ))
@@ -57,8 +66,14 @@ export function _OrderSummary() {
         </div>
       </div>
 
-      <Button variant="primary" size="lg" className="mt-6 w-full" disabled={items.length === 0}>
-        Place Order &mdash; {formatPrice((subtotal > 0 ? total : 0).toFixed(2), currency)}
+      <Button
+        variant="primary"
+        size="lg"
+        className="mt-6 w-full"
+        disabled={items.length === 0 || checkout.isPending}
+        onClick={handlePlaceOrder}
+      >
+        {checkout.isPending ? "Processing..." : `Place Order \u2014 ${formatPrice((subtotal > 0 ? total : 0).toFixed(2), currency)}`}
       </Button>
 
       <p className="mt-3 text-center text-xs text-muted-light">
