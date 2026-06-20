@@ -72,6 +72,66 @@ export interface SkuResource {
   createdAt: string | null;
 }
 
+export interface CartItemResource {
+  id: number;
+  skuId: number;
+  productName: string;
+  skuCode: string;
+  coverUrl: string | null;
+  unitPrice: string;
+  quantity: number;
+  subtotal: string;
+}
+
+export type OrderStatus = "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
+
+export interface OrderResource {
+  nanoId: string;
+  status: OrderStatus;
+  subtotal: string;
+  tax: string;
+  discount: string;
+  total: string;
+  currency: string;
+  notes: string | null;
+  items: OrderItem[];
+  createdAt: string;
+}
+
+export interface OrderItem {
+  productName: string;
+  skuCode: string;
+  coverUrl: string | null;
+  unitPrice: string;
+  quantity: number;
+  subtotal: string;
+}
+
+export interface AddressResource {
+  id: number;
+  label: string | null;
+  name: string;
+  phone: string | null;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string | null;
+  postalCode: string | null;
+  country: string;
+  isDefault: boolean;
+}
+
+export type AddressInput = {
+  name: string;
+  phone?: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state?: string;
+  postalCode?: string;
+  country?: string;
+};
+
 export interface LoginRequest {
   email: string;
   password: string;
