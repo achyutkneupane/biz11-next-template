@@ -1,6 +1,7 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken } from "@biz11/store/business/selectors";
 import { getVisitorHeaders } from "@biz11/lib/visitor";
+import type { CartItemResource, OrderResource, AddressResource, AddressInput } from "@biz11/Types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
@@ -139,4 +140,46 @@ export async function apiDelete(
       body.detail || res.statusText,
     );
   }
+}
+
+// Cart
+
+export function getCart() {
+  return apiGet<CartItemResource[]>("/v1/cart");
+}
+
+export function addToCart(skuNanoId: string, quantity: number = 1) {
+  return apiPost<CartItemResource>("/v1/cart/items", { sku_nano_id: skuNanoId, quantity });
+}
+
+export function updateCartItem(id: number, quantity: number) {
+  return apiPatch<CartItemResource>(`/v1/cart/items/${id}`, { quantity });
+}
+
+export function removeCartItem(id: number) {
+  return apiDelete(`/v1/cart/items/${id}`);
+}
+
+// Checkout & Orders
+
+export function checkout(body?: { notes?: string; billing_address_id?: number; shipping_address_id?: number }) {
+  return apiPost<OrderResource>("/v1/checkout", body);
+}
+
+export function getOrders(page: number = 1) {
+  return apiGet<OrderResource[]>(`/v1/orders`, { params: { page } });
+}
+
+export function getOrder(nanoId: string) {
+  return apiGet<OrderResource>(`/v1/orders/${nanoId}`);
+}
+
+// Addresses
+
+export function getAddresses() {
+  return apiGet<AddressResource[]>("/v1/addresses");
+}
+
+export function createAddress(data: AddressInput) {
+  return apiPost<AddressResource>("/v1/addresses", data);
 }
