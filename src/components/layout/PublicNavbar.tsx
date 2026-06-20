@@ -4,8 +4,7 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
-import { useStore } from "@biz11/store";
-import { selectCartCount } from "@biz11/store/cart/selectors";
+import { useCart } from "@biz11/Hooks/cart/useCart";
 import { useBusiness } from "@biz11/Hooks/useBusiness";
 
 const navLinks = [
@@ -16,7 +15,8 @@ const navLinks = [
 export function PublicNavbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const cartCount = useStore(selectCartCount);
+  const { data: cartData } = useCart();
+  const cartCount = (cartData?.data ?? []).length;
   const business = useBusiness();
 
   const toggleCart = useCallback(() => setCartOpen((v) => !v), []);
