@@ -100,7 +100,7 @@ export function ProductDetail({slug}: { slug: string }) {
 					/>
 
 					<AddToCartSection
-						nanoId={product.nanoId ?? ""}
+						skuNanoId={activeSku?.nanoId ?? ""}
 						name={product.name}
 						price={activeSku?.price ?? "0"}
 						coverUrl={product.coverUrl}
