@@ -1,5 +1,6 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken } from "@biz11/store/business/selectors";
+import { getVisitorHeaders } from "@biz11/lib/visitor";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
@@ -25,6 +26,7 @@ function getHeaders(authenticated = true): Record<string, string> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
+    ...getVisitorHeaders(),
   };
 
   if (authenticated) {
