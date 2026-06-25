@@ -160,8 +160,20 @@ Every API call includes:
 
 ### Persistence
 
-Visitor tokens are stored in zustand memory (re-fetched on page load from `/business`).
-No sessionStorage or localStorage needed for visitor data.
+Visitor tokens are stored in **both** zustand (runtime) and **sessionStorage** (cross-reload).
+
+- **zustand**: Used by `getHeaders()` for all API calls during the current session.
+- **sessionStorage**: Persists across page reloads. On reload, the bootstrap reads stored tokens from sessionStorage and sends them on the `/business` call. The backend reuses the existing guest identity instead of creating a new one.
+
+```
+1. First visit → /business (no visitor headers) → backend creates guest
+                 → store visitorId/visitorSignature in zustand + sessionStorage
+2. Page reload → read from sessionStorage → /business (with visitor headers)
+                 → backend reuses same guest → cart/orders preserved
+3. New tab    → no sessionStorage (tab-scoped) → /business → new guest
+```
+
+**Why sessionStorage not localStorage:** Each tab gets a fresh guest identity. Cart is ephemeral — merged on login anyway.
 
 ## Skills (load from `.agents/skills/`)
 
