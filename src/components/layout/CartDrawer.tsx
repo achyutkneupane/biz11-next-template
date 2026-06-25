@@ -1,15 +1,47 @@
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { clsx } from "clsx";
 import { HiOutlineXMark } from "react-icons/hi2";
 import { useStore } from "@biz11/store";
 import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
+import { useDebounce } from "@biz11/Hooks/useDebounce";
 import { useCart, useUpdateCartItem, useRemoveCartItem } from "@biz11/Hooks/cart/useCart";
 import { CartItemRow } from "@biz11/components/ui/CartItemRow";
 import { CartSummary } from "@biz11/components/ui/CartSummary";
+import type { CartItemResource } from "@biz11/Types/Api";
+
+function CartItemQuantity({ item }: { item: CartItemResource }) {
+  const updateCartItem = useUpdateCartItem();
+  const removeCartItem = useRemoveCartItem();
+  const [qty, setQty] = useState(item.quantity);
+  const debouncedQty = useDebounce(qty, 400);
+
+  useEffect(() => {
+    if (debouncedQty !== item.quantity) {
+      updateCartItem.mutate({ id: item.id, quantity: debouncedQty });
+    }
+  }, [debouncedQty]);
+
+  useEffect(() => {
+    setQty(item.quantity);
+  }, [item.quantity]);
+
+  return (
+    <CartItemRow
+      coverUrl={item.coverUrl}
+      productName={item.productName}
+      skuCode={item.skuCode}
+      subtotal={item.subtotal}
+      quantity={qty}
+      formatPrice={(p) => formatPrice(p, useStore.getState().currency)}
+      onUpdateQuantity={setQty}
+      onRemove={() => removeCartItem.mutate(item.id)}
+    />
+  );
+}
 
 type CartDrawerProps = {
   open: boolean;
@@ -18,8 +50,6 @@ type CartDrawerProps = {
 
 export function CartDrawer({ open, onClose }: CartDrawerProps) {
   const { data: cartData } = useCart();
-  const updateCartItem = useUpdateCartItem();
-  const removeCartItem = useRemoveCartItem();
   const currency = useStore(selectCurrency);
 
   const items = useStore(selectCartItems);
@@ -82,19 +112,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
               <p className="text-sm text-muted">Your cart is empty</p>
             </div>
           ) : (
-            cartItems.map((item) => (
-              <CartItemRow
-                key={item.id}
-                coverUrl={item.coverUrl}
-                productName={item.productName}
-                skuCode={item.skuCode}
-                subtotal={item.subtotal}
-                quantity={item.quantity}
-                formatPrice={fp}
-                onUpdateQuantity={(qty) => updateCartItem.mutate({ id: item.id, quantity: qty })}
-                onRemove={() => removeCartItem.mutate(item.id)}
-              />
-            ))
+            cartItems.map((item) => <CartItemQuantity key={item.id} item={item} />)
           )}
         </div>
 
