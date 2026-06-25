@@ -117,6 +117,52 @@ RFC 9457 Problem Details: `{ type, title, status, detail }`.
 
 Business, Brand, Category (recursive children), Product, Sku — all typed in `frontend-guideline.md` section 3.3.
 
+## Visitor Integration — Signed Guest Token
+
+Every device/browser gets a signed visitor token on the first API call for cart, checkout, orders, and addresses **without requiring login**.
+
+### Bootstrap
+
+`GET /api/v1/business` returns visitor tokens in the JSON body:
+
+```json
+{
+  "data": {
+    "nanoId": "...",
+    "name": "...",
+    "currency": "...",
+    "timezone": "...",
+    "visitorId": "r56Wf8qAiMKS...",
+    "visitorSignature": "a1b2c3d4e5..."
+  }
+}
+```
+
+Both are stored in the zustand business slice alongside `bizId`.
+
+### Headers
+
+Every API call includes:
+- `X-BIZID` — from zustand (`selectBizId`)
+- `X-Visitor-Id` — from zustand (`selectVisitorId`)
+- `X-Visitor-Signature` — from zustand (`selectVisitorSignature`)
+- `Authorization: Bearer {token}` — only when logged in (`selectToken`)
+
+### Flow
+
+```
+1. Page load → GET /v1/business → store bizId + visitor tokens in zustand
+2. All subsequent calls include X-BIZID + X-Visitor-Id + X-Visitor-Signature
+3. Backend verifies HMAC-SHA256 signature against visitor ID
+4. Guest cart/orders are scoped to the visitor
+5. On login → backend merges guest data into authenticated user automatically
+```
+
+### Persistence
+
+Visitor tokens are stored in zustand memory (re-fetched on page load from `/business`).
+No sessionStorage or localStorage needed for visitor data.
+
 ## Skills (load from `.agents/skills/`)
 
 | Skill                           | Load when                                                                                 |
