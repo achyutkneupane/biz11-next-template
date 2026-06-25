@@ -12,8 +12,9 @@ export function _OrderSummary() {
   const { data: cartData } = useCart();
   const checkout = useCheckout();
   const currency = useStore(selectCurrency);
+  const storeItems = useStore(selectCartItems);
 
-  const items = cartData?.data ?? useStore(selectCartItems);
+  const items = cartData?.data ?? storeItems;
   const subtotal = items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
   const shipping = 12.99;
   const total = subtotal + shipping;
