@@ -24,11 +24,18 @@ EcomKit-powered Next.js front app.
 ## Commands
 
 ```bash
-npm run dev      # next dev
+npm run dev      # next dev -p 3010 (project-specific port)
 npm run build    # next build
 npm run start    # next start (prod)
 npm run lint     # eslint (ESLint 10, NOT next lint)
 ```
+
+### Dev server with custom domain
+```bash
+npm run dev                         # starts on :3010
+herd proxy ecom-front.test http://localhost:3010   # Herd nginx → port 3010
+```
+Open [http://ecom-front.test](http://ecom-front.test) in browser.
 
 ## Project Layout
 
