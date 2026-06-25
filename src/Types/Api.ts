@@ -3,6 +3,8 @@ export interface BusinessResource {
   name: string;
   currency: string;
   timezone: string;
+  visitorId: string;
+  visitorSignature: string;
 }
 
 export interface BrandResource {

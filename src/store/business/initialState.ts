@@ -5,6 +5,8 @@ export type BusinessState = {
   timezone: string;
   isLoaded: boolean;
   token: string | null;
+  visitorId: string;
+  visitorSignature: string;
 };
 
 export const initialBusinessState: BusinessState = {
@@ -14,4 +16,6 @@ export const initialBusinessState: BusinessState = {
   timezone: "UTC",
   isLoaded: false,
   token: null,
+  visitorId: "",
+  visitorSignature: "",
 };

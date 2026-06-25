@@ -20,6 +20,8 @@ export const createBusinessSlice: StateCreator<
       name: data.name,
       currency: data.currency,
       timezone: data.timezone,
+      visitorId: data.visitorId,
+      visitorSignature: data.visitorSignature,
       isLoaded: true,
     }),
   setToken: (token) => set({ token }),

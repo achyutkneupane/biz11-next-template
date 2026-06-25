@@ -2,29 +2,18 @@
 
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "@biz11/lib/api-client";
 import { useStore } from "@biz11/store";
 import { selectIsBizLoaded } from "@biz11/store/business/selectors";
-import { setVisitorFromHeaders } from "@biz11/lib/visitor";
 import type { BusinessResource } from "@biz11/Types/Api";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
 function BootstrapInner() {
   const isLoaded = useStore(selectIsBizLoaded);
   const setBusiness = useStore((s) => s.setBusiness);
 
-  const { data } = useQuery({
+  const { data, error } = useQuery({
     queryKey: ["business"],
-    queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/v1/business`);
-      setVisitorFromHeaders(res.headers);
-      if (!res.ok) {
-        const body = await res.json().catch(() => ({}));
-        throw new Error(body.detail || body.title || "Business fetch failed");
-      }
-      const json = await res.json() as { data: BusinessResource };
-      return json;
-    },
+    queryFn: () => apiGet<BusinessResource>("/v1/business"),
     staleTime: Infinity,
     retry: 2,
   });
@@ -34,6 +23,12 @@ function BootstrapInner() {
       setBusiness(data.data);
     }
   }, [data, isLoaded, setBusiness]);
+
+  useEffect(() => {
+    if (error) {
+      console.error("Business bootstrap failed:", error);
+    }
+  }, [error]);
 
   return null;
 }

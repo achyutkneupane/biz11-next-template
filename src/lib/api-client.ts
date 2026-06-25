@@ -1,6 +1,5 @@
 import { useStore } from "@biz11/store";
-import { selectBizId, selectToken } from "@biz11/store/business/selectors";
-import { getVisitorHeaders } from "@biz11/lib/visitor";
+import { selectBizId, selectToken, selectVisitorId, selectVisitorSignature } from "@biz11/store/business/selectors";
 import type { CartItemResource, OrderResource, AddressResource, AddressInput } from "@biz11/Types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
@@ -22,28 +21,42 @@ export class ApiError extends Error {
   }
 }
 
-function getHeaders(authenticated = true): Record<string, string> {
+function getHeaders(): Record<string, string> {
   const state = useStore.getState();
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
-    ...getVisitorHeaders(),
   };
 
-  if (authenticated) {
-    const bizId = selectBizId(state);
-    if (bizId) headers["X-BIZID"] = bizId;
+  const bizId = selectBizId(state);
+  if (bizId) headers["X-BIZID"] = bizId;
 
-    const token = selectToken(state);
-    if (token) headers["Authorization"] = `Bearer ${token}`;
-  }
+  const visitorId = selectVisitorId(state);
+  const visitorSignature = selectVisitorSignature(state);
+  if (visitorId) headers["X-Visitor-Id"] = visitorId;
+  if (visitorSignature) headers["X-Visitor-Signature"] = visitorSignature;
+
+  const token = selectToken(state);
+  if (token) headers["Authorization"] = `Bearer ${token}`;
 
   return headers;
 }
 
+async function handleResponse(res: Response): Promise<any> {
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new ApiError(
+      res.status,
+      body.title || "Request failed",
+      body.detail || res.statusText,
+    );
+  }
+  return res.json();
+}
+
 export async function apiGet<T>(
   path: string,
-  options?: { params?: Record<string, string | number | undefined>; authenticated?: boolean },
+  options?: { params?: Record<string, string | number | undefined> },
 ): Promise<{ data: T; meta?: { nextCursor?: string; prevCursor?: string; perPage: number; hasMore: boolean; total?: number } }> {
   const url = resolveUrl(path);
 
@@ -55,83 +68,44 @@ export async function apiGet<T>(
     });
   }
 
-  const res = await fetch(url.toString(), {
-    headers: getHeaders(options?.authenticated ?? true),
-  });
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new ApiError(
-      res.status,
-      body.title || "Request failed",
-      body.detail || res.statusText,
-    );
-  }
-
-  return res.json();
+  const res = await fetch(url.toString(), { headers: getHeaders() });
+  return handleResponse(res);
 }
 
 export async function apiPost<T>(
   path: string,
   body?: unknown,
-  options?: { authenticated?: boolean },
 ): Promise<{ data: T }> {
   const url = resolveUrl(path);
-
   const res = await fetch(url.toString(), {
     method: "POST",
-    headers: getHeaders(options?.authenticated ?? true),
+    headers: getHeaders(),
     body: body ? JSON.stringify(body) : undefined,
   });
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new ApiError(
-      res.status,
-      body.title || "Request failed",
-      body.detail || res.statusText,
-    );
-  }
-
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function apiPatch<T>(
   path: string,
   body: unknown,
-  options?: { authenticated?: boolean },
 ): Promise<{ data: T }> {
   const url = resolveUrl(path);
-
   const res = await fetch(url.toString(), {
     method: "PATCH",
-    headers: getHeaders(options?.authenticated ?? true),
+    headers: getHeaders(),
     body: JSON.stringify(body),
   });
-
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new ApiError(
-      res.status,
-      body.title || "Request failed",
-      body.detail || res.statusText,
-    );
-  }
-
-  return res.json();
+  return handleResponse(res);
 }
 
 export async function apiDelete(
   path: string,
-  options?: { authenticated?: boolean },
 ): Promise<void> {
   const url = resolveUrl(path);
-
   const res = await fetch(url.toString(), {
     method: "DELETE",
-    headers: getHeaders(options?.authenticated ?? true),
+    headers: getHeaders(),
   });
-
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
     throw new ApiError(
