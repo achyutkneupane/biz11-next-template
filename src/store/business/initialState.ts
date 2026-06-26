@@ -7,6 +7,7 @@ export type BusinessState = {
   token: string | null;
   visitorId: string;
   visitorSignature: string;
+  stripePublishableKey: string;
 };
 
 export const initialBusinessState: BusinessState = {
@@ -18,4 +19,5 @@ export const initialBusinessState: BusinessState = {
   token: null,
   visitorId: "",
   visitorSignature: "",
+  stripePublishableKey: "",
 };

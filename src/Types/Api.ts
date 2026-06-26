@@ -5,6 +5,7 @@ export interface BusinessResource {
   timezone: string;
   visitorId: string;
   visitorSignature: string;
+  stripePublishableKey?: string;
 }
 
 export interface BrandResource {

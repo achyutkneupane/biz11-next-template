@@ -22,6 +22,7 @@ export const createBusinessSlice: StateCreator<
       timezone: data.timezone,
       visitorId: data.visitorId,
       visitorSignature: data.visitorSignature,
+      stripePublishableKey: data.stripePublishableKey ?? "",
       isLoaded: true,
     }),
   setToken: (token) => set({ token }),

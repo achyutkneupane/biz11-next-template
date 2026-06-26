@@ -23,8 +23,5 @@ export async function getPaymentIntent(orderId: string, bizId: string) {
   }
 
   const json = await res.json();
-  return {
-    clientSecret: json.data.client_secret as string,
-    publishableKey: json.data.publishable_key as string,
-  };
+  return json.data.client_secret as string;
 }
