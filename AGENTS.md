@@ -193,7 +193,9 @@ Visitor tokens are stored in **both** zustand (runtime) and **sessionStorage** (
 | `web-design-guidelines`         | Before shipping UI — compliance checker                                                   |
 | `writing-guidelines`            | Writing docs or prose                                                                     |
 | `atomic-semantics-commits`      | Every commit — strict conventional commit format                                          |
-| `zustand`	                      | For global state management                                                               | 
+| `zustand`	                      | For global state management                                                               |
+
+Alongside, we have stripe skills which we can use when stripe is needed.
 
 ## Coding Standards
 
