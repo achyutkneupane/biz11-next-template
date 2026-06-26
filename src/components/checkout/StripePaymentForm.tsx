@@ -31,6 +31,16 @@ export function StripePaymentForm({ orderId }: { orderId: string }) {
     }
   };
 
+  if (!stripe || !elements) {
+    return (
+      <div className="space-y-4">
+        <div className="h-12 w-full animate-pulse rounded-xl bg-border-light" />
+        <div className="h-12 w-3/4 animate-pulse rounded-xl bg-border-light" />
+        <div className="h-12 w-full animate-pulse rounded-xl bg-border-light" />
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit}>
       <PaymentElement />
@@ -45,7 +55,7 @@ export function StripePaymentForm({ orderId }: { orderId: string }) {
         variant="primary"
         size="lg"
         className="mt-6 w-full"
-        disabled={!stripe || isProcessing}
+        disabled={isProcessing}
         type="submit"
       >
         {isProcessing ? "Processing..." : `Pay Now`}
