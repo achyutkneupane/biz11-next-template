@@ -16,7 +16,8 @@ import {AddToCartSection} from "@biz11/components/layout/AddToCartSection";
 import {ProductDetailSkeleton} from "@biz11/components/Skeletons/ProductDetailSkeleton";
 import {Specifications} from "@biz11/Types/Api";
 
-const buildSpecs = (specifications: Specifications) => {
+const buildSpecs = (specifications: Specifications | null) => {
+	if (!specifications) return null;
 	const entries = Object.entries(specifications);
 	return entries.length > 0 ? entries.map(([k, v]) => ({key: k, value: v})) : null;
 }
