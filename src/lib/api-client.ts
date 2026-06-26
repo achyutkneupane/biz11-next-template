@@ -1,6 +1,6 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken, selectVisitorId, selectVisitorSignature } from "@biz11/store/business/selectors";
-import type { CartItemResource, OrderResource, AddressResource, AddressInput } from "@biz11/Types/Api";
+import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutResponse } from "@biz11/Types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
@@ -137,7 +137,7 @@ export function removeCartItem(id: number) {
 // Checkout & Orders
 
 export function checkout(body?: { notes?: string; billing_address_id?: number; shipping_address_id?: number }) {
-  return apiPost<OrderResource>("/v1/checkout", body);
+  return apiPost<CheckoutResponse>("/v1/checkout", body);
 }
 
 export function getOrders(page: number = 1) {

@@ -95,6 +95,8 @@ export interface OrderResource {
   discount: string;
   total: string;
   currency: string;
+  paymentStatus: string;
+  paidAt: string | null;
   notes: string | null;
   items: OrderItem[];
   createdAt: string;
@@ -133,6 +135,11 @@ export type AddressInput = {
   postalCode?: string;
   country?: string;
 };
+
+export interface CheckoutResponse {
+  order: OrderResource;
+  paymentIntent: unknown;
+}
 
 export interface LoginRequest {
   email: string;

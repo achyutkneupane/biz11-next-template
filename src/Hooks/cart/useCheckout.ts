@@ -11,7 +11,7 @@ export function useCheckout() {
       checkoutApi(body),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["cart"] });
-      router.push(`/checkout/${data.data.nanoId}/payment`);
+      router.push(`/checkout/${data.data.order.nanoId}/payment`);
     },
   });
 }
