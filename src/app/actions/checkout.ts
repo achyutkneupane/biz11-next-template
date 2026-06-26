@@ -1,11 +1,8 @@
 "use server";
 
-const DEV_HTTP_RE = /^https:\/\//i;
-
 export async function getPaymentIntent(orderId: string, bizId: string) {
-  const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
-  const httpUrl = rawUrl.replace(DEV_HTTP_RE, "http://");
-  const base = httpUrl.endsWith("/") ? httpUrl : httpUrl + "/";
+  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
+  const base = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
   const url = new URL(`v1/orders/${orderId}/payment-intent`, base);
 
   const res = await fetch(url.toString(), {
