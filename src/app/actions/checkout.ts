@@ -1,7 +1,8 @@
 "use server";
 
 export async function getPaymentIntent(orderId: string, bizId: string) {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
+  const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost").replace(/^https:\/\//, "http://");
+  // Node.js doesn't trust local dev certificates, so use HTTP for server-side calls
 
   const res = await fetch(`${BASE_URL}/v1/orders/${orderId}/payment-intent`, {
     method: "POST",
