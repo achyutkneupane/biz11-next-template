@@ -1,10 +1,14 @@
 "use server";
 
-export async function getPaymentIntent(orderId: string, bizId: string) {
-  const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost").replace(/^https:\/\//, "http://");
-  // Node.js doesn't trust local dev certificates, so use HTTP for server-side calls
+const DEV_HTTP_RE = /^https:\/\//i;
 
-  const res = await fetch(`${BASE_URL}/v1/orders/${orderId}/payment-intent`, {
+export async function getPaymentIntent(orderId: string, bizId: string) {
+  const rawUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
+  const httpUrl = rawUrl.replace(DEV_HTTP_RE, "http://");
+  const base = httpUrl.endsWith("/") ? httpUrl : httpUrl + "/";
+  const url = new URL(`v1/orders/${orderId}/payment-intent`, base);
+
+  const res = await fetch(url.toString(), {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

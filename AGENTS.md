@@ -37,6 +37,11 @@ herd proxy ecom-front.test http://localhost:3010   # Herd nginx → port 3010
 ```
 Open [http://ecom-front.test](http://ecom-front.test) in browser.
 
+### Notes
+
+- **Restart dev server after changing Server Actions** (`app/actions/*.ts`) — they are cached in compiled chunks until a full restart.
+- Local `.test` domains use self-signed SSL. Server-side fetch calls use HTTP automatically. If an API shows `fetch failed` → restart dev server.
+
 ## Project Layout
 
 **Important:** There are two `.agents/rules/` files that define the architecture:
