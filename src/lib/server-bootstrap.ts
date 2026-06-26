@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 import type { BusinessResource } from "@biz11/Types/Api";
 
-const BASE_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost").replace(/^https:\/\//i, "http://");
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
 export type ServerBootstrapResult =
   | { data: BusinessResource; visitorId: string; visitorSignature: string }
