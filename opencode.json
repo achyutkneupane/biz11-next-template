@@ -1,8 +1,0 @@
-{
-  "references": {
-    "Backend": {
-      "path": "/Users/achyutkneupane/htdocs/laravel13/EcomKit",
-      "description": "Laravel EcomKit API — source of truth for all API endpoints, models, and migrations"
-    }
-  }
-}
