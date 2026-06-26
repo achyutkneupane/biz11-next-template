@@ -41,6 +41,7 @@ Open [http://ecom-front.test](http://ecom-front.test) in browser.
 
 - **Restart dev server after changing Server Actions** (`app/actions/*.ts`) — they are cached in compiled chunks until a full restart.
 - Local `.test` domains use self-signed SSL. Server-side fetch calls use HTTP automatically. If an API shows `fetch failed` → restart dev server.
+- `(public)` routes are dynamic (`ƒ`) — they use `headers()` from `next/headers` for server-side business bootstrap. This is intentional; the `/v1/business` call runs during SSR and never appears in the browser's Network tab.
 
 ## Project Layout
 
