@@ -55,7 +55,13 @@ The frontend expects:
 }
 ```
 
-The Checkout Session's `client_secret` is available as `$session->client_secret` (note: this differs from `$session->payment_intent->client_secret`).
+The frontend's `<Elements>` component requires a **PaymentIntent** client_secret (`pi_...`), not a Checkout Session client_secret (`cs_...`). Get it from the session's payment intent:
+
+```php
+$client_secret = $session->payment_intent->client_secret;
+```
+
+The session's `client_secret` (`$session->client_secret`) won't work — it starts with `cs_` and Stripe.js Elements rejects it.
 
 ### 3. Key Rules (Stripe Best Practices)
 
