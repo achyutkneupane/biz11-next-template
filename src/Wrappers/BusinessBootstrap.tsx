@@ -53,6 +53,7 @@ function BootstrapInner() {
     },
     staleTime: Infinity,
     retry: 2,
+    enabled: !isLoaded,
   });
 
   useEffect(() => {
