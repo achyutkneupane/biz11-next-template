@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import {
   getCart,
   addToCart,
@@ -20,7 +21,13 @@ export function useAddToCart() {
   return useMutation({
     mutationFn: ({ skuNanoId, quantity }: { skuNanoId: string; quantity: number }) =>
       addToCart(skuNanoId, quantity),
-    onSuccess: () => qc.invalidateQueries({ queryKey: CART_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CART_KEY });
+      toast.success("Added to cart");
+    },
+    onError: () => {
+      toast.error("Failed to add to cart");
+    },
   });
 }
 
