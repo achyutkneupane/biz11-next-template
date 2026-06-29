@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { clsx } from "clsx";
 import type { ProductResource } from "@biz11/Types/Api";
@@ -34,11 +35,12 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
           variant === "compact" && "h-40 w-full",
         )}
       >
-        <img
+        <Image
           src={product.coverUrl}
           alt={product.name}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          loading="lazy"
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
       </div>
