@@ -37,6 +37,7 @@ export function useUpdateCartItem() {
     mutationFn: ({ id, quantity }: { id: number; quantity: number }) =>
       updateCartItemApi(id, quantity),
     onSuccess: () => qc.invalidateQueries({ queryKey: CART_KEY }),
+    onError: () => toast.error("Failed to update cart"),
   });
 }
 
@@ -44,6 +45,10 @@ export function useRemoveCartItem() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => removeCartItemApi(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: CART_KEY }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: CART_KEY });
+      toast.success("Item removed");
+    },
+    onError: () => toast.error("Failed to remove item"),
   });
 }
