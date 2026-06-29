@@ -1,0 +1,20 @@
+{
+	"instructions": [
+		"./AGENTS.md"
+	],
+	"$schema": "https://opencode.ai/config.json",
+	"plugin": [
+		"caveman-opencode-plugin"
+	],
+	"mcp": {
+		"backend-laravel-boost": {
+			"type": "local",
+			"enabled": true,
+			"command": [
+				"bash",
+				"-c",
+				"cd /Users/achyutkneupane/htdocs/laravel13/EcomKit && php artisan boost:mcp"
+			]
+		}
+	}
+}

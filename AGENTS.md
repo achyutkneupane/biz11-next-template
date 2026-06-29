@@ -24,15 +24,15 @@ EcomKit-powered Next.js front app.
 ## Commands
 
 ```bash
-npm run dev      # next dev -p 3010 (project-specific port)
-npm run build    # next build
-npm run start    # next start (prod)
-npm run lint     # eslint (ESLint 10, NOT next lint)
+bun run dev      # next dev -p 3010 (project-specific port)
+bun run build    # next build
+bun run start    # next start (prod)
+bun run lint     # eslint (ESLint 10, NOT next lint)
 ```
 
 ### Dev server with custom domain
 ```bash
-npm run dev                         # starts on :3010
+bun run dev                         # starts on :3010
 herd proxy ecom-front.test http://localhost:3010   # Herd nginx → port 3010
 ```
 Open [http://ecom-front.test](http://ecom-front.test) in browser.
@@ -183,18 +183,19 @@ Visitor tokens are stored in **both** zustand (runtime) and **sessionStorage** (
 
 ## Skills (load from `.agents/skills/`)
 
-| Skill                           | Load when                                                                                 |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `next-best-practices`           | Every task — file conventions, RSC, async, metadata, error handling, routes, images/fonts |
-| `next-cache-components`         | Using `'use cache'`, `cacheLife()`, `cacheTag()`, `updateTag()`                           |
-| `vercel-react-best-practices`   | Writing React components — 70 perf rules across 8 categories                              |
-| `vercel-react-view-transitions` | Page transitions or `<ViewTransition>`                                                    |
-| `frontend-design`               | Visual/design decisions — typography, palette, layout                                     |
-| `ui-ux-pro-max`                 | Python-based design system generator for design tokens                                    |
-| `web-design-guidelines`         | Before shipping UI — compliance checker                                                   |
-| `writing-guidelines`            | Writing docs or prose                                                                     |
-| `atomic-semantics-commits`      | Every commit — strict conventional commit format                                          |
-| `zustand`	                      | For global state management                                                               |
+| Skill                           | Load when                                                                                                  |
+|---------------------------------|------------------------------------------------------------------------------------------------------------|
+| `next-best-practices`           | Every task — file conventions, RSC, async, metadata, error handling, routes, images/fonts                  |
+| `next-cache-components`         | Using `'use cache'`, `cacheLife()`, `cacheTag()`, `updateTag()`                                            |
+| `vercel-react-best-practices`   | Writing React components — 70 perf rules across 8 categories                                               |
+| `vercel-react-view-transitions` | Page transitions or `<ViewTransition>`                                                                     |
+| `frontend-design`               | Visual/design decisions — typography, palette, layout                                                      |
+| `ui-ux-pro-max`                 | Python-based design system generator for design tokens                                                     |
+| `web-design-guidelines`         | Before shipping UI — compliance checker                                                                    |
+| `writing-guidelines`            | Writing docs or prose                                                                                      |
+| `atomic-semantics-commits`      | Every commit — strict conventional commit format                                                           |
+| `zustand`	                      | For global state management                                                                                |
+| `autonomous-loop-engineering`	  | Strict guidelines for autonomous iteration, self-correction, and tool-driven feedback loops for AI agents. |
 
 Alongside, we have stripe skills which we can use when stripe is needed.
 
