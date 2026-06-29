@@ -10,6 +10,7 @@ import { useBusiness } from "@biz11/Hooks/useBusiness";
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Shop" },
+  { href: "/orders", label: "Orders" },
 ];
 
 export function PublicNavbar() {
