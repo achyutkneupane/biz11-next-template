@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useId, useMemo } from "react";
+import { useDebounce } from "@biz11/Hooks/useDebounce";
 import { ProductCard } from "@biz11/components/ui/ProductCard";
 import { ProductGridSkeleton } from "@biz11/components/Skeletons/ProductGridSkeleton";
 import { CategoryTreeSkeleton } from "@biz11/components/Skeletons/CategoryTreeSkeleton";
@@ -27,6 +28,7 @@ export default function ProductsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sortMode, setSortMode] = useState<SortMode>("all");
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 300);
   const [cursor, setCursor] = useState<string | undefined>();
   const [cursorHistory, setCursorHistory] = useState<string[]>([]);
   const searchId = useId();
@@ -68,8 +70,8 @@ export default function ProductsPage() {
     if (selectedBrands.length > 0) {
       result = result.filter((p) => selectedBrands.includes(p.brand.nanoId!));
     }
-    if (search) {
-      const q = search.toLowerCase();
+    if (debouncedSearch) {
+      const q = debouncedSearch.toLowerCase();
       result = result.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
@@ -77,8 +79,9 @@ export default function ProductsPage() {
           p.description?.toLowerCase().includes(q),
       );
     }
+
     return result;
-  }, [pool, selectedCategory, selectedBrands, search]);
+  }, [pool, selectedCategory, selectedBrands, debouncedSearch]);
 
   const handleSortChange = (mode: SortMode) => {
     setSortMode(mode);
