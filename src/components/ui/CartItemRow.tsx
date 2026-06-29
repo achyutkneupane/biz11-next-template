@@ -1,4 +1,5 @@
 import { QuantityInput } from "@biz11/components/ui/QuantityInput";
+import Image from "next/image";
 import { HiOutlineTrash } from "react-icons/hi2";
 
 type CartItemRowProps = {
@@ -18,7 +19,7 @@ export function CartItemRow({
   return (
     <div className="flex items-center gap-4 border-b border-border-light py-5 last:border-none">
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-border-light">
-        {coverUrl && <img src={coverUrl} alt={productName} className="h-full w-full object-cover" />}
+        {coverUrl && <Image src={coverUrl} alt={productName || ""} width={80} height={80} className="h-full w-full object-cover" />}
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-foreground truncate">{productName}</p>

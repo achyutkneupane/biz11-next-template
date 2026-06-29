@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
@@ -78,7 +79,7 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
           {order.items.map((item, i) => (
             <div key={i} className="flex items-center gap-4 px-6 py-4">
               <div className="h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-border-light">
-                {item.coverUrl && <img src={item.coverUrl} alt={item.productName} className="h-full w-full object-cover" />}
+                {item.coverUrl && <Image src={item.coverUrl} alt={item.productName || ""} width={56} height={56} className="h-full w-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground">{item.productName}</p>

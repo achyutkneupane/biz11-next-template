@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 
 import { Button } from "@biz11/components/ui/Button";
 import { useStore } from "@biz11/store";
@@ -54,7 +55,7 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
           items.map((item) => (
             <div key={item.id} className="flex items-center gap-3 border-b border-border-light pb-4 last:border-none last:pb-0">
               <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-border-light">
-                {item.coverUrl && <img src={item.coverUrl} alt={item.productName} className="h-full w-full object-cover" />}
+                {item.coverUrl && <Image src={item.coverUrl} alt={item.productName || ""} width={56} height={56} className="h-full w-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-foreground truncate">{item.productName}</p>
