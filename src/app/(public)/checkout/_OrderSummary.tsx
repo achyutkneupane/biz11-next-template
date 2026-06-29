@@ -5,22 +5,42 @@ import { useStore } from "@biz11/store";
 import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
+import { createAddress } from "@biz11/lib/api-client";
 import { useCart } from "@biz11/Hooks/cart/useCart";
 import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
+import type { ShippingFormData } from "@biz11/app/(public)/checkout/_ShippingForm";
 
-export function _OrderSummary() {
+export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
   const { data: cartData } = useCart();
   const checkout = useCheckout();
   const currency = useStore(selectCurrency);
-  const storeItems = useStore(selectCartItems);
 
-  const items = cartData?.data ?? storeItems;
+  const items = cartData?.data ?? useStore(selectCartItems);
   const subtotal = items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
-  const shipping = 12.99;
-  const total = subtotal + shipping;
+  const shipping_ = 12.99;
+  const total = subtotal + shipping_;
 
-  const handlePlaceOrder = () => {
-    checkout.mutate(undefined);
+  const handlePlaceOrder = async () => {
+    let shippingAddressId: number | undefined;
+
+    if (shipping.line1) {
+      try {
+        const addr = await createAddress({
+          name: shipping.name,
+          phone: shipping.phone || undefined,
+          line1: shipping.line1,
+          line2: shipping.line2 || undefined,
+          city: shipping.city,
+          state: shipping.state || undefined,
+          postalCode: shipping.postalCode || undefined,
+        });
+        shippingAddressId = addr.data.id;
+      } catch {
+        // proceed without address
+      }
+    }
+
+    checkout.mutate(shippingAddressId ? { shipping_address_id: shippingAddressId } : undefined);
   };
 
   return (
@@ -56,7 +76,7 @@ export function _OrderSummary() {
         <div className="flex items-center justify-between">
           <span className="text-muted">Shipping</span>
           <span className="font-medium text-foreground">
-            {subtotal > 0 ? formatPrice(shipping.toFixed(2), currency) : formatPrice("0.00", currency)}
+            {subtotal > 0 ? formatPrice(shipping_.toFixed(2), currency) : formatPrice("0.00", currency)}
           </span>
         </div>
         <div className="flex items-center justify-between border-t border-border pt-2 text-base">
