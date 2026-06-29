@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import { clsx } from "clsx";
 import type { SkuResource } from "@biz11/Types/Api";
 
@@ -28,7 +29,7 @@ export function ProductImageGallery({
   return (
     <div className="space-y-4">
       <div className="relative aspect-square overflow-hidden rounded-3xl border border-border bg-border-light shadow-lg">
-        <img src={selectedImage} alt={productName} className="h-full w-full object-cover" />
+        <Image src={selectedImage} alt={productName} fill priority sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
       </div>
       {allImages.length > 1 && (
