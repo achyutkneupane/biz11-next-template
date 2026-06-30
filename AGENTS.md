@@ -240,6 +240,7 @@ Alongside, we have stripe skills which we can use when stripe is needed.
 
 ## References
 
+- [Project Description](./.agents/rules/project-description.md)
 - [Frontend guideline](./.agents/rules/frontend-guideline.md)
 - [Folder Structure](./.agents/rules/folder-structure.md)
 - [Skills](./.agents/skills)
