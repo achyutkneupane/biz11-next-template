@@ -6,9 +6,10 @@ import { useStore } from "@biz11/store";
 import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
-import { createAddress } from "@biz11/lib/api-client";
+import { createAddress, register as registerApi } from "@biz11/lib/api-client";
 import { useCart } from "@biz11/Hooks/cart/useCart";
 import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
+import { toast } from "react-toastify";
 import type { ShippingFormData } from "@biz11/app/(public)/checkout/_ShippingForm";
 
 export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
@@ -20,8 +21,11 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
   const subtotal = items.reduce((sum, item) => sum + parseFloat(item.subtotal), 0);
   const shipping_ = 12.99;
   const total = subtotal + shipping_;
+  const setToken = useStore((s) => s.setToken);
 
-  const isValid = shipping.name.trim() && shipping.line1.trim() && shipping.city.trim();
+  const isValid =
+    shipping.name.trim() && shipping.line1.trim() && shipping.city.trim() &&
+    (!shipping.createAccount || (shipping.email.trim() && shipping.password.trim()));
 
   const handlePlaceOrder = async () => {
     if (!isValid) return;
@@ -42,6 +46,16 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
         shippingAddressId = addr.data.id;
       } catch {
         // proceed without address
+      }
+    }
+
+    if (shipping.createAccount && shipping.email && shipping.password) {
+      try {
+        const account = await registerApi(shipping.name, shipping.email, shipping.password);
+        setToken(account.data.token);
+        toast.success("Account created! Welcome, " + account.data.user.name);
+      } catch {
+        toast.error("Could not create account. Placing order as guest.");
       }
     }
 
@@ -104,7 +118,9 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
 
       {!isValid && (
         <p className="mt-3 text-center text-xs text-danger">
-          Please fill in all required shipping fields (marked with *)
+          {shipping.createAccount && !shipping.email.trim()
+            ? "Please fill in your email and password for account creation"
+            : "Please fill in all required shipping fields (marked with *)"}
         </p>
       )}
       <p className="mt-3 text-center text-xs text-muted-light">

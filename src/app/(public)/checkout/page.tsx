@@ -15,6 +15,9 @@ export default function CheckoutPage() {
     city: "",
     state: "",
     postalCode: "",
+    createAccount: true,
+    email: "",
+    password: "",
   });
 
   return (

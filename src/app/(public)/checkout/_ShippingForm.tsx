@@ -11,6 +11,9 @@ export type ShippingFormData = {
   city: string;
   state: string;
   postalCode: string;
+  createAccount: boolean;
+  email: string;
+  password: string;
 };
 
 export function _ShippingForm({
@@ -22,6 +25,9 @@ export function _ShippingForm({
 }) {
   const set = (field: keyof ShippingFormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
     onChange({ ...data, [field]: e.target.value });
+
+  const setBool = (field: keyof ShippingFormData) => (e: React.ChangeEvent<HTMLInputElement>) =>
+    onChange({ ...data, [field]: e.target.checked });
 
   return (
     <section>
@@ -43,6 +49,43 @@ export function _ShippingForm({
           <Input label="City *" value={data.city} onChange={set("city")} placeholder="New York" required />
           <Input label="State" value={data.state} onChange={set("state")} placeholder="NY" />
           <Input label="ZIP Code" value={data.postalCode} onChange={set("postalCode")} placeholder="10001" />
+        </div>
+
+        <div className="border-t border-border-light pt-4">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={data.createAccount}
+              onChange={setBool("createAccount")}
+              className="h-4 w-4 rounded border-2 border-muted-light accent-accent"
+            />
+            <span className="text-sm font-medium text-foreground">
+              Create an account for faster checkout next time
+            </span>
+          </label>
+
+          {data.createAccount && (
+            <div className="mt-4 space-y-3">
+              <Input
+                label="Email Address *"
+                type="email"
+                value={data.email}
+                onChange={set("email")}
+                placeholder="you@example.com…"
+                autoComplete="email"
+                required
+              />
+              <Input
+                label="Password *"
+                type="password"
+                value={data.password}
+                onChange={set("password")}
+                placeholder="At least 8 characters…"
+                autoComplete="new-password"
+                required={data.createAccount}
+              />
+            </div>
+          )}
         </div>
       </div>
     </section>
