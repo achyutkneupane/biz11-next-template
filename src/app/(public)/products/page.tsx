@@ -109,7 +109,7 @@ export default function ProductsPage() {
   }, []);
 
   const from = meta ? (cursorHistory.length * (meta.perPage || 12)) + 1 : 1;
-  const to = from + activeQuery.data?.data?.length! - 1;
+  const to = from + (activeQuery.data?.data?.length ?? 1) - 1;
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">

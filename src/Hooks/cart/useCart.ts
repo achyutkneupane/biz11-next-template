@@ -1,5 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import {
   getCart,
   addToCart,
@@ -10,9 +12,12 @@ import {
 const CART_KEY = ["cart"];
 
 export function useCart() {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   return useQuery({
     queryKey: CART_KEY,
     queryFn: getCart,
+    enabled: isBizLoaded,
   });
 }
 

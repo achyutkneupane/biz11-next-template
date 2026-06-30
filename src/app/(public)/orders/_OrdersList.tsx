@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import { getOrders } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { OrdersListSkeleton } from "@biz11/components/Skeletons/OrdersListSkeleton";
@@ -19,10 +21,12 @@ const statusColors: Record<OrderStatus, string> = {
 
 export function _OrdersList() {
   const [page, setPage] = useState(1);
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
   const { data, isLoading, isPending } = useQuery({
     queryKey: ["orders", page],
     queryFn: () => getOrders(page),
+    enabled: isBizLoaded,
   });
 
   const orders = data?.data ?? [];
@@ -69,9 +73,7 @@ export function _OrdersList() {
                 </p>
               </div>
               <span className="shrink-0 text-lg font-bold text-primary">
-              <span className="shrink-0 text-lg font-bold text-primary">
                 {formatPrice(String(order.total ?? "0"), order.currency ?? "USD")}
-              </span>
               </span>
             </Link>
           ))}

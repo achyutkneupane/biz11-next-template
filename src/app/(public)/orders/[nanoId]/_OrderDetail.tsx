@@ -3,6 +3,8 @@ import Image from "next/image";
 
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import { getOrder } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
@@ -18,13 +20,13 @@ const statusColors: Record<OrderStatus, string> = {
   cancelled: "bg-danger/10 text-danger",
 };
 
-const currencySymbols: Record<string, string> = { USD: "$", EUR: "\u20AC", GBP: "\u00A3", NPR: "\u20A8" };
-const sym = (c: string) => currencySymbols[c] || "$";
-
 export function _OrderDetail({ nanoId }: { nanoId: string }) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["order", nanoId],
     queryFn: () => getOrder(nanoId),
+    enabled: isBizLoaded,
   });
 
   const order = data?.data;
