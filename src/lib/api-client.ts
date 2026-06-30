@@ -164,6 +164,21 @@ export function logout() {
   return apiPost<null>("/v1/auth/logout");
 }
 
-export function getMe() {
-  return apiGet<UserResource>("/v1/auth/me");
+export async function getMe() {
+  const url = resolveUrl("/v1/auth/me");
+  const res = await fetch(url.toString(), {
+    ...fetchOpts,
+    headers: getHeaders(),
+  });
+
+  if (res.status === 401) return { data: null };
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new ApiError(
+      res.status,
+      body.title || "Request failed",
+      body.detail || res.statusText,
+    );
+  }
+  return res.json() as Promise<{ data: UserResource }>;
 }

@@ -13,6 +13,7 @@ export function useMe() {
     staleTime: Infinity,
     retry: false,
     enabled: isBizLoaded,
+    select: (result) => result.data,
   });
 }
 
