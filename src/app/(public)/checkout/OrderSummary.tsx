@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useStore } from "@biz11/store";
 import { selectCartItems, selectCartSubtotal } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
@@ -18,7 +19,7 @@ export function OrderSummary() {
           <div key={item.id} className="flex items-center gap-3 px-4 py-3">
             <div className="h-12 w-12 shrink-0 overflow-hidden rounded-lg bg-border-light">
               {item.coverUrl && (
-                <img src={item.coverUrl} alt={item.productName} className="h-full w-full object-cover" />
+                <Image src={item.coverUrl} alt={item.productName} width={48} height={48} className="h-12 w-12 object-cover" />
               )}
             </div>
             <div className="flex-1 min-w-0">

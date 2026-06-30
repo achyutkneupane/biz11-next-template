@@ -36,9 +36,9 @@ export default function ProductsPage() {
   const { data: catsData, isLoading: catsLoading, isPending: catsPending } = useCategories();
   const { data: brandsData, isLoading: brandsLoading, isPending: brandsPending } = useBrands();
 
-  const allQuery = useAllProducts(sortMode === "all" ? cursor : undefined);
-  const featuredQuery = useFeaturedProducts(sortMode === "featured" ? cursor : undefined);
-  const latestQuery = useLatestProducts(sortMode === "latest" ? cursor : undefined);
+  const allQuery = useAllProducts(sortMode === "all" ? cursor : undefined, sortMode === "all");
+  const featuredQuery = useFeaturedProducts(sortMode === "featured" ? cursor : undefined, sortMode === "featured");
+  const latestQuery = useLatestProducts(sortMode === "latest" ? cursor : undefined, sortMode === "latest");
 
   const activeQuery =
     sortMode === "latest" ? latestQuery :

@@ -1,6 +1,6 @@
 "use client";
 
-import { HiOutlineXMark, HiOutlineMagnifyingGlass } from "react-icons/hi2";
+import { HiOutlineMagnifyingGlass } from "react-icons/hi2";
 
 export function _ProductSearch({
   value,

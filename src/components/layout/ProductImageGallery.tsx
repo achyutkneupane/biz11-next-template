@@ -45,7 +45,7 @@ export function ProductImageGallery({
                   : "border-border hover:border-muted-light",
               )}
             >
-              <img src={url} alt="" className="h-full w-full object-cover" />
+              <Image src={url} alt="" width={80} height={80} className="h-20 w-20 object-cover" />
             </button>
           ))}
         </div>

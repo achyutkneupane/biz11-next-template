@@ -14,26 +14,7 @@ export type ProductFilters = {
   sort?: SortMode;
 };
 
-function clientSideFilter(
-  products: ProductResource[],
-  filters: ProductFilters,
-): ProductResource[] {
-  let result = products;
-
-  if (filters.search) {
-    const q = filters.search.toLowerCase();
-    result = result.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.brand.name.toLowerCase().includes(q) ||
-        p.description?.toLowerCase().includes(q),
-    );
-  }
-
-  return result;
-}
-
-export function useFeaturedProducts(cursor?: string) {
+export function useFeaturedProducts(cursor?: string, enabled = true) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
   return useQuery({
@@ -42,11 +23,11 @@ export function useFeaturedProducts(cursor?: string) {
       apiGet<ProductResource[]>("/v1/products/featured", {
         params: { perPage: 12, cursor },
       }),
-    enabled: isBizLoaded,
+    enabled: isBizLoaded && enabled,
   });
 }
 
-export function useLatestProducts(cursor?: string) {
+export function useLatestProducts(cursor?: string, enabled = true) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
   return useQuery({
@@ -55,11 +36,11 @@ export function useLatestProducts(cursor?: string) {
       apiGet<ProductResource[]>("/v1/products/latest", {
         params: { perPage: 12, cursor },
       }),
-    enabled: isBizLoaded,
+    enabled: isBizLoaded && enabled,
   });
 }
 
-export function useAllProducts(cursor?: string) {
+export function useAllProducts(cursor?: string, enabled = true) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
   return useQuery({
@@ -68,7 +49,7 @@ export function useAllProducts(cursor?: string) {
       apiGet<ProductResource[]>("/v1/products", {
         params: { perPage: 12, cursor },
       }),
-    enabled: isBizLoaded,
+    enabled: isBizLoaded && enabled,
   });
 }
 
@@ -89,7 +70,7 @@ export function useRelatedProducts(product: ProductResource | null) {
     queryKey: ["products", "list"],
     queryFn: () =>
       apiGet<ProductResource[]>("/v1/products", {
-        params: { perPage: 50 },
+        params: { perPage: 6 },
       }),
     enabled: !!product && isBizLoaded,
   });
