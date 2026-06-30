@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useStore } from "@biz11/store";
-import { selectToken } from "@biz11/store/business/selectors";
+import { useMe } from "@biz11/Hooks/auth/useAuth";
 import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
 import { Input } from "@biz11/components/ui/Input";
 import { Button } from "@biz11/components/ui/Button";
@@ -10,8 +9,8 @@ import { AddressSelection } from "./AddressSelection";
 import { OrderSummary } from "./OrderSummary";
 
 export function CheckoutForm() {
-  const token = useStore(selectToken);
-  const isAuthenticated = !!token;
+  const { data: me } = useMe();
+  const isAuthenticated = !!me;
   const checkout = useCheckout();
 
   const [name, setName] = useState("");

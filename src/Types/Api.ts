@@ -3,8 +3,6 @@ export interface BusinessResource {
   name: string;
   currency: string;
   timezone: string;
-  visitorId: string;
-  visitorSignature: string;
   stripePublishableKey?: string;
 }
 
@@ -172,7 +170,6 @@ export interface CheckoutInput {
 export interface CheckoutResponse {
   order: OrderResource;
   paymentIntent: unknown;
-  token?: string;
 }
 
 export interface LoginRequest {

@@ -16,8 +16,6 @@ export default async function PublicLayout({
     <>
       <ServerBusinessHydrator
         data={hasData ? result.data : null}
-        visitorId={hasData ? result.visitorId : undefined}
-        visitorSignature={hasData ? result.visitorSignature : undefined}
       />
       <WrappersHandler>
         <a

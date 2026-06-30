@@ -4,9 +4,6 @@ export type BusinessState = {
   currency: string;
   timezone: string;
   isLoaded: boolean;
-  token: string | null;
-  visitorId: string;
-  visitorSignature: string;
   stripePublishableKey: string;
 };
 
@@ -16,8 +13,5 @@ export const initialBusinessState: BusinessState = {
   currency: "USD",
   timezone: "UTC",
   isLoaded: false,
-  token: null,
-  visitorId: "",
-  visitorSignature: "",
   stripePublishableKey: "",
 };

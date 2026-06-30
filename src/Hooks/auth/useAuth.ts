@@ -1,16 +1,29 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { login as loginApi, logout as logoutApi, register as registerApi } from "@biz11/lib/api-client";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { login as loginApi, logout as logoutApi, getMe } from "@biz11/lib/api-client";
 import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import { toast } from "react-toastify";
 
+export function useMe() {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
+  return useQuery({
+    queryKey: ["me"],
+    queryFn: getMe,
+    staleTime: Infinity,
+    retry: false,
+    enabled: isBizLoaded,
+  });
+}
+
 export function useLogin() {
-  const setToken = useStore((s) => s.setToken);
+  const qc = useQueryClient();
 
   return useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) =>
       loginApi(email, password),
     onSuccess: (data) => {
-      setToken(data.data.token);
+      qc.invalidateQueries({ queryKey: ["me"] });
       toast.success(`Welcome, ${data.data.user.name}`);
     },
     onError: () => {
@@ -19,30 +32,12 @@ export function useLogin() {
   });
 }
 
-export function useRegister() {
-  const setToken = useStore((s) => s.setToken);
-
-  return useMutation({
-    mutationFn: ({ name, email, password }: { name: string; email: string; password: string }) =>
-      registerApi(name, email, password),
-    onSuccess: (data) => {
-      setToken(data.data.token);
-      toast.success(`Account created! Welcome, ${data.data.user.name}`);
-    },
-    onError: () => {
-      toast.error("Registration failed. Please try again.");
-    },
-  });
-}
-
 export function useLogout() {
   const qc = useQueryClient();
-  const clearAuth = useStore((s) => s.clearAuth);
 
   return useMutation({
     mutationFn: () => logoutApi(),
     onSuccess: () => {
-      clearAuth();
       qc.invalidateQueries();
       toast.success("Logged out");
     },

@@ -4,8 +4,6 @@ import type { BusinessResource } from "@biz11/Types/Api";
 
 export interface BusinessAction {
   setBusiness: (data: BusinessResource) => void;
-  setToken: (token: string) => void;
-  clearAuth: () => void;
 }
 
 export const createBusinessSlice: StateCreator<
@@ -20,11 +18,7 @@ export const createBusinessSlice: StateCreator<
       name: data.name,
       currency: data.currency,
       timezone: data.timezone,
-      visitorId: data.visitorId,
-      visitorSignature: data.visitorSignature,
       stripePublishableKey: data.stripePublishableKey ?? "",
       isLoaded: true,
     }),
-  setToken: (token) => set({ token }),
-  clearAuth: () => set({ token: null }),
 });

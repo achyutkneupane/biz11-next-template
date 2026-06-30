@@ -1,5 +1,5 @@
 import { useStore } from "@biz11/store";
-import { selectBizId, selectToken, selectVisitorId, selectVisitorSignature } from "@biz11/store/business/selectors";
+import { selectBizId } from "@biz11/store/business/selectors";
 import { apiUrl } from "@biz11/lib/api-url";
 import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource } from "@biz11/Types/Api";
 
@@ -29,14 +29,6 @@ function getHeaders(): Record<string, string> {
   const bizId = selectBizId(state);
   if (bizId) headers["X-BIZID"] = bizId;
 
-  const visitorId = selectVisitorId(state);
-  const visitorSignature = selectVisitorSignature(state);
-  if (visitorId) headers["X-Visitor-Id"] = visitorId;
-  if (visitorSignature) headers["X-Visitor-Signature"] = visitorSignature;
-
-  const token = selectToken(state);
-  if (token) headers["Authorization"] = `Bearer ${token}`;
-
   return headers;
 }
 
@@ -53,6 +45,8 @@ async function handleResponse(res: Response): Promise<any> {
   return res.json();
 }
 
+const fetchOpts: RequestInit = { credentials: "include" };
+
 export async function apiGet<T>(
   path: string,
   options?: { params?: Record<string, string | number | undefined> },
@@ -67,7 +61,7 @@ export async function apiGet<T>(
     });
   }
 
-  const res = await fetch(url.toString(), { headers: getHeaders() });
+  const res = await fetch(url.toString(), { ...fetchOpts, headers: getHeaders() });
   return handleResponse(res);
 }
 
@@ -77,6 +71,7 @@ export async function apiPost<T>(
 ): Promise<{ data: T }> {
   const url = resolveUrl(path);
   const res = await fetch(url.toString(), {
+    ...fetchOpts,
     method: "POST",
     headers: getHeaders(),
     body: body ? JSON.stringify(body) : undefined,
@@ -90,6 +85,7 @@ export async function apiPatch<T>(
 ): Promise<{ data: T }> {
   const url = resolveUrl(path);
   const res = await fetch(url.toString(), {
+    ...fetchOpts,
     method: "PATCH",
     headers: getHeaders(),
     body: JSON.stringify(body),
@@ -102,6 +98,7 @@ export async function apiDelete(
 ): Promise<void> {
   const url = resolveUrl(path);
   const res = await fetch(url.toString(), {
+    ...fetchOpts,
     method: "DELETE",
     headers: getHeaders(),
   });
@@ -160,7 +157,7 @@ export function createAddress(data: AddressInput) {
 // Auth
 
 export function login(email: string, password: string) {
-  return apiPost<{ token: string; user: UserResource }>("/v1/auth/login", { email, password });
+  return apiPost<{ user: UserResource }>("/v1/auth/login", { email, password });
 }
 
 export function logout() {
@@ -169,13 +166,4 @@ export function logout() {
 
 export function getMe() {
   return apiGet<UserResource>("/v1/auth/me");
-}
-
-export function register(name: string, email: string, password: string) {
-  return apiPost<{ token: string; user: UserResource }>("/v1/auth/register", {
-    name,
-    email,
-    password,
-    password_confirmation: password,
-  });
 }

@@ -6,9 +6,7 @@ import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icon
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
 import { useCart } from "@biz11/Hooks/cart/useCart";
 import { useBusiness } from "@biz11/Hooks/useBusiness";
-import { useStore } from "@biz11/store";
-import { selectToken } from "@biz11/store/business/selectors";
-import { useLogout } from "@biz11/Hooks/auth/useAuth";
+import { useMe, useLogout } from "@biz11/Hooks/auth/useAuth";
 
 const baseLinks = [
   { href: "/", label: "Home" },
@@ -22,7 +20,8 @@ export function PublicNavbar() {
   const { data: cartData } = useCart();
   const cartCount = (cartData?.data ?? []).length;
   const business = useBusiness();
-  const token = useStore(selectToken);
+  const { data: me } = useMe();
+  const isAuthenticated = !!me;
   const logout = useLogout();
 
   const toggleCart = useCallback(() => setCartOpen((v) => !v), []);
@@ -51,7 +50,7 @@ export function PublicNavbar() {
           </nav>
 
           <div className="flex items-center gap-2">
-            {token ? (
+            {isAuthenticated ? (
               <button
                 onClick={() => logout.mutate(undefined)}
                 className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block cursor-pointer"
@@ -59,20 +58,12 @@ export function PublicNavbar() {
                 Sign Out
               </button>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/register"
-                  className="hidden text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:block"
-                >
-                  Register
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
+              >
+                Sign In
+              </Link>
             )}
 
             <button
@@ -118,7 +109,7 @@ export function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
-              {token ? (
+              {isAuthenticated ? (
                 <button
                   onClick={() => {
                     logout.mutate(undefined);
@@ -129,22 +120,13 @@ export function PublicNavbar() {
                   Sign Out
                 </button>
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
-                  >
-                    Sign In
-                  </Link>
-                  <Link
-                    href="/register"
-                    onClick={() => setMobileOpen(false)}
-                    className="rounded-xl px-4 py-3 text-sm font-semibold text-accent transition-colors duration-200 hover:bg-border-light"
-                  >
-                    Register
-                  </Link>
-                </>
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
+                >
+                  Sign In
+                </Link>
               )}
             </nav>
           </div>
