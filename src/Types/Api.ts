@@ -137,9 +137,20 @@ export type AddressInput = {
   country?: string;
 };
 
+export interface CheckoutInput {
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  notes?: string;
+  billing_address_id?: number;
+  shipping_address_id?: number;
+  create_account?: boolean;
+}
+
 export interface CheckoutResponse {
   order: OrderResource;
   paymentIntent: unknown;
+  token?: string;
 }
 
 export interface LoginRequest {
