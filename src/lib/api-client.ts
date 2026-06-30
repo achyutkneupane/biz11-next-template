@@ -1,6 +1,6 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken, selectVisitorId, selectVisitorSignature } from "@biz11/store/business/selectors";
-import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutResponse } from "@biz11/Types/Api";
+import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutResponse, UserResource } from "@biz11/Types/Api";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
@@ -156,4 +156,18 @@ export function getAddresses() {
 
 export function createAddress(data: AddressInput) {
   return apiPost<AddressResource>("/v1/addresses", data);
+}
+
+// Auth
+
+export function login(email: string, password: string) {
+  return apiPost<{ token: string; user: UserResource }>("/v1/auth/login", { email, password });
+}
+
+export function logout() {
+  return apiPost<null>("/v1/auth/logout");
+}
+
+export function getMe() {
+  return apiGet<UserResource>("/v1/auth/me");
 }

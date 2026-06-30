@@ -6,8 +6,11 @@ import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icon
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
 import { useCart } from "@biz11/Hooks/cart/useCart";
 import { useBusiness } from "@biz11/Hooks/useBusiness";
+import { useStore } from "@biz11/store";
+import { selectToken } from "@biz11/store/business/selectors";
+import { useLogout } from "@biz11/Hooks/auth/useAuth";
 
-const navLinks = [
+const baseLinks = [
   { href: "/", label: "Home" },
   { href: "/products", label: "Shop" },
   { href: "/orders", label: "Orders" },
@@ -19,6 +22,8 @@ export function PublicNavbar() {
   const { data: cartData } = useCart();
   const cartCount = (cartData?.data ?? []).length;
   const business = useBusiness();
+  const token = useStore(selectToken);
+  const logout = useLogout();
 
   const toggleCart = useCallback(() => setCartOpen((v) => !v), []);
 
@@ -34,7 +39,7 @@ export function PublicNavbar() {
           </Link>
 
           <nav className="hidden items-center gap-8 sm:flex">
-            {navLinks.map((link) => (
+            {baseLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -46,9 +51,25 @@ export function PublicNavbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {token ? (
+              <button
+                onClick={() => logout.mutate(undefined)}
+                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block cursor-pointer"
+              >
+                Sign Out
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
+              >
+                Sign In
+              </Link>
+            )}
+
             <button
               onClick={toggleCart}
-              className="relative flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-all duration-200 hover:bg-border-light active:scale-95 cursor-pointer"
+              className="relative flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-border-light active:scale-95 cursor-pointer"
               aria-label="Open shopping cart"
             >
               <HiOutlineShoppingBag className="h-5 w-5" />
@@ -76,7 +97,7 @@ export function PublicNavbar() {
         {mobileOpen && (
           <div className="border-t border-border bg-surface px-4 pb-5 pt-3 sm:hidden">
             <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              {baseLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -86,6 +107,25 @@ export function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
+              {token ? (
+                <button
+                  onClick={() => {
+                    logout.mutate(undefined);
+                    setMobileOpen(false);
+                  }}
+                  className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light"
+                >
+                  Sign In
+                </Link>
+              )}
             </nav>
           </div>
         )}
