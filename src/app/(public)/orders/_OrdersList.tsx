@@ -5,8 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { getOrders } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
-import { useStore } from "@biz11/store";
-import { selectCurrency } from "@biz11/store/business/selectors";
 import { OrdersListSkeleton } from "@biz11/components/Skeletons/OrdersListSkeleton";
 import type { OrderStatus } from "@biz11/Types/Api";
 
@@ -21,7 +19,6 @@ const statusColors: Record<OrderStatus, string> = {
 
 export function _OrdersList() {
   const [page, setPage] = useState(1);
-  const currency = useStore(selectCurrency);
 
   const { data, isLoading, isPending } = useQuery({
     queryKey: ["orders", page],
@@ -72,7 +69,9 @@ export function _OrdersList() {
                 </p>
               </div>
               <span className="shrink-0 text-lg font-bold text-primary">
-                {formatPrice(order.total, currency)}
+              <span className="shrink-0 text-lg font-bold text-primary">
+                {formatPrice(String(order.total ?? "0"), order.currency ?? "USD")}
+              </span>
               </span>
             </Link>
           ))}

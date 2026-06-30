@@ -85,7 +85,7 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
                 <p className="text-sm font-semibold text-foreground">{item.productName}</p>
                 <p className="text-xs text-muted">{item.skuCode} &times; {item.quantity}</p>
               </div>
-              <p className="text-sm font-bold text-foreground">{formatPrice(item.subtotal, order.currency)}</p>
+              <p className="text-sm font-bold text-foreground">{formatPrice(String(item.subtotal), order.currency)}</p>
             </div>
           ))}
         </div>
@@ -93,21 +93,21 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
         <div className="border-t border-border px-6 py-5 space-y-2 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted">Subtotal</span>
-            <span className="font-medium text-foreground">{formatPrice(order.subtotal, order.currency)}</span>
+            <span className="font-medium text-foreground">{formatPrice(String(order.subtotal), order.currency)}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted">Tax</span>
-            <span className="font-medium text-foreground">{formatPrice(order.tax, order.currency)}</span>
+            <span className="font-medium text-foreground">{formatPrice(String(order.tax), order.currency)}</span>
           </div>
           {order.discount !== "0" && (
             <div className="flex items-center justify-between">
               <span className="text-muted">Discount</span>
-              <span className="font-medium text-success">&minus;{formatPrice(order.discount, order.currency)}</span>
+              <span className="font-medium text-success">&minus;{formatPrice(String(order.discount), order.currency)}</span>
             </div>
           )}
           <div className="flex items-center justify-between border-t border-border pt-2 text-base">
             <span className="font-bold text-foreground">Total</span>
-            <span className="font-black text-primary">{formatPrice(order.total, order.currency)}</span>
+            <span className="font-black text-primary">{formatPrice(String(order.total), order.currency)}</span>
           </div>
         </div>
       </div>
