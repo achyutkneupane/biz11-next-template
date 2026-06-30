@@ -22,7 +22,7 @@ export function _ProductSearch({
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Search products, brands..."
-          className="h-12 w-full rounded-xl border-2 border-border bg-surface pl-12 pr-4 text-sm text-foreground placeholder:text-muted-light transition-colors duration-200 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+          className="h-12 w-full rounded-xl border-2 border-border bg-surface pl-12 pr-4 text-sm text-foreground placeholder:text-muted-light transition-colors duration-200 focus:border-accent focus-visible:outline-none focus:ring-1 focus:ring-accent"
         />
       </div>
     </div>
