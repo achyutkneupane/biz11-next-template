@@ -36,7 +36,7 @@ export function SkuSelector({
               key={sku.nanoId ?? sku.skuCode}
               onClick={() => onChange(i)}
               className={clsx(
-                "rounded-xl border-2 px-5 py-3 text-left text-sm transition-all duration-200 cursor-pointer",
+                "rounded-xl border-2 px-5 py-3 text-left text-sm transition-colors duration-200 cursor-pointer",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
                 selected
                   ? "border-accent bg-accent/5 shadow-sm"

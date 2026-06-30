@@ -51,7 +51,7 @@ export function _OrdersList() {
             <Link
               key={order.nanoId}
               href={`/orders/${order.nanoId}`}
-              className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5 shadow-sm transition-colors duration-200 hover:-translate-y-0.5 hover:shadow-md"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3">
@@ -84,7 +84,7 @@ export function _OrdersList() {
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-all duration-200 hover:border-muted-light hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-muted-light hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
           >
             Previous
           </button>
@@ -94,7 +94,7 @@ export function _OrdersList() {
           <button
             onClick={() => setPage((p) => Math.min(meta.lastPage, p + 1))}
             disabled={page >= meta.lastPage}
-            className="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-all duration-200 hover:border-muted-light hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
+            className="rounded-xl border border-border bg-surface px-5 py-2.5 text-sm font-semibold text-foreground transition-colors duration-200 hover:border-muted-light hover:shadow-sm disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next
           </button>

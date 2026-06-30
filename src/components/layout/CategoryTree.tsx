@@ -34,7 +34,7 @@ function TreeNode({
           onSelect(category.nanoId ?? category.slug);
         }}
         className={clsx(
-          "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",
+          "flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm transition-colors duration-200 cursor-pointer",
           "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-1",
           isSelected
             ? "bg-accent/10 font-semibold text-accent"
@@ -88,7 +88,7 @@ export function CategoryTree({
         <button
           onClick={() => onSelect(undefined)}
           className={clsx(
-            "w-full rounded-xl px-3 py-2.5 text-left text-sm transition-all duration-200 cursor-pointer",
+            "w-full rounded-xl px-3 py-2.5 text-left text-sm transition-colors duration-200 cursor-pointer",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent",
             !selectedNanoId
               ? "bg-accent/10 font-semibold text-accent"

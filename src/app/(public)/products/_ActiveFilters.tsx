@@ -42,7 +42,7 @@ export function _ActiveFilters({
       <span className="text-sm text-muted">Active filters:</span>
       {search && (
         <button onClick={onClearSearch}
-          className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
+          className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent/20 cursor-pointer"
         >
           Search: &ldquo;{search}&rdquo;
           <HiOutlineXMark className="h-3.5 w-3.5" />
@@ -52,7 +52,7 @@ export function _ActiveFilters({
         const name = findCat(selectedCategory, catsData);
         return (
           <button onClick={onClearCategory}
-            className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
+            className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent/20 cursor-pointer"
           >
             {name || selectedCategory}
             <HiOutlineXMark className="h-3.5 w-3.5" />
@@ -63,7 +63,7 @@ export function _ActiveFilters({
         const brand = brandsData.find((b) => b.nanoId === nanoId);
         return (
           <button key={nanoId} onClick={() => onClearBrand(nanoId)}
-            className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-all duration-200 hover:bg-accent/20 cursor-pointer"
+            className="flex items-center gap-1.5 rounded-full bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition-colors duration-200 hover:bg-accent/20 cursor-pointer"
           >
             {brand?.name || nanoId}
             <HiOutlineXMark className="h-3.5 w-3.5" />

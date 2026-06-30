@@ -99,7 +99,7 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
             Cart <span className="text-muted">({cartItems.length})</span>
           </h2>
           <button onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-xl text-muted transition-all duration-200 hover:bg-border-light hover:text-foreground cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-muted transition-colors duration-200 hover:bg-border-light hover:text-foreground cursor-pointer"
             aria-label="Close cart"
           >
             <HiOutlineXMark className="h-5 w-5" />

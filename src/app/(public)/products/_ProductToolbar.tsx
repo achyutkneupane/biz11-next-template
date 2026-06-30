@@ -41,7 +41,7 @@ export function _ProductToolbar({
               key={mode.key}
               onClick={() => onSortChange(mode.key)}
               className={clsx(
-                "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 cursor-pointer",
+                "flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors duration-200 cursor-pointer",
                 sortMode === mode.key
                   ? "bg-primary text-white shadow-lg shadow-primary/20"
                   : "border border-border bg-surface text-muted hover:border-muted-light hover:text-foreground hover:shadow-sm",
@@ -54,7 +54,7 @@ export function _ProductToolbar({
         })}
         <button
           onClick={onOpenFilters}
-          className="relative ml-2 flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-all duration-200 hover:border-muted-light hover:shadow-md cursor-pointer lg:hidden"
+          className="relative ml-2 flex h-11 items-center gap-2 rounded-xl border border-border bg-surface px-4 text-sm font-semibold text-foreground shadow-sm transition-colors duration-200 hover:border-muted-light hover:shadow-md cursor-pointer lg:hidden"
         >
           <HiOutlineAdjustmentsHorizontal className="h-5 w-5" />
           Filters

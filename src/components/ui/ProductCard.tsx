@@ -22,7 +22,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
       href={`/products/${product.slug}`}
       className={clsx(
         "group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-surface",
-        "shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl",
+        "shadow-sm transition-[transform,box-shadow] duration-300 hover:-translate-y-1 hover:shadow-xl",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2",
         variant === "featured" ? "sm:flex-row" : "",
       )}

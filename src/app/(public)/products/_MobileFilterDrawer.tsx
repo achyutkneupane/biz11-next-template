@@ -34,7 +34,7 @@ export function _MobileFilterDrawer({
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-primary">Filters</h2>
           <button onClick={onClose}
-            className="flex h-9 w-9 items-center justify-center rounded-xl text-muted transition-all duration-200 hover:bg-border-light hover:text-foreground cursor-pointer"
+            className="flex h-9 w-9 items-center justify-center rounded-xl text-muted transition-colors duration-200 hover:bg-border-light hover:text-foreground cursor-pointer"
             aria-label="Close filters"
           >
             <HiOutlineXMark className="h-5 w-5" />
