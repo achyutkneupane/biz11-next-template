@@ -75,7 +75,7 @@ export function useOptimisticCart() {
     count,
     subtotal,
     isLoading: useCartQuery.isLoading,
-    isPending: useCartQuery.isPending,
+    isPending: addToCart.isPending,
     add,
     update,
     remove,

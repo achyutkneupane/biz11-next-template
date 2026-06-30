@@ -16,6 +16,7 @@ import type { CartItemResource } from "@biz11/Types/Api";
 
 function CartItemQuantity({ item }: { item: CartItemResource }) {
   const { update, remove } = useOptimisticCart();
+  const currency = useStore(selectCurrency);
   const [qty, setQty] = useState(item.quantity);
   const debouncedQty = useDebounce(qty, 400);
 
@@ -26,6 +27,7 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
   }, [debouncedQty]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs server-reconciled quantity into local state
     setQty(item.quantity);
   }, [item.quantity]);
 
@@ -36,7 +38,7 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
       skuCode={item.skuCode}
       subtotal={item.subtotal}
       quantity={qty}
-      formatPrice={(p) => formatPrice(p, useStore.getState().currency)}
+      formatPrice={(p) => formatPrice(p, currency)}
       onUpdateQuantity={setQty}
       onRemove={() => remove(item.id)}
     />

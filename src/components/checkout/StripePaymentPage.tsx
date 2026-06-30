@@ -79,6 +79,7 @@ export function StripePaymentPage({ orderId }: { orderId: string }) {
   }, [orderId, bizId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- initial fetch of Stripe payment intent on mount
     fetchIntent();
   }, [fetchIntent]);
 
