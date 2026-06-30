@@ -1,7 +1,7 @@
 "use client";
 
-import { HiOutlineXMark, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi2";
-import { clsx } from "clsx";
+import { HiOutlineXMark } from "react-icons/hi2";
+import type { CategoryResource } from "@biz11/Types/Api";
 
 export function _ActiveFilters({
   selectedCategory,
@@ -17,7 +17,7 @@ export function _ActiveFilters({
   selectedCategory: string | undefined;
   selectedBrands: string[];
   search: string;
-  catsData: readonly { nanoId: string | null; name: string; slug: string; children?: any[] }[];
+  catsData: readonly CategoryResource[];
   brandsData: readonly { nanoId: string | null; name: string }[];
   onClearCategory: () => void;
   onClearBrand: (nanoId: string) => void;

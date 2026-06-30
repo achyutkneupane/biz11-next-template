@@ -9,6 +9,7 @@ import { getOrders } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { OrdersListSkeleton } from "@biz11/components/Skeletons/OrdersListSkeleton";
 import type { OrderStatus } from "@biz11/Types/Api";
+import type { OrdersMeta } from "@biz11/Types/Response";
 
 const statusColors: Record<OrderStatus, string> = {
   pending: "bg-warning/10 text-warning",
@@ -30,9 +31,7 @@ export function _OrdersList() {
   });
 
   const orders = data?.data ?? [];
-  const meta = data?.meta as
-    | { currentPage: number; lastPage: number; perPage: number; total: number }
-    | undefined;
+  const meta = data?.meta as OrdersMeta | undefined;
 
   if (isPending || isLoading) return <OrdersListSkeleton />;
 

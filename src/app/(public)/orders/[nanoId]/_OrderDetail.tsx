@@ -23,7 +23,7 @@ const statusColors: Record<OrderStatus, string> = {
 export function _OrderDetail({ nanoId }: { nanoId: string }) {
   const isBizLoaded = useStore(selectIsBizLoaded);
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["order", nanoId],
     queryFn: () => getOrder(nanoId),
     enabled: isBizLoaded,

@@ -78,7 +78,7 @@ export function ProductDetail({slug}: { slug: string }) {
             </span>
 						<h1 className="mt-1 text-3xl font-black text-primary sm:text-4xl">{product.name}</h1>
 						<div className="mt-3 flex flex-wrap gap-2">
-							{product.categories.map((cat: any) => (
+							{product.categories.map((cat) => (
 								<span key={cat.nanoId ?? cat.slug}
 								      className="rounded-full bg-border-light px-3.5 py-1 text-xs font-medium text-muted">
                   {cat.name}
@@ -123,7 +123,7 @@ export function ProductDetail({slug}: { slug: string }) {
 						<h2 className="mt-1 text-2xl font-black text-primary">Related Products</h2>
 					</div>
 					<div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-						{related.map((p: any) => (
+						{related.map((p) => (
 							<ProductCard key={p.nanoId} product={p}/>
 						))}
 					</div>

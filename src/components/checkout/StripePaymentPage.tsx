@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo, useCallback } from "react";
-import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
+import { loadStripe, type Stripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 import { useStore } from "@biz11/store";
 import { selectBizId, selectStripeKey } from "@biz11/store/business/selectors";
@@ -10,7 +10,7 @@ import { StripePaymentForm } from "@biz11/components/checkout/StripePaymentForm"
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
 import { Button } from "@biz11/components/ui/Button";
 
-const stripePromises = new Map<string, Promise<any>>();
+const stripePromises = new Map<string, Promise<Stripe | null>>();
 
 function getStripe(publishableKey: string) {
   if (!stripePromises.has(publishableKey)) {

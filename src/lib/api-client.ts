@@ -15,6 +15,7 @@ export class ApiError extends Error {
     public status: number,
     public title: string,
     public detail: string,
+    public errors?: Record<string, string[]>,
   ) {
     super(title);
     this.name = "ApiError";
@@ -42,6 +43,7 @@ function getHeaders(): Record<string, string> {
   return headers;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- res.json() is untyped
 async function handleResponse(res: Response): Promise<any> {
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
