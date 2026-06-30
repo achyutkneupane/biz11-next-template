@@ -64,7 +64,7 @@ export function _OrdersList() {
                 </div>
                 <p className="mt-1 text-xs text-muted">
                   {order.items.length} item{order.items.length !== 1 ? "s" : ""} &middot;{" "}
-                  {new Date(order.createdAt).toLocaleDateString("en-US", {
+                  {new Date(order.createdAt).toLocaleDateString(undefined, {
                     year: "numeric",
                     month: "short",
                     day: "numeric",

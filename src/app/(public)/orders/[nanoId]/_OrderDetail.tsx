@@ -56,7 +56,7 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
       <div className="mb-8 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-black text-primary sm:text-4xl">Order #{order.nanoId.slice(0, 8)}</h1>
-          <p className="mt-1 text-sm text-muted">{new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</p>
+          <p className="mt-1 text-sm text-muted">{new Date(order.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p>
         </div>
         <span className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${statusColors[order.status] || "bg-border-light text-muted"}`}>
           {order.status}
