@@ -35,7 +35,7 @@ export function useOptimisticCart() {
       coverUrl: item.coverUrl,
       unitPrice: item.price,
       quantity: item.quantity,
-      subtotal: parseFloat(item.price) * item.quantity,
+      subtotal: (parseFloat(item.price) * item.quantity).toFixed(2),
     };
     addItem(optimistic);
     addToCart.mutate({ skuNanoId: item.skuNanoId, quantity: item.quantity });
