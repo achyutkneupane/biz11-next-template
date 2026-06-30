@@ -1,24 +1,51 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { HiOutlineShieldCheck } from "react-icons/hi2";
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
+import { getAddresses } from "@biz11/lib/api-client";
 import { _ShippingForm, type ShippingFormData } from "@biz11/app/(public)/checkout/_ShippingForm";
 import { _OrderSummary } from "@biz11/app/(public)/checkout/_OrderSummary";
 
+const emptyForm: ShippingFormData = {
+  name: "",
+  phone: "",
+  line1: "",
+  line2: "",
+  city: "",
+  state: "",
+  postalCode: "",
+  createAccount: true,
+  email: "",
+  password: "",
+};
+
 export default function CheckoutPage() {
-  const [shipping, setShipping] = useState<ShippingFormData>({
-    name: "",
-    phone: "",
-    line1: "",
-    line2: "",
-    city: "",
-    state: "",
-    postalCode: "",
-    createAccount: true,
-    email: "",
-    password: "",
+  const [shipping, setShipping] = useState<ShippingFormData>(emptyForm);
+  const [prefilled, setPrefilled] = useState(false);
+
+  const { data: addresses } = useQuery({
+    queryKey: ["addresses"],
+    queryFn: getAddresses,
   });
+
+  useEffect(() => {
+    if (addresses?.data?.length && !prefilled) {
+      const addr = addresses.data.find((a) => a.isDefault) || addresses.data[0];
+      setShipping({
+        ...emptyForm,
+        name: addr.name,
+        phone: addr.phone || "",
+        line1: addr.line1,
+        line2: addr.line2 || "",
+        city: addr.city,
+        state: addr.state || "",
+        postalCode: addr.postalCode || "",
+      });
+      setPrefilled(true);
+    }
+  }, [addresses, prefilled]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
