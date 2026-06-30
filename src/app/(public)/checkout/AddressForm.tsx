@@ -21,8 +21,7 @@ export function AddressForm({ onCancel, onSuccess }: Props) {
   const [state, setState] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     createAddress.mutate(
       { name, phone, line1, line2: line2 || undefined, city, state: state || undefined, postalCode: postalCode || undefined },
       {
@@ -34,7 +33,7 @@ export function AddressForm({ onCancel, onSuccess }: Props) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="rounded-xl border border-border bg-surface p-4 space-y-3">
+    <div className="rounded-xl border border-border bg-surface p-4 space-y-3">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <Input label="Recipient name" required value={name} onChange={(e) => setName(e.target.value)} />
         <Input label="Phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
@@ -48,10 +47,10 @@ export function AddressForm({ onCancel, onSuccess }: Props) {
         <Button variant="ghost" type="button" onClick={onCancel}>
           Cancel
         </Button>
-        <Button variant="primary" type="submit" disabled={createAddress.isPending || !name || !line1 || !city}>
+        <Button variant="primary" type="button" onClick={handleSubmit} disabled={createAddress.isPending || !name || !line1 || !city}>
           {createAddress.isPending ? "Saving..." : "Save address"}
         </Button>
       </div>
-    </form>
+    </div>
   );
 }
