@@ -5,7 +5,7 @@ import { loadStripe, type Stripe, type StripeElementsOptions } from "@stripe/str
 import { Elements } from "@stripe/react-stripe-js";
 import { useStore } from "@biz11/store";
 import { selectBizId, selectStripeKey } from "@biz11/store/business/selectors";
-import { getPaymentIntent } from "@biz11/app/actions/checkout";
+import { getPaymentIntent } from "@biz11/lib/api-client";
 import { StripePaymentForm } from "@biz11/components/checkout/StripePaymentForm";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
 import { Button } from "@biz11/components/ui/Button";
@@ -67,9 +67,9 @@ export function StripePaymentPage({ orderId }: { orderId: string }) {
     setLoading(true);
     setError(null);
 
-    getPaymentIntent(orderId, bizId)
-      .then((secret) => {
-        setClientSecret(secret);
+    getPaymentIntent(orderId)
+      .then((res) => {
+        setClientSecret(decodeURIComponent(res.data.client_secret));
         setLoading(false);
       })
       .catch((err: unknown) => {

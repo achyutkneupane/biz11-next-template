@@ -136,6 +136,10 @@ export function checkout(body: CheckoutInput) {
   return apiPost<CheckoutResponse>("/v1/checkout", body);
 }
 
+export function getPaymentIntent(orderId: string) {
+  return apiPost<{ id: string; client_secret: string; publishable_key: string }>(`/v1/orders/${orderId}/payment-intent`);
+}
+
 export function getOrders(page: number = 1) {
   return apiGet<OrderResource[]>(`/v1/orders`, { params: { page } });
 }
