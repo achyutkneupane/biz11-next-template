@@ -171,3 +171,12 @@ export function logout() {
 export function getMe() {
   return apiGet<UserResource>("/v1/auth/me");
 }
+
+export function register(name: string, email: string, password: string) {
+  return apiPost<{ token: string; user: UserResource }>("/v1/auth/register", {
+    name,
+    email,
+    password,
+    password_confirmation: password,
+  });
+}

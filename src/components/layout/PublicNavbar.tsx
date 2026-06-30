@@ -59,12 +59,20 @@ export function PublicNavbar() {
                 Sign Out
               </button>
             ) : (
-              <Link
-                href="/login"
-                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
-              >
-                Sign In
-              </Link>
+              <>
+                <Link
+                  href="/login"
+                  className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="hidden text-sm font-semibold text-accent transition-colors duration-200 hover:text-accent-dark sm:block"
+                >
+                  Register
+                </Link>
+              </>
             )}
 
             <button
@@ -118,13 +126,22 @@ export function PublicNavbar() {
                   Sign Out
                 </button>
               ) : (
-                <Link
-                  href="/login"
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-xl px-4 py-3 text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light"
-                >
-                  Sign In
-                </Link>
+                <>
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    href="/register"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-xl px-4 py-3 text-sm font-semibold text-accent transition-colors duration-200 hover:bg-border-light"
+                  >
+                    Register
+                  </Link>
+                </>
               )}
             </nav>
           </div>

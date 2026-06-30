@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@biz11/components/ui/Input";
 import { Button } from "@biz11/components/ui/Button";
 import { useLogin } from "@biz11/Hooks/auth/useAuth";
+import Link from "next/link";
 
 export function _LoginForm() {
   const router = useRouter();
@@ -46,6 +47,12 @@ export function _LoginForm() {
       >
         {login.isPending ? "Signing in…" : "Sign In"}
       </Button>
+      <p className="text-center text-sm text-muted">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="font-semibold text-accent hover:text-accent-dark">
+          Create one
+        </Link>
+      </p>
     </form>
   );
 }

@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { login as loginApi, logout as logoutApi } from "@biz11/lib/api-client";
+import { login as loginApi, logout as logoutApi, register as registerApi } from "@biz11/lib/api-client";
 import { useStore } from "@biz11/store";
 import { toast } from "react-toastify";
 
@@ -15,6 +15,22 @@ export function useLogin() {
     },
     onError: () => {
       toast.error("Invalid email or password");
+    },
+  });
+}
+
+export function useRegister() {
+  const setToken = useStore((s) => s.setToken);
+
+  return useMutation({
+    mutationFn: ({ name, email, password }: { name: string; email: string; password: string }) =>
+      registerApi(name, email, password),
+    onSuccess: (data) => {
+      setToken(data.data.token);
+      toast.success(`Account created! Welcome, ${data.data.user.name}`);
+    },
+    onError: () => {
+      toast.error("Registration failed. Please try again.");
     },
   });
 }
