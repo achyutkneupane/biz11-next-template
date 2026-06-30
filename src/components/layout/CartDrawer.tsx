@@ -3,6 +3,7 @@
 import { useEffect, useCallback, useState, useRef } from "react";
 import { clsx } from "clsx";
 import { HiOutlineXMark } from "react-icons/hi2";
+import Link from "next/link";
 import { useStore } from "@biz11/store";
 import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
@@ -120,6 +121,9 @@ export function CartDrawer({ open, onClose }: CartDrawerProps) {
           {cartItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="text-sm text-muted">Your cart is empty</p>
+              <Link href="/products" onClick={onClose} className="mt-3 text-sm font-semibold text-accent hover:text-accent-dark">
+                Continue Shopping
+              </Link>
             </div>
           ) : (
             cartItems.map((item) => <CartItemQuantity key={item.id} item={item} />)

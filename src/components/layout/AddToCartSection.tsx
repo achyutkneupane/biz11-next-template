@@ -50,10 +50,9 @@ export function AddToCartSection(props: AddToCartSectionProps) {
         >
           {isPending
             ? "Adding..."
-            : `Add to Cart \u2014 ${formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}`}
-        </Button>
-        <Button variant="outline" size="lg" className="flex-1">
-          Add to Wishlist
+            : props.quantity === 0
+              ? "Out of Stock"
+              : `Add to Cart \u2014 ${formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}`}
         </Button>
       </div>
     </>
