@@ -21,7 +21,11 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
   const shipping_ = 12.99;
   const total = subtotal + shipping_;
 
+  const isValid = shipping.name.trim() && shipping.line1.trim() && shipping.city.trim();
+
   const handlePlaceOrder = async () => {
+    if (!isValid) return;
+
     let shippingAddressId: number | undefined;
 
     if (shipping.line1) {
@@ -92,12 +96,17 @@ export function _OrderSummary({ shipping }: { shipping: ShippingFormData }) {
         variant="primary"
         size="lg"
         className="mt-6 w-full"
-        disabled={items.length === 0 || checkout.isPending}
+        disabled={items.length === 0 || checkout.isPending || !isValid}
         onClick={handlePlaceOrder}
       >
         {checkout.isPending ? "Processing..." : `Place Order \u2014 ${formatPrice((subtotal > 0 ? total : 0).toFixed(2), currency)}`}
       </Button>
 
+      {!isValid && (
+        <p className="mt-3 text-center text-xs text-danger">
+          Please fill in all required shipping fields (marked with *)
+        </p>
+      )}
       <p className="mt-3 text-center text-xs text-muted-light">
         By placing this order, you agree to our Terms of Service
       </p>

@@ -35,12 +35,12 @@ export function _ShippingForm({
         </div>
       </div>
       <div className="space-y-4 rounded-2xl border border-border bg-surface p-6 shadow-sm">
-        <Input label="Full Name" value={data.name} onChange={set("name")} placeholder="John Doe" />
+        <Input label="Full Name *" value={data.name} onChange={set("name")} placeholder="John Doe" required />
         <Input label="Phone Number" type="tel" value={data.phone} onChange={set("phone")} placeholder="+1 (555) 000-0000" />
-        <Input label="Street Address" value={data.line1} onChange={set("line1")} placeholder="123 Main Street" />
+        <Input label="Street Address *" value={data.line1} onChange={set("line1")} placeholder="123 Main Street" required />
         <Input label="Apt / Suite (optional)" value={data.line2} onChange={set("line2")} placeholder="Apt 4B" />
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Input label="City" value={data.city} onChange={set("city")} placeholder="New York" />
+          <Input label="City *" value={data.city} onChange={set("city")} placeholder="New York" required />
           <Input label="State" value={data.state} onChange={set("state")} placeholder="NY" />
           <Input label="ZIP Code" value={data.postalCode} onChange={set("postalCode")} placeholder="10001" />
         </div>
