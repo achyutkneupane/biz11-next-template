@@ -19,7 +19,7 @@ type AddToCartSectionProps = {
 
 export function AddToCartSection(props: AddToCartSectionProps) {
   const [qty, setQty] = useState(1);
-  const { add } = useOptimisticCart();
+  const { add, isPending } = useOptimisticCart();
   const currency = useStore(selectCurrency);
 
   return (
@@ -36,7 +36,7 @@ export function AddToCartSection(props: AddToCartSectionProps) {
           variant="primary"
           size="lg"
           className="flex-1"
-          disabled={props.quantity === 0}
+          disabled={props.quantity === 0 || isPending}
           onClick={() =>
             add({
               skuNanoId: props.skuNanoId,
@@ -48,17 +48,9 @@ export function AddToCartSection(props: AddToCartSectionProps) {
             })
           }
         >
-          Add to Cart — {formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}
-        </Button>
-        <Button variant="outline" size="lg" className="flex-1">
-          Add to Wishlist
-        </Button>
-      </div>
-    </>
-  );
-}
-        >
-          {addToCart.isPending ? "Adding..." : `Add to Cart \u2014 ${formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}`}
+          {isPending
+            ? "Adding..."
+            : `Add to Cart \u2014 ${formatPrice((parseFloat(props.price) * qty).toFixed(2), currency)}`}
         </Button>
         <Button variant="outline" size="lg" className="flex-1">
           Add to Wishlist
