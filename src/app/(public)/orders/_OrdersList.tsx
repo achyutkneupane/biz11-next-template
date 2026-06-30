@@ -8,17 +8,9 @@ import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import { getOrders } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { OrdersListSkeleton } from "@biz11/components/Skeletons/OrdersListSkeleton";
-import type { OrderStatus } from "@biz11/Types/Api";
 import type { OrdersMeta } from "@biz11/Types/Response";
 
-const statusColors: Record<OrderStatus, string> = {
-  pending: "bg-warning/10 text-warning",
-  confirmed: "bg-primary-light/10 text-primary",
-  processing: "bg-accent/10 text-accent",
-  shipped: "bg-accent/10 text-accent",
-  delivered: "bg-success/10 text-success",
-  cancelled: "bg-danger/10 text-danger",
-};
+import { orderStatusColors } from "@biz11/lib/order-status";
 
 export function _OrdersList() {
   const [page, setPage] = useState(1);
@@ -58,7 +50,7 @@ export function _OrdersList() {
                   <span className="text-sm font-semibold text-foreground">
                     #{order.orderNumber ?? order.nanoId.slice(0, 8)}
                   </span>
-                  <span className={`rounded-full px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColors[order.status] || "bg-border-light text-muted"}`}>
+                  <span className={`rounded-full px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${orderStatusColors[order.status] || "bg-border-light text-muted"}`}>
                     {order.status}
                   </span>
                 </div>

@@ -1,7 +1,6 @@
 import { headers } from "next/headers";
+import { apiUrl } from "@biz11/lib/api-url";
 import type { BusinessResource } from "@biz11/Types/Api";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
 export type ServerBootstrapResult =
   | { data: BusinessResource; visitorId: string; visitorSignature: string }
@@ -23,8 +22,7 @@ export async function serverFetchBusiness(): Promise<ServerBootstrapResult> {
       fetchHeaders["X-Visitor-Signature"] = visitorSig;
     }
 
-    const base = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
-    const url = new URL("v1/business", base);
+    const url = apiUrl("v1/business");
 
     const res = await fetch(url.toString(), { headers: fetchHeaders });
 

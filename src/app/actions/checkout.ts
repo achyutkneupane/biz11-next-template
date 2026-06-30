@@ -1,9 +1,9 @@
 "use server";
 
+import { apiUrl } from "@biz11/lib/api-url";
+
 export async function getPaymentIntent(orderId: string, bizId: string) {
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
-  const base = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
-  const url = new URL(`v1/orders/${orderId}/payment-intent`, base);
+  const url = apiUrl(`v1/orders/${orderId}/payment-intent`);
 
   const res = await fetch(url.toString(), {
     method: "POST",

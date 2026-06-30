@@ -9,16 +9,7 @@ import { getOrder } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
-import type { OrderStatus } from "@biz11/Types/Api";
-
-const statusColors: Record<OrderStatus, string> = {
-  pending: "bg-warning/10 text-warning",
-  confirmed: "bg-primary-light/10 text-primary",
-  processing: "bg-accent/10 text-accent",
-  shipped: "bg-accent/10 text-accent",
-  delivered: "bg-success/10 text-success",
-  cancelled: "bg-danger/10 text-danger",
-};
+import { orderStatusColors } from "@biz11/lib/order-status";
 
 export function _OrderDetail({ nanoId }: { nanoId: string }) {
   const isBizLoaded = useStore(selectIsBizLoaded);
@@ -60,7 +51,7 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
           <h1 className="text-3xl font-black text-primary sm:text-4xl">Order #{order.orderNumber ?? order.nanoId.slice(0, 8)}</h1>
           <p className="mt-1 text-sm text-muted">{new Date(order.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p>
         </div>
-        <span className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${statusColors[order.status] || "bg-border-light text-muted"}`}>
+        <span className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${orderStatusColors[order.status] || "bg-border-light text-muted"}`}>
           {order.status}
         </span>
       </div>

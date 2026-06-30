@@ -1,13 +1,10 @@
 import { useStore } from "@biz11/store";
 import { selectBizId, selectToken, selectVisitorId, selectVisitorSignature } from "@biz11/store/business/selectors";
+import { apiUrl } from "@biz11/lib/api-url";
 import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource } from "@biz11/Types/Api";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
-
 function resolveUrl(path: string): URL {
-  const base = BASE_URL.endsWith("/") ? BASE_URL : BASE_URL + "/";
-  const clean = path.startsWith("/") ? path.slice(1) : path;
-  return new URL(clean, base);
+  return apiUrl(path);
 }
 
 export class ApiError extends Error {

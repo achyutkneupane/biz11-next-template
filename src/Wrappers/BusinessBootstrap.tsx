@@ -4,9 +4,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useStore } from "@biz11/store";
 import { selectIsBizLoaded } from "@biz11/store/business/selectors";
+import { apiUrl } from "@biz11/lib/api-url";
 import type { BusinessResource } from "@biz11/Types/Api";
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost";
 
 function getStoredVisitorHeaders(): Record<string, string> {
   if (typeof sessionStorage === "undefined") return {};
@@ -32,7 +31,7 @@ function BootstrapInner() {
   const { data, error } = useQuery({
     queryKey: ["business"],
     queryFn: async () => {
-      const res = await fetch(`${BASE_URL}/v1/business`, {
+      const res = await fetch(apiUrl("v1/business").toString(), {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
