@@ -188,5 +188,6 @@ export interface UserResource {
   id: number;
   name: string;
   email: string;
+  phone?: string | null;
   role: string;
 }

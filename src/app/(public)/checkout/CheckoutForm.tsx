@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useMe } from "@biz11/Hooks/auth/useAuth";
 import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
 import { Input } from "@biz11/components/ui/Input";
@@ -20,6 +20,14 @@ export function CheckoutForm() {
   const [billingAddressId, setBillingAddressId] = useState<number | null>(null);
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [createAccount, setCreateAccount] = useState(false);
+
+  useEffect(() => {
+    if (me) {
+      setName((prev) => prev || me.name || "");
+      setEmail((prev) => prev || me.email || "");
+      setPhone((prev) => prev || me.phone || "");
+    }
+  }, [me]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
