@@ -7,7 +7,7 @@ import { getOrders } from "@biz11/lib/api-client";
 import { formatPrice } from "@biz11/lib/helpers";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
-import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
+import { OrdersListSkeleton } from "@biz11/components/Skeletons/OrdersListSkeleton";
 import type { OrderStatus } from "@biz11/Types/Api";
 
 const statusColors: Record<OrderStatus, string> = {
@@ -33,7 +33,7 @@ export function _OrdersList() {
     | { currentPage: number; lastPage: number; perPage: number; total: number }
     | undefined;
 
-  if (isPending || isLoading) return <ProductDetailSkeleton />;
+  if (isPending || isLoading) return <OrdersListSkeleton />;
 
   return (
     <div>
