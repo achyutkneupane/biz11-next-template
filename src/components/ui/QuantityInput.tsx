@@ -47,7 +47,14 @@ export function QuantityInput({
       >
         <HiOutlineMinus className="h-3.5 w-3.5" />
       </button>
-      <span className="flex h-9 min-w-[2.5rem] items-center justify-center border-x-2 border-border text-sm font-bold text-foreground">
+      <span
+        role="spinbutton"
+        aria-valuenow={value}
+        aria-valuemin={min}
+        aria-valuemax={max}
+        aria-label="Quantity"
+        className="flex h-9 min-w-[2.5rem] items-center justify-center border-x-2 border-border text-sm font-bold text-foreground"
+      >
         {value}
       </span>
       <button

@@ -93,6 +93,8 @@ export function PublicNavbar() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-border-light sm:hidden cursor-pointer"
               aria-label="Toggle navigation menu"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
             >
               {mobileOpen ? (
                 <HiOutlineXMark className="h-5 w-5" />
@@ -104,7 +106,7 @@ export function PublicNavbar() {
         </div>
 
         {mobileOpen && (
-          <div className="border-t border-border bg-surface px-4 pb-5 pt-3 sm:hidden">
+          <div id="mobile-menu" className="border-t border-border bg-surface px-4 pb-5 pt-3 sm:hidden">
             <nav className="flex flex-col gap-2">
               {baseLinks.map((link) => (
                 <Link

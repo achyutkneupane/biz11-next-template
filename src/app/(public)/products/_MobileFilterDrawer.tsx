@@ -30,7 +30,7 @@ export function _MobileFilterDrawer({
   return (
     <div className="fixed inset-0 z-50 lg:hidden">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
-      <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto border-r border-border bg-surface p-6 shadow-2xl">
+      <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto border-r border-border bg-surface p-6 shadow-2xl" role="dialog" aria-modal="true" aria-label="Product filters">
         <div className="mb-6 flex items-center justify-between">
           <h2 className="text-lg font-bold text-primary">Filters</h2>
           <button onClick={onClose}
