@@ -25,6 +25,7 @@ export function useLogin() {
       loginApi(email, password),
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["me"] });
+      qc.invalidateQueries({ queryKey: ["orders"] });
       toast.success(`Welcome, ${data.data.user.name}`);
     },
     onError: () => {

@@ -12,6 +12,7 @@ export function useCheckout() {
     onSuccess: (data) => {
       qc.invalidateQueries({ queryKey: ["cart"] });
       qc.invalidateQueries({ queryKey: ["me"] });
+      qc.invalidateQueries({ queryKey: ["orders"] });
       router.push(`/checkout/${data.data.order.nanoId}/payment`);
     },
   });
