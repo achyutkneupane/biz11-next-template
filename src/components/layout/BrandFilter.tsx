@@ -27,7 +27,7 @@ export function BrandFilter({
             <label
               key={id}
               className={clsx(
-                "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200",
+                "flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-colors duration-200",
                 "hover:bg-border-light",
                 isChecked && "bg-accent/5",
               )}

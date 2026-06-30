@@ -39,7 +39,7 @@ export function ProductImageGallery({
               key={i}
               onClick={() => setSelectedIndex(i)}
               className={clsx(
-                "h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-all duration-200 cursor-pointer",
+                "h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 transition-colors duration-200 cursor-pointer",
                 i === selectedIndex
                   ? "border-accent ring-1 ring-accent"
                   : "border-border hover:border-muted-light",
