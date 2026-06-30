@@ -89,18 +89,40 @@ export interface CartItemResource {
 export type OrderStatus = "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
 
 export interface OrderResource {
+  orderNumber: number;
   nanoId: string;
   status: OrderStatus;
-  subtotal: string;
-  tax: string;
-  discount: string;
-  total: string;
-  currency: string;
   paymentStatus: string;
+  channel: string;
+  currency: string;
+  summary: {
+    subtotal: string;
+    tax: string;
+    discount: string;
+    total: string;
+  };
   paidAt: string | null;
   notes: string | null;
+  timeline?: Array<{ label: string; timestamp: string; status: string }>;
+  customer?: { name: string; email: string } | null;
   items: OrderItem[];
+  transactions?: Array<{
+    provider: string;
+    paymentId: string;
+    amount: string;
+    currency: string;
+    status: string;
+    date: string;
+  }>;
   createdAt: string;
+  /** @deprecated Use summary.subtotal */
+  subtotal?: string;
+  /** @deprecated Use summary.tax */
+  tax?: string;
+  /** @deprecated Use summary.discount */
+  discount?: string;
+  /** @deprecated Use summary.total */
+  total?: string;
 }
 
 export interface OrderItem {

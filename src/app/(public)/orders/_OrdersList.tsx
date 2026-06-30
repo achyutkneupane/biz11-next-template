@@ -57,7 +57,7 @@ export function _OrdersList() {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-3">
                   <span className="text-sm font-semibold text-foreground">
-                    #{order.nanoId.slice(0, 8)}
+                    #{order.orderNumber ?? order.nanoId.slice(0, 8)}
                   </span>
                   <span className={`rounded-full px-3 py-0.5 text-[10px] font-semibold uppercase tracking-wider ${statusColors[order.status] || "bg-border-light text-muted"}`}>
                     {order.status}
@@ -73,7 +73,7 @@ export function _OrdersList() {
                 </p>
               </div>
               <span className="shrink-0 text-lg font-bold text-primary">
-                {formatPrice(String(order.total ?? "0"), order.currency ?? "USD")}
+                {formatPrice(String(order.summary?.total ?? order.total ?? "0"), order.currency ?? "USD")}
               </span>
             </Link>
           ))}

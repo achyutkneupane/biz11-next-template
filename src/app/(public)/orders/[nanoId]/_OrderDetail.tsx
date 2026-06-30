@@ -51,13 +51,13 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
         items={[
           { label: "Home", href: "/" },
           { label: "Order" },
-          { label: `#${order.nanoId.slice(0, 8)}` },
+          {label: `#${order.orderNumber ?? order.nanoId.slice(0, 8)}` },
         ]}
       />
 
       <div className="mb-8 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-black text-primary sm:text-4xl">Order #{order.nanoId.slice(0, 8)}</h1>
+          <h1 className="text-3xl font-black text-primary sm:text-4xl">Order #{order.orderNumber ?? order.nanoId.slice(0, 8)}</h1>
           <p className="mt-1 text-sm text-muted">{new Date(order.createdAt).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</p>
         </div>
         <span className={`rounded-full px-4 py-1.5 text-xs font-semibold uppercase tracking-wider ${statusColors[order.status] || "bg-border-light text-muted"}`}>
@@ -95,21 +95,21 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
         <div className="border-t border-border px-6 py-5 space-y-2 text-sm">
           <div className="flex items-center justify-between">
             <span className="text-muted">Subtotal</span>
-            <span className="font-medium text-foreground">{formatPrice(String(order.subtotal), order.currency)}</span>
+            <span className="font-medium text-foreground">{formatPrice(String(order.summary?.subtotal ?? order.subtotal), order.currency)}</span>
           </div>
           <div className="flex items-center justify-between">
             <span className="text-muted">Tax</span>
-            <span className="font-medium text-foreground">{formatPrice(String(order.tax), order.currency)}</span>
+            <span className="font-medium text-foreground">{formatPrice(String(order.summary?.tax ?? order.tax), order.currency)}</span>
           </div>
-          {order.discount !== "0" && (
+          {(order.summary?.discount ?? order.discount) !== "0" && (
             <div className="flex items-center justify-between">
               <span className="text-muted">Discount</span>
-              <span className="font-medium text-success">&minus;{formatPrice(String(order.discount), order.currency)}</span>
+              <span className="font-medium text-success">&minus;{formatPrice(String(order.summary?.discount ?? order.discount), order.currency)}</span>
             </div>
           )}
           <div className="flex items-center justify-between border-t border-border pt-2 text-base">
             <span className="font-bold text-foreground">Total</span>
-            <span className="font-black text-primary">{formatPrice(String(order.total), order.currency)}</span>
+            <span className="font-black text-primary">{formatPrice(String(order.summary?.total ?? order.total), order.currency)}</span>
           </div>
         </div>
       </div>
