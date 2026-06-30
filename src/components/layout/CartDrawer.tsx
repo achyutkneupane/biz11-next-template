@@ -8,20 +8,20 @@ import { selectCartItems } from "@biz11/store/cart/selectors";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
 import { useDebounce } from "@biz11/Hooks/useDebounce";
-import { useCart, useUpdateCartItem, useRemoveCartItem } from "@biz11/Hooks/cart/useCart";
+import { useCart } from "@biz11/Hooks/cart/useCart";
+import { useOptimisticCart } from "@biz11/Hooks/cart/useOptimisticCart";
 import { CartItemRow } from "@biz11/components/ui/CartItemRow";
 import { CartSummary } from "@biz11/components/ui/CartSummary";
 import type { CartItemResource } from "@biz11/Types/Api";
 
 function CartItemQuantity({ item }: { item: CartItemResource }) {
-  const updateCartItem = useUpdateCartItem();
-  const removeCartItem = useRemoveCartItem();
+  const { update, remove } = useOptimisticCart();
   const [qty, setQty] = useState(item.quantity);
   const debouncedQty = useDebounce(qty, 400);
 
   useEffect(() => {
     if (debouncedQty !== item.quantity) {
-      updateCartItem.mutate({ id: item.id, quantity: debouncedQty });
+      update(item.id, debouncedQty);
     }
   }, [debouncedQty]);
 
@@ -38,7 +38,7 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
       quantity={qty}
       formatPrice={(p) => formatPrice(p, useStore.getState().currency)}
       onUpdateQuantity={setQty}
-      onRemove={() => removeCartItem.mutate(item.id)}
+      onRemove={() => remove(item.id)}
     />
   );
 }
