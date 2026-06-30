@@ -79,6 +79,7 @@ export function PublicNavbar() {
               onClick={toggleCart}
               className="relative flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-border-light active:scale-95 cursor-pointer"
               aria-label="Open shopping cart"
+              style={{ viewTransitionName: "cart" }}
             >
               <HiOutlineShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (

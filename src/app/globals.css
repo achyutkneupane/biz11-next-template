@@ -36,3 +36,57 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Cart shared element morph between navbar icon and drawer */
+::view-transition-group(cart) {
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-old(cart),
+::view-transition-new(cart) {
+  animation-duration: 280ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Add item bounce */
+::view-transition-old(.cart-add) {
+  animation: cart-fade-out 180ms ease-in;
+}
+::view-transition-new(.cart-add) {
+  animation: cart-scale-in 280ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes cart-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes cart-scale-in {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Remove slide-out */
+::view-transition-old(.cart-remove) {
+  animation: cart-slide-left 200ms ease-in;
+}
+::view-transition-new(.cart-remove) {
+  animation: cart-fade-in 200ms ease-out;
+}
+@keyframes cart-slide-left {
+  to {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+}
+@keyframes cart-fade-in {
+  to {
+    opacity: 1;
+  }
+}
