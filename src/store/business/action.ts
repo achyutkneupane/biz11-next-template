@@ -17,7 +17,6 @@ export const createBusinessSlice: StateCreator<
       nanoId: data.nanoId,
       name: data.name,
       currency: data.currency,
-      timezone: data.timezone,
       stripePublishableKey: data.stripePublishableKey ?? "",
       isLoaded: true,
     }),

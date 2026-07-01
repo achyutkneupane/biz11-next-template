@@ -1,17 +1,15 @@
 export type BusinessState = {
   nanoId: string | null;
-  name: string;
-  currency: string;
-  timezone: string;
+  name: string | null;
+  currency: string | null;
   isLoaded: boolean;
   stripePublishableKey: string;
 };
 
 export const initialBusinessState: BusinessState = {
   nanoId: null,
-  name: "Biz11",
-  currency: "USD",
-  timezone: "UTC",
+  name: null,
+  currency: null,
   isLoaded: false,
   stripePublishableKey: "",
 };

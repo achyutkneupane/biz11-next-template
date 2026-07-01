@@ -2,7 +2,6 @@ export interface BusinessResource {
   nanoId: string;
   name: string;
   currency: string;
-  timezone: string;
   stripePublishableKey?: string;
 }
 

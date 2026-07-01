@@ -19,7 +19,7 @@ export function SkuSelector({
 }: {
   skus: SkuResource[];
   selectedIndex: number;
-  currency: string;
+  currency: string | null;
   onChange: (index: number) => void;
 }) {
   if (skus.length <= 1) return null;
