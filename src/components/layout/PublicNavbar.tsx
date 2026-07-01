@@ -34,7 +34,9 @@ export function PublicNavbar() {
             href="/"
             className="text-2xl font-black tracking-tight text-accent"
           >
-            {business.name}
+            {business.name ?? (
+              <span className="inline-block h-7 w-24 animate-pulse rounded-lg bg-border-light" />
+            )}
           </Link>
 
           <nav className="hidden items-center gap-8 sm:flex">

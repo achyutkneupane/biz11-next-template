@@ -21,8 +21,10 @@ export function CheckoutForm() {
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [createAccount, setCreateAccount] = useState(false);
 
+  // Pre-fill customer info from authenticated user data on first load
   useEffect(() => {
     if (me) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initializing form fields from async auth data
       setName((prev) => prev || me.name || "");
       setEmail((prev) => prev || me.email || "");
       setPhone((prev) => prev || me.phone || "");

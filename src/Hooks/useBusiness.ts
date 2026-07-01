@@ -14,6 +14,7 @@ export function useBusiness() {
     name,
     currency,
     isLoaded,
+    isBusinessLoaded: isLoaded && !!name,
     isLoading: !isLoaded,
     error: null,
   };

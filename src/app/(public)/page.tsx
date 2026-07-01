@@ -32,8 +32,12 @@ export default function LandingPage() {
             <span className="text-accent">elevate your everyday</span>
           </h1>
           <p className="max-w-xl text-lg leading-relaxed text-white/70 sm:text-xl">
-            {business.name} connects you with curated products from trusted brands
-            worldwide. Shop smarter, live better.
+            {business.name ? (
+              <>{business.name} connects you with curated products from trusted brands
+              worldwide. Shop smarter, live better.</>
+            ) : (
+              <span className="inline-block h-6 w-72 animate-pulse rounded-lg bg-white/10" />
+            )}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
             <Link href="/products">
