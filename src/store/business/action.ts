@@ -14,6 +14,9 @@ export const createBusinessSlice: StateCreator<
 > = (set) => ({
   setBusiness: (data) => {
     if (typeof window !== "undefined") {
+      // SECURITY WARNING: Storing visitor identity in sessionStorage makes it vulnerable
+      // to Cross-Site Scripting (XSS) attacks. A strict Content Security Policy (CSP)
+      // is required to mitigate this risk.
       if (data.visitorId) {
         sessionStorage.setItem("visitorId", data.visitorId);
       }
