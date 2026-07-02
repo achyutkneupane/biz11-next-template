@@ -23,6 +23,7 @@
     "eslint-plugin-unused-imports": "^4.4.1",
     "mantine-react-table": "^1.3.4",
     "next": "16.2.9",
+    "next-sanctum": "^0.1.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-icons": "^5.6.0",
