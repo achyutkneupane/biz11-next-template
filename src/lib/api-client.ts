@@ -64,11 +64,13 @@ function getCookie(name: string): string | null {
 }
 
 let csrfPromise: Promise<void> | null = null;
+let hasFetchedCsrf = false;
 
 async function ensureCsrf() {
   if (isServer) return;
   const token = getCookie("XSRF-TOKEN");
   if (token) return;
+  if (hasFetchedCsrf) return;
 
   if (csrfPromise) return csrfPromise;
 
@@ -79,6 +81,7 @@ async function ensureCsrf() {
     headers: { Accept: "application/json" },
   })
     .then((res) => {
+      hasFetchedCsrf = true;
       if (!res.ok) throw new Error("CSRF cookie bootstrap failed");
     })
     .finally(() => {

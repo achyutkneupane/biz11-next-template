@@ -4,17 +4,16 @@ import { formatPrice } from "@biz11/lib/helpers";
 describe("formatPrice", () => {
   it("formats NPR currency correctly", () => {
     const result = formatPrice("1299.00", "NPR");
-    expect(result).toContain("1,299");
-    expect(result).toMatch(/1[,.]299/);
+    expect(result).toBe("NPR 1299.00");
   });
 
   it("formats USD currency correctly", () => {
-    expect(formatPrice("50.00", "USD")).toBe("$50.00");
+    expect(formatPrice("50.00", "USD")).toBe("USD 50.00");
   });
 
-  it("falls back to NPR when currency is empty", () => {
+  it("returns --- when currency is empty", () => {
     const result = formatPrice("0.00", "");
-    expect(result).toContain("0.00");
+    expect(result).toBe("---");
   });
 
   it("handles NaN input gracefully", () => {

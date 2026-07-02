@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef, useCallback } from "react";
 import { useStore } from "@biz11/store";
 import {
   selectCartItems,
@@ -31,7 +31,7 @@ export function useOptimisticCart() {
     }
   }, [useCartQuery.data, setCartItems]);
 
-  const add = (item: { skuNanoId: string; quantity: number; name: string; price: string; coverUrl: string; skuCode: string }) => {
+  const addFn = (item: { skuNanoId: string; quantity: number; name: string; price: string; coverUrl: string; skuCode: string }) => {
     const optimistic: CartItemResource = {
       id: Date.now(),
       skuId: 0,
@@ -53,7 +53,7 @@ export function useOptimisticCart() {
     );
   };
 
-  const update = (id: number, quantity: number) => {
+  const updateFn = (id: number, quantity: number) => {
     const previous = items.find((i) => i.id === id);
     updateQuantity(id, quantity);
     updateCartItem.mutate(
@@ -66,9 +66,18 @@ export function useOptimisticCart() {
     );
   };
 
-  const remove = (id: number) => {
+  const removeFn = (id: number) => {
     removeCartItem.mutate(id);
   };
+
+  const handlersRef = useRef({ add: addFn, update: updateFn, remove: removeFn });
+  useEffect(() => {
+    handlersRef.current = { add: addFn, update: updateFn, remove: removeFn };
+  });
+
+  const add = useCallback((...args: Parameters<typeof addFn>) => handlersRef.current.add(...args), []);
+  const update = useCallback((...args: Parameters<typeof updateFn>) => handlersRef.current.update(...args), []);
+  const remove = useCallback((...args: Parameters<typeof removeFn>) => handlersRef.current.remove(...args), []);
 
   return {
     items,
