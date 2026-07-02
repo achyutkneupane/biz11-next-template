@@ -30,6 +30,7 @@ export function ProductDetail({slug}: { slug: string }) {
 
 	const skus = product?.skus ?? [];
 	const [selectedSkuIndex, setSelectedSkuIndex] = useState(0);
+	// eslint-disable-next-line security/detect-object-injection
 	const activeSku = skus[selectedSkuIndex];
 
 	if (isPending || isLoading) return <ProductDetailSkeleton/>;

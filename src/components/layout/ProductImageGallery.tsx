@@ -24,6 +24,7 @@ export function ProductImageGallery({
   }, [sku]);
 
   const [selectedIndex, setSelectedIndex] = useState(0);
+  // eslint-disable-next-line security/detect-object-injection
   const selectedImage = allImages[selectedIndex] || productCoverUrl;
 
   return (
