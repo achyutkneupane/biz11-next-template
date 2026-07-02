@@ -25,7 +25,7 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
     if (debouncedQty !== item.quantity) {
       update(item.id, debouncedQty);
     }
-  }, [debouncedQty]);
+  }, [debouncedQty, item.quantity, item.id, update]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs server-reconciled quantity into local state
@@ -38,6 +38,7 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
       productName={item.productName}
       skuCode={item.skuCode}
       subtotal={item.subtotal}
+      originalPrice={item.originalPrice}
       quantity={qty}
       formatPrice={(p) => formatPrice(p, currency)}
       onUpdateQuantity={setQty}

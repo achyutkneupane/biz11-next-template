@@ -91,5 +91,5 @@ export function useRelatedProducts(product: ProductResource | null) {
       isLoading: false,
       error: null,
     };
-  }, [product, allProducts.data]);
+  }, [product, allProducts.data, allProducts.isLoading]);
 }

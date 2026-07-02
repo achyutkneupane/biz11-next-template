@@ -53,12 +53,20 @@ export function PublicNavbar() {
 
           <div className="flex items-center gap-2">
             {isAuthenticated ? (
-              <button
-                onClick={() => logout.mutate(undefined)}
-                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block cursor-pointer"
-              >
-                Sign Out
-              </button>
+              <div className="hidden items-center gap-4 sm:flex">
+                <Link
+                  href="/profile"
+                  className="text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary"
+                >
+                  {me?.name}
+                </Link>
+                <button
+                  onClick={() => logout.mutate(undefined)}
+                  className="text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
             ) : (
               <Link
                 href="/login"
@@ -112,15 +120,24 @@ export function PublicNavbar() {
                 </Link>
               ))}
               {isAuthenticated ? (
-                <button
-                  onClick={() => {
-                    logout.mutate(undefined);
-                    setMobileOpen(false);
-                  }}
-                  className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light cursor-pointer"
-                >
-                  Sign Out
-                </button>
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout.mutate(undefined);
+                      setMobileOpen(false);
+                    }}
+                    className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </>
               ) : (
                 <Link
                   href="/login"

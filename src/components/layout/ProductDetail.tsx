@@ -87,9 +87,22 @@ export function ProductDetail({slug}: { slug: string }) {
 						</div>
 					</div>
 
-					<p className="text-3xl font-black text-primary">
-						{activeSku ? formatPrice(activeSku.price, currency) : ""}
-					</p>
+					<div className="flex items-end gap-3">
+						{activeSku?.discountPrice ? (
+							<>
+								<p className="text-3xl font-black text-accent">
+									{formatPrice(activeSku.discountPrice, currency)}
+								</p>
+								<p className="mb-1 text-lg font-bold text-muted line-through">
+									{formatPrice(activeSku.price, currency)}
+								</p>
+							</>
+						) : (
+							<p className="text-3xl font-black text-primary">
+								{activeSku ? formatPrice(activeSku.price, currency) : ""}
+							</p>
+						)}
+					</div>
 
 					<p className="leading-relaxed text-muted">{product.description}</p>
 

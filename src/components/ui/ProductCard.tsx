@@ -75,18 +75,26 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
         )}
         <div
           className={clsx(
-            "mt-auto flex items-center justify-between",
+            "mt-auto flex items-end justify-between",
             variant === "compact" ? "pt-1" : "pt-3",
           )}
         >
-          <span
-            className={clsx(
-              "font-bold tracking-tight text-primary",
-              variant === "compact" ? "text-base" : "text-xl",
+          <div className="flex flex-col items-start leading-tight">
+            {getDefaultSku(product).discountPrice ? (
+              <>
+                <span className={clsx("font-bold tracking-tight text-accent", variant === "compact" ? "text-base" : "text-xl")}>
+                  {formatPrice(getDefaultSku(product).discountPrice!, currency)}
+                </span>
+                <span className={clsx("font-semibold text-muted line-through", variant === "compact" ? "text-[10px]" : "text-[12px]")}>
+                  {formatPrice(getDefaultSku(product).price, currency)}
+                </span>
+              </>
+            ) : (
+              <span className={clsx("font-bold tracking-tight text-primary", variant === "compact" ? "text-base" : "text-xl")}>
+                {formatPrice(getDefaultSku(product).price, currency)}
+              </span>
             )}
-          >
-            {formatPrice(getDefaultSku(product).price, currency)}
-          </span>
+          </div>
           <span
             className={clsx(
               "rounded-full bg-accent/10 px-3 py-1 font-semibold uppercase tracking-wider text-accent",

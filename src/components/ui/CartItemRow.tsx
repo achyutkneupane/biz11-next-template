@@ -7,6 +7,7 @@ type CartItemRowProps = {
   productName: string;
   skuCode: string;
   subtotal: string;
+  originalPrice?: string;
   quantity: number;
   formatPrice: (p: string) => string;
   onUpdateQuantity: (qty: number) => void;
@@ -14,7 +15,7 @@ type CartItemRowProps = {
 };
 
 export function CartItemRow({
-  coverUrl, productName, skuCode, subtotal, quantity, formatPrice, onUpdateQuantity, onRemove,
+  coverUrl, productName, skuCode, subtotal, originalPrice, quantity, formatPrice, onUpdateQuantity, onRemove,
 }: CartItemRowProps) {
   return (
     <div className="flex items-center gap-4 border-b border-border-light py-5 last:border-none">
@@ -26,7 +27,14 @@ export function CartItemRow({
         <p className="mt-1.5 text-xs text-muted">{skuCode}</p>
         <div className="mt-2 flex items-center gap-3">
           <QuantityInput value={quantity} max={999} onChange={onUpdateQuantity} />
-          <p className="text-base font-bold text-accent">{formatPrice(subtotal)}</p>
+          <div className="flex flex-col items-start leading-tight">
+            <p className="text-base font-bold text-accent">{formatPrice(subtotal)}</p>
+            {originalPrice && (parseFloat(originalPrice) * quantity).toFixed(2) !== parseFloat(subtotal).toFixed(2) && (
+              <p className="text-xs font-semibold text-muted line-through">
+                {formatPrice((parseFloat(originalPrice) * quantity).toString())}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       <button onClick={onRemove}
