@@ -12,12 +12,23 @@ export const createBusinessSlice: StateCreator<
   [],
   BusinessAction
 > = (set) => ({
-  setBusiness: (data) =>
+  setBusiness: (data) => {
+    if (typeof window !== "undefined") {
+      if (data.visitorId) {
+        sessionStorage.setItem("visitorId", data.visitorId);
+      }
+      if (data.visitorSignature) {
+        sessionStorage.setItem("visitorSignature", data.visitorSignature);
+      }
+    }
     set({
       nanoId: data.nanoId,
       name: data.name,
       currency: data.currency,
       stripePublishableKey: data.stripePublishableKey ?? "",
+      visitorId: data.visitorId ?? null,
+      visitorSignature: data.visitorSignature ?? null,
       isLoaded: true,
-    }),
+    });
+  },
 });

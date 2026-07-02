@@ -10,16 +10,23 @@ import type { BusinessResource } from "@biz11/Types/Api";
 function BootstrapInner() {
   const isLoaded = useStore(selectIsBizLoaded);
   const setBusiness = useStore((s) => s.setBusiness);
+  const visitorId = useStore((s) => s.visitorId);
+  const visitorSignature = useStore((s) => s.visitorSignature);
 
   const { data, error } = useQuery({
     queryKey: ["business"],
     queryFn: async () => {
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      };
+
+      if (visitorId) headers["X-Visitor-Id"] = visitorId;
+      if (visitorSignature) headers["X-Visitor-Signature"] = visitorSignature;
+
       const res = await fetch(apiUrl("v1/business").toString(), {
         credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
+        headers,
       });
 
       if (!res.ok) {

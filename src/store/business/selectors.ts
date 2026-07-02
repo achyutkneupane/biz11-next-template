@@ -9,3 +9,8 @@ export const selectIsBizLoaded = (state: BusinessState) => state.isLoaded;
 export const selectBusinessName = (state: BusinessState) => state.name;
 
 export const selectStripeKey = (state: BusinessState) => state.stripePublishableKey;
+
+export const selectVisitorId = (state: BusinessState) => state.visitorId;
+
+export const selectVisitorSignature = (state: BusinessState) => state.visitorSignature;
+

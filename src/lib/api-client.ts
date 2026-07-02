@@ -1,7 +1,7 @@
 import { useStore } from "@biz11/store";
 import { selectBizId } from "@biz11/store/business/selectors";
 import { apiUrl } from "@biz11/lib/api-url";
-import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource } from "@biz11/Types/Api";
+import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource, RegisterRequest } from "@biz11/Types/Api";
 
 function resolveUrl(path: string): URL {
   return apiUrl(path);
@@ -19,17 +19,120 @@ export class ApiError extends Error {
   }
 }
 
-function getHeaders(): Record<string, string> {
-  const state = useStore.getState();
-  const headers: Record<string, string> = {
+const isServer = typeof window === "undefined";
+
+async function getHeaders(): Promise<Record<string, string>> {
+  const headersObj: Record<string, string> = {
     "Content-Type": "application/json",
     Accept: "application/json",
   };
 
-  const bizId = selectBizId(state);
-  if (bizId) headers["X-BIZID"] = bizId;
+  if (isServer) {
+    try {
+      const { headers: getNextHeaders } = await import("next/headers");
+      const nextHeaders = await getNextHeaders();
+      const visitorId = nextHeaders.get("x-visitor-id");
+      const visitorSig = nextHeaders.get("x-visitor-signature");
+      const bizId = nextHeaders.get("x-bizid");
 
-  return headers;
+      if (visitorId) headersObj["X-Visitor-Id"] = visitorId;
+      if (visitorSig) headersObj["X-Visitor-Signature"] = visitorSig;
+      if (bizId) headersObj["X-BIZID"] = bizId;
+    } catch (e) {
+      console.warn("Could not read headers on server:", e);
+    }
+  } else {
+    const state = useStore.getState();
+    const bizId = selectBizId(state);
+    const visitorId = state.visitorId;
+    const visitorSignature = state.visitorSignature;
+
+    if (bizId) headersObj["X-BIZID"] = bizId;
+    if (visitorId) headersObj["X-Visitor-Id"] = visitorId;
+    if (visitorSignature) headersObj["X-Visitor-Signature"] = visitorSignature;
+  }
+
+  return headersObj;
+}
+
+function getCookie(name: string): string | null {
+  if (typeof document === "undefined") return null;
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(";").shift() ?? null;
+  return null;
+}
+
+let csrfPromise: Promise<void> | null = null;
+
+async function ensureCsrf() {
+  if (isServer) return;
+  const token = getCookie("XSRF-TOKEN");
+  if (token) return;
+
+  if (csrfPromise) return csrfPromise;
+
+  const url = resolveUrl("/sanctum/csrf-cookie");
+  csrfPromise = fetch(url.toString(), {
+    method: "GET",
+    credentials: "include",
+    headers: { Accept: "application/json" },
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("CSRF cookie bootstrap failed");
+    })
+    .finally(() => {
+      csrfPromise = null;
+    });
+
+  return csrfPromise;
+}
+
+const fetchOpts: RequestInit = { credentials: "include" };
+
+async function executeRequest(
+  path: string,
+  init: RequestInit & { json?: unknown },
+): Promise<Response> {
+  const method = (init.method ?? "GET").toUpperCase();
+  const isStateful = ["POST", "PUT", "PATCH", "DELETE"].includes(method);
+
+  if (isServer) {
+    const { serverFetch } = await import("next-sanctum/server");
+    const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost";
+    const headers = {
+      ...(await getHeaders()),
+      ...Object.fromEntries(new Headers(init.headers).entries()),
+    };
+
+    return serverFetch(path, {
+      ...init,
+      baseUrl,
+      headers,
+    });
+  } else {
+    if (isStateful) {
+      await ensureCsrf();
+    }
+
+    const url = resolveUrl(path);
+    const headers = {
+      ...(await getHeaders()),
+      ...Object.fromEntries(new Headers(init.headers).entries()),
+    };
+
+    const token = getCookie("XSRF-TOKEN");
+    if (token && !headers["X-XSRF-TOKEN"]) {
+      headers["X-XSRF-TOKEN"] = decodeURIComponent(token);
+    }
+
+    return fetch(url.toString(), {
+      ...fetchOpts,
+      ...init,
+      headers,
+      body: init.json ? JSON.stringify(init.json) : init.body,
+    });
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- res.json() is untyped
@@ -40,12 +143,11 @@ async function handleResponse(res: Response): Promise<any> {
       res.status,
       body.title || "Request failed",
       body.detail || res.statusText,
+      body.errors,
     );
   }
   return res.json();
 }
-
-const fetchOpts: RequestInit = { credentials: "include" };
 
 export async function apiGet<T>(
   path: string,
@@ -61,7 +163,8 @@ export async function apiGet<T>(
     });
   }
 
-  const res = await fetch(url.toString(), { ...fetchOpts, headers: getHeaders() });
+  const pathWithSearch = path + url.search;
+  const res = await executeRequest(pathWithSearch, { method: "GET" });
   return handleResponse(res);
 }
 
@@ -69,12 +172,9 @@ export async function apiPost<T>(
   path: string,
   body?: unknown,
 ): Promise<{ data: T }> {
-  const url = resolveUrl(path);
-  const res = await fetch(url.toString(), {
-    ...fetchOpts,
+  const res = await executeRequest(path, {
     method: "POST",
-    headers: getHeaders(),
-    body: body ? JSON.stringify(body) : undefined,
+    json: body,
   });
   return handleResponse(res);
 }
@@ -83,12 +183,9 @@ export async function apiPatch<T>(
   path: string,
   body: unknown,
 ): Promise<{ data: T }> {
-  const url = resolveUrl(path);
-  const res = await fetch(url.toString(), {
-    ...fetchOpts,
+  const res = await executeRequest(path, {
     method: "PATCH",
-    headers: getHeaders(),
-    body: JSON.stringify(body),
+    json: body,
   });
   return handleResponse(res);
 }
@@ -96,11 +193,8 @@ export async function apiPatch<T>(
 export async function apiDelete(
   path: string,
 ): Promise<void> {
-  const url = resolveUrl(path);
-  const res = await fetch(url.toString(), {
-    ...fetchOpts,
+  const res = await executeRequest(path, {
     method: "DELETE",
-    headers: getHeaders(),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -108,6 +202,7 @@ export async function apiDelete(
       res.status,
       body.title || "Request failed",
       body.detail || res.statusText,
+      body.errors,
     );
   }
 }
@@ -164,25 +259,24 @@ export function login(email: string, password: string) {
   return apiPost<{ user: UserResource }>("/v1/auth/login", { email, password });
 }
 
+export function register(data: RegisterRequest) {
+  return apiPost<{ user: UserResource }>("/v1/auth/register", data);
+}
+
 export function logout() {
   return apiPost<null>("/v1/auth/logout");
 }
 
 export async function getMe() {
-  const url = resolveUrl("/v1/auth/me");
-  const res = await fetch(url.toString(), {
-    ...fetchOpts,
-    headers: getHeaders(),
-  });
-
-  if (res.status === 401) return { data: null };
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}));
-    throw new ApiError(
-      res.status,
-      body.title || "Request failed",
-      body.detail || res.statusText,
-    );
+  try {
+    const res = await executeRequest("/v1/auth/me", { method: "GET" });
+    if (res.status === 401) return { data: null };
+    return handleResponse(res);
+  } catch (error) {
+    if (error instanceof ApiError && error.status === 401) {
+      return { data: null };
+    }
+    throw error;
   }
-  return res.json() as Promise<{ data: UserResource }>;
 }
+
