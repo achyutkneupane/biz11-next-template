@@ -10,6 +10,7 @@ import { formatPrice } from "@biz11/lib/helpers";
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
 import { ProductDetailSkeleton } from "@biz11/components/Skeletons/ProductDetailSkeleton";
 import { orderStatusColors } from "@biz11/lib/order-status";
+import { SafeHtml } from "@biz11/components/ui/SafeHtml";
 
 export function _OrderDetail({ nanoId }: { nanoId: string }) {
   const isBizLoaded = useStore(selectIsBizLoaded);
@@ -59,7 +60,7 @@ export function _OrderDetail({ nanoId }: { nanoId: string }) {
       {order.notes && (
         <div className="mb-8 rounded-2xl border border-border bg-surface p-5 shadow-sm">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted">Notes</p>
-          <p className="mt-1 text-sm text-foreground">{order.notes}</p>
+          <SafeHtml html={order.notes} as="p" className="mt-1 text-sm text-foreground" />
         </div>
       )}
 

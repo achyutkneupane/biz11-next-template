@@ -8,6 +8,7 @@ import { getDefaultSku } from "@biz11/Types/Api";
 import { useStore } from "@biz11/store";
 import { selectCurrency } from "@biz11/store/business/selectors";
 import { formatPrice } from "@biz11/lib/helpers";
+import { SafeHtml } from "./SafeHtml";
 
 type ProductCardProps = {
   product: ProductResource;
@@ -69,9 +70,7 @@ export function ProductCard({ product, variant = "default" }: ProductCardProps) 
           {product.name}
         </h3>
         {variant !== "compact" && (
-          <p className="text-sm leading-relaxed text-muted line-clamp-2">
-            {product.description}
-          </p>
+          <SafeHtml html={product.description || ""} as="p" className="text-sm leading-relaxed text-muted line-clamp-2" />
         )}
         <div
           className={clsx(
