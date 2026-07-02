@@ -25,7 +25,8 @@ function CartItemQuantity({ item }: { item: CartItemResource }) {
     if (debouncedQty !== item.quantity) {
       update(item.id, debouncedQty);
     }
-  }, [debouncedQty, item.quantity, item.id, update]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- we only want to trigger update when debouncedQty settles
+  }, [debouncedQty, item.id, update]);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs server-reconciled quantity into local state
