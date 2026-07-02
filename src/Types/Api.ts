@@ -3,6 +3,8 @@ export interface BusinessResource {
   name: string;
   currency: string;
   stripePublishableKey?: string;
+  visitorId?: string | null;
+  visitorSignature?: string | null;
 }
 
 export interface BrandResource {
@@ -32,6 +34,7 @@ export interface DefaultSku {
   nanoId: string | null;
   skuCode: string;
   price: string;
+  discountPrice?: string | null;
   quantity: number;
 }
 
@@ -54,10 +57,10 @@ export interface ProductResource {
 export function getDefaultSku(product: ProductResource): DefaultSku {
   if (product.skus && product.skus.length > 0) {
     const s = product.skus[0];
-    return { nanoId: s.nanoId, skuCode: s.skuCode, price: s.price, quantity: s.quantity };
+    return { nanoId: s.nanoId, skuCode: s.skuCode, price: s.price, discountPrice: s.discountPrice, quantity: s.quantity };
   }
   if (product.defaultSku) return product.defaultSku;
-  return { nanoId: null, skuCode: "", price: "0", quantity: 0 };
+  return { nanoId: null, skuCode: "", price: "0", discountPrice: null, quantity: 0 };
 }
 
 export interface SkuResource {
@@ -65,6 +68,7 @@ export interface SkuResource {
   skuCode: string;
   barcode: string | null;
   price: string;
+  discountPrice?: string | null;
   quantity: number;
   variantAttributes: Specifications;
   coverUrl: string;
@@ -79,6 +83,7 @@ export interface CartItemResource {
   skuCode: string;
   coverUrl: string | null;
   unitPrice: string;
+  originalPrice?: string;
   quantity: number;
   subtotal: string;
 }
@@ -179,6 +184,7 @@ export interface LoginRequest {
 export interface RegisterRequest {
   name: string;
   email: string;
+  phone?: string;
   password: string;
   password_confirmation: string;
 }
