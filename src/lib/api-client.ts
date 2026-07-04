@@ -1,7 +1,7 @@
 import { useStore } from "@biz11/store";
 import { selectBizId } from "@biz11/store/business/selectors";
 import { apiUrl } from "@biz11/lib/api-url";
-import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource, RegisterRequest } from "@biz11/Types/Api";
+import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource, RegisterRequest, StaticPageResource } from "@biz11/Types/Api";
 
 function resolveUrl(path: string): URL {
   return apiUrl(path);
@@ -287,5 +287,11 @@ export async function getMe() {
     }
     throw error;
   }
+}
+
+// Pages
+
+export function getPage(slug: string) {
+  return apiGet<StaticPageResource>(`/v1/pages/${slug}`);
 }
 
