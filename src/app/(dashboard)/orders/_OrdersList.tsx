@@ -63,9 +63,20 @@ export function _OrdersList() {
                   })}
                 </p>
               </div>
-              <span className="shrink-0 text-lg font-bold text-primary">
-                {formatPrice(String(order.summary?.total ?? order.total ?? "0"), order.currency ?? "USD")}
-              </span>
+              <div className="shrink-0 text-right">
+                <span className="block text-lg font-bold text-primary">
+                  {formatPrice(String(order.summary?.total ?? order.total ?? "0"), order.currency ?? "USD")}
+                </span>
+                {order.status !== "cancelled" && order.paymentStatus !== "paid" && (
+                  <Link
+                    href={`/orders/${order.nanoId}/pay`}
+                    className="mt-2 inline-flex items-center justify-center rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-content transition-colors duration-200 hover:bg-primary-dark hover:shadow-sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Pay Now
+                  </Link>
+                )}
+              </div>
             </Link>
           ))}
         </div>
