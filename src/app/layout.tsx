@@ -12,11 +12,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Biz11 — Multi-Tenant E-Commerce Platform",
-  description:
-    "A modern multi-tenant e-commerce platform powering businesses worldwide.",
-};
+import { serverFetchBusiness } from "@biz11/lib/server-bootstrap";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const business = await serverFetchBusiness();
+  const name = "data" in business ? business.data.name : "Biz11";
+
+  return {
+    title: {
+      template: `%s - ${name}`,
+      default: name,
+    },
+    description:
+      "A modern multi-tenant e-commerce platform powering businesses worldwide.",
+  };
+}
 
 export default function RootLayout({
   children,

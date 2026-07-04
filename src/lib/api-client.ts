@@ -3,6 +3,10 @@ import { selectBizId } from "@biz11/store/business/selectors";
 import { apiUrl } from "@biz11/lib/api-url";
 import type { CartItemResource, OrderResource, AddressResource, AddressInput, CheckoutInput, CheckoutResponse, UserResource, RegisterRequest, StaticPageResource } from "@biz11/Types/Api";
 
+if (typeof process !== "undefined" && process.env.NODE_ENV === "development") {
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+}
+
 function resolveUrl(path: string): URL {
   return apiUrl(path);
 }
