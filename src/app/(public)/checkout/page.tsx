@@ -1,29 +1,27 @@
-"use client";
+import { Metadata, ResolvingMetadata } from "next";
+import { apiGet } from "@biz11/lib/api-client";
+import { generateSeoMetadata } from "@biz11/lib/seo";
+import type { StaticPageResource } from "@biz11/Types/Api";
+import CheckoutPage from "./_CheckoutPage";
 
-import { useRouter } from "next/navigation";
-import { useStore } from "@biz11/store";
-import { selectCartItems } from "@biz11/store/cart/selectors";
-import { useEffect } from "react";
-import { CheckoutForm } from "./CheckoutForm";
-
-export default function CheckoutPage() {
-  const router = useRouter();
-  const items = useStore(selectCartItems);
-
-  useEffect(() => {
-    if (items.length === 0) {
-      router.push("/products");
+export async function generateMetadata(
+  props: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const response = await apiGet<StaticPageResource>("/v1/pages/checkout");
+    const page = response.data;
+    if (page.seo) {
+      return generateSeoMetadata(page.seo, await parent);
     }
-  }, [items.length, router]);
-
-  if (items.length === 0) {
-    return null;
+  } catch (error) {
+    // Fallback
   }
+  return {
+    title: "Checkout",
+  };
+}
 
-  return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="mb-8 text-2xl font-black text-primary">Checkout</h1>
-      <CheckoutForm />
-    </div>
-  );
+export default function Page() {
+  return <CheckoutPage />;
 }

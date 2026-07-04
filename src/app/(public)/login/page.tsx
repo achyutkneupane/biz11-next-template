@@ -1,5 +1,27 @@
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
 import { _LoginForm } from "@biz11/app/(public)/login/_LoginForm";
+import { Metadata, ResolvingMetadata } from "next";
+import { apiGet } from "@biz11/lib/api-client";
+import { generateSeoMetadata } from "@biz11/lib/seo";
+import type { StaticPageResource } from "@biz11/Types/Api";
+
+export async function generateMetadata(
+  props: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const response = await apiGet<StaticPageResource>("/v1/pages/login");
+    const page = response.data;
+    if (page.seo) {
+      return generateSeoMetadata(page.seo, await parent);
+    }
+  } catch (error) {
+    // Fallback
+  }
+  return {
+    title: "Login",
+  };
+}
 
 export default function LoginPage() {
   return (

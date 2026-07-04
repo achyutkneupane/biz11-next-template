@@ -1,6 +1,28 @@
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@biz11/components/ui/Breadcrumbs";
 import { StripePaymentPage } from "@biz11/components/checkout/StripePaymentPage";
+import { Metadata, ResolvingMetadata } from "next";
+import { apiGet } from "@biz11/lib/api-client";
+import { generateSeoMetadata } from "@biz11/lib/seo";
+import type { StaticPageResource } from "@biz11/Types/Api";
+
+export async function generateMetadata(
+  props: any,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
+  try {
+    const response = await apiGet<StaticPageResource>("/v1/pages/payment");
+    const page = response.data;
+    if (page.seo) {
+      return generateSeoMetadata(page.seo, await parent);
+    }
+  } catch (error) {
+    // Fallback
+  }
+  return {
+    title: "Payment",
+  };
+}
 
 export default async function PaymentPage({
   params,
