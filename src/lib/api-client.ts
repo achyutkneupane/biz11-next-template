@@ -256,6 +256,12 @@ export function createAddress(data: AddressInput) {
   return apiPost<AddressResource>("/v1/addresses", data);
 }
 
+// Customer
+
+export function getCustomerProfile() {
+  return apiGet<{ name: string | null; email: string | null; phone: string | null; isRegistered: boolean }>("/v1/customer/profile");
+}
+
 // Auth
 
 export function login(email: string, password: string) {

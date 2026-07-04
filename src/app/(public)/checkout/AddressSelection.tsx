@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAddresses } from "@biz11/Hooks/addresses/useAddresses";
 import { AddressForm } from "./AddressForm";
 import type { AddressResource } from "@biz11/Types/Api";
@@ -14,6 +14,13 @@ type Props = {
 export function AddressSelection({ title, selectedId, onSelect }: Props) {
   const { data: addresses, isLoading } = useAddresses();
   const [showForm, setShowForm] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && addresses && addresses.length > 0 && selectedId === null) {
+      const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+      onSelect(defaultAddr.id);
+    }
+  }, [addresses, isLoading, selectedId, onSelect]);
 
   return (
     <section>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useMe } from "@biz11/Hooks/auth/useAuth";
+import { useCustomerProfile } from "@biz11/Hooks/customer/useCustomerProfile";
 import { useCheckout } from "@biz11/Hooks/cart/useCheckout";
 import { Input } from "@biz11/components/ui/Input";
 import { Button } from "@biz11/components/ui/Button";
@@ -10,6 +11,7 @@ import { OrderSummary } from "./OrderSummary";
 
 export function CheckoutForm() {
   const { data: me } = useMe();
+  const { data: profile } = useCustomerProfile();
   const isAuthenticated = !!me;
   const checkout = useCheckout();
 
@@ -21,15 +23,15 @@ export function CheckoutForm() {
   const [sameAsShipping, setSameAsShipping] = useState(true);
   const [createAccount, setCreateAccount] = useState(false);
 
-  // Pre-fill customer info from authenticated user data on first load
+  // Pre-fill customer info from customer profile on first load
   useEffect(() => {
-    if (me) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- initializing form fields from async auth data
-      setName((prev) => prev || me.name || "");
-      setEmail((prev) => prev || me.email || "");
-      setPhone((prev) => prev || me.phone || "");
+    if (profile) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initializing form fields from async data
+      setName((prev) => prev || profile.name || "");
+      setEmail((prev) => prev || profile.email || "");
+      setPhone((prev) => prev || profile.phone || "");
     }
-  }, [me]);
+  }, [profile]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
