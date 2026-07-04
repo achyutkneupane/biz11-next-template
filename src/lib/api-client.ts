@@ -37,7 +37,15 @@ async function getHeaders(): Promise<Record<string, string>> {
 
       if (visitorId) headersObj["X-Visitor-Id"] = visitorId;
       if (visitorSig) headersObj["X-Visitor-Signature"] = visitorSig;
-      if (bizId) headersObj["X-BIZID"] = bizId;
+      if (bizId) {
+        headersObj["X-BIZID"] = bizId;
+      } else {
+        const { serverFetchBusiness } = await import("@biz11/lib/server-bootstrap");
+        const res = await serverFetchBusiness();
+        if ("data" in res && res.data.nanoId) {
+          headersObj["X-BIZID"] = res.data.nanoId;
+        }
+      }
     } catch (e) {
       console.warn("Could not read headers on server:", e);
     }
