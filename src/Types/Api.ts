@@ -7,6 +7,19 @@ export interface BusinessResource {
   visitorSignature?: string | null;
 }
 
+export interface SEOData {
+  title: string | null;
+  description: string | null;
+  author: string | null;
+  image: string | null;
+  url: string | null;
+  type: string | null;
+  robots: string | null;
+  canonicalUrl: string | null;
+  openGraphTitle: string | null;
+  schema?: Record<string, any> | null;
+}
+
 export interface BrandResource {
   nanoId: string | null;
   name: string;
@@ -15,6 +28,7 @@ export interface BrandResource {
   logoUrl: string;
   productsCount: number;
   createdAt: string | null;
+  seo?: SEOData | null;
 }
 
 export interface CategoryResource {
@@ -28,6 +42,7 @@ export interface CategoryResource {
   productsCount: number;
   children: CategoryResource[];
   createdAt: string | null;
+  seo?: SEOData | null;
 }
 
 export interface DefaultSku {
@@ -52,6 +67,7 @@ export interface ProductResource {
   defaultSku?: DefaultSku;
   skus?: SkuResource[];
   createdAt: string | null;
+  seo?: SEOData | null;
 }
 
 export function getDefaultSku(product: ProductResource): DefaultSku {
@@ -195,4 +211,17 @@ export interface UserResource {
   email: string;
   phone?: string | null;
   role: string;
+}
+
+export interface StaticPageResource {
+  title: string;
+  slug: string;
+  description: string | null;
+  content: string | null;
+  type: string | null;
+  name: string | null;
+  tags: string[] | null;
+  cover: string | null;
+  seo?: SEOData | null;
+  breadcrumbs?: Array<{ label: string; url: string }>;
 }
