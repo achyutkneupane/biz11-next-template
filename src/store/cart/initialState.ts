@@ -1,10 +1,12 @@
 export type CartItem = {
-  nanoId: string;
-  name: string;
-  price: string;
-  quantity: number;
-  coverUrl: string;
+  id: number;
+  skuId: number;
+  productName: string;
   skuCode: string;
+  coverUrl: string | null;
+  unitPrice: string;
+  quantity: number;
+  subtotal: string;
 };
 
 export type CartState = {

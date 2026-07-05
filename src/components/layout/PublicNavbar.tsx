@@ -4,18 +4,25 @@ import Link from "next/link";
 import { useCallback, useState } from "react";
 import { HiOutlineShoppingBag, HiOutlineBars3, HiOutlineXMark } from "react-icons/hi2";
 import { CartDrawer } from "@biz11/components/layout/CartDrawer";
-import { getBusiness } from "@biz11/lib/business-mock";
-import { getNavLinks } from "@biz11/lib/content-mock";
-import { useStore } from "@biz11/store";
-import { selectCartCount } from "@biz11/store/cart/selectors";
+import { useCart } from "@biz11/Hooks/cart/useCart";
+import { useBusiness } from "@biz11/Hooks/useBusiness";
+import { useMe, useLogout } from "@biz11/Hooks/auth/useAuth";
 
-const business = getBusiness();
-const navLinks = getNavLinks();
+const baseLinks = [
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Shop" },
+  { href: "/orders", label: "Orders" },
+];
 
 export function PublicNavbar() {
   const [cartOpen, setCartOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const cartCount = useStore(selectCartCount);
+  const { data: cartData } = useCart();
+  const cartCount = (cartData?.data ?? []).length;
+  const business = useBusiness();
+  const { data: me } = useMe();
+  const isAuthenticated = !!me;
+  const logout = useLogout();
 
   const toggleCart = useCallback(() => setCartOpen((v) => !v), []);
 
@@ -25,13 +32,15 @@ export function PublicNavbar() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="text-2xl font-black tracking-tight text-primary"
+            className="text-2xl font-black tracking-tight text-accent"
           >
-            {business.name}
+            {business.name ?? (
+              <span className="inline-block h-7 w-24 animate-pulse rounded-lg bg-border-light" />
+            )}
           </Link>
 
           <nav className="hidden items-center gap-8 sm:flex">
-            {navLinks.map((link) => (
+            {baseLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -43,10 +52,35 @@ export function PublicNavbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            {isAuthenticated ? (
+              <div className="hidden items-center gap-4 sm:flex">
+                <Link
+                  href="/profile"
+                  className="text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary"
+                >
+                  {me?.name}
+                </Link>
+                <button
+                  onClick={() => logout.mutate(undefined)}
+                  className="text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="hidden text-sm font-semibold text-muted transition-colors duration-200 hover:text-primary sm:block"
+              >
+                Sign In
+              </Link>
+            )}
+
             <button
               onClick={toggleCart}
-              className="relative flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-all duration-200 hover:bg-border-light active:scale-95 cursor-pointer"
+              className="relative flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-border-light active:scale-95 cursor-pointer"
               aria-label="Open shopping cart"
+              style={{ viewTransitionName: "cart" }}
             >
               <HiOutlineShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (
@@ -60,6 +94,8 @@ export function PublicNavbar() {
               onClick={() => setMobileOpen(!mobileOpen)}
               className="flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors duration-200 hover:bg-border-light sm:hidden cursor-pointer"
               aria-label="Toggle navigation menu"
+              aria-expanded={mobileOpen}
+              aria-controls="mobile-menu"
             >
               {mobileOpen ? (
                 <HiOutlineXMark className="h-5 w-5" />
@@ -71,9 +107,9 @@ export function PublicNavbar() {
         </div>
 
         {mobileOpen && (
-          <div className="border-t border-border bg-surface px-4 pb-5 pt-3 sm:hidden">
+          <div id="mobile-menu" className="border-t border-border bg-surface px-4 pb-5 pt-3 sm:hidden">
             <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
+              {baseLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
@@ -83,6 +119,34 @@ export function PublicNavbar() {
                   {link.label}
                 </Link>
               ))}
+              {isAuthenticated ? (
+                <>
+                  <Link
+                    href="/profile"
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
+                  >
+                    Profile
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout.mutate(undefined);
+                      setMobileOpen(false);
+                    }}
+                    className="rounded-xl px-4 py-3 text-left text-sm font-semibold text-muted transition-colors duration-200 hover:bg-border-light cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="rounded-xl px-4 py-3 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-border-light"
+                >
+                  Sign In
+                </Link>
+              )}
             </nav>
           </div>
         )}

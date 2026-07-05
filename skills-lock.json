@@ -13,6 +13,18 @@
       "skillPath": "skills/frontend-design/SKILL.md",
       "computedHash": "4eabc66183767153e404b39d1b839b1c37f2d82d86f0a0d7e880a579d8d62336"
     },
+    "frontend-mobile-security-xss-scan": {
+      "source": "rmyndharis/antigravity-skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-mobile-security-xss-scan/SKILL.md",
+      "computedHash": "7edf4f84aa3840ecef61af5be6b1b9a8f8eff285713ba3df3dcebf6e1d1f130f"
+    },
+    "frontend-security-coder": {
+      "source": "rmyndharis/antigravity-skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-security-coder/SKILL.md",
+      "computedHash": "6c2516a60d57b136593466c6c144794265dc9570a4f2af0af060f7cbb0165b10"
+    },
     "next-best-practices": {
       "source": "vercel-labs/next-skills",
       "sourceType": "github",
@@ -24,6 +36,32 @@
       "sourceType": "github",
       "skillPath": "skills/next-cache-components/SKILL.md",
       "computedHash": "f835d8226c28abf012cc013928e2627c8a7a046de61127ef229be1711bd1f255"
+    },
+    "security-auditor": {
+      "source": "rmyndharis/antigravity-skills",
+      "sourceType": "github",
+      "skillPath": "skills/security-auditor/SKILL.md",
+      "computedHash": "00c182c0af0e7b44133c7f0e2961c02e9bf8504ca1fbf5901de3098c3d59bfcb"
+    },
+    "stripe-best-practices": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "4aecf9b7d63a5f63ecbd1fdcb6077e0923a675befa6e9b7aa5d1e51ff28d9dae"
+    },
+    "stripe-directory": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "58d8c458beaa92877ed2f0a622af65a0a91e2804efcc4188ac87a35780015361"
+    },
+    "stripe-projects": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "56cec649e6e1ad41c44b0aeaffee90c84579b025fc13a787051abdec3bbe81d4"
+    },
+    "upgrade-stripe": {
+      "source": "docs.stripe.com",
+      "sourceType": "well-known",
+      "computedHash": "46bb3c16878f93b953ed901b950686d64f04f90c67400bf31e1a0d7790d889df"
     },
     "vercel-react-best-practices": {
       "source": "vercel-labs/agent-skills",

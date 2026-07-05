@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Biz11 — Multi-Tenant E-Commerce Frontend
+
+Next.js 16 storefront for EcomKit, a multi-tenant commerce API built on Laravel.
+
+## Prerequisites
+
+- Node v20
+- [bun](https://bun.sh)
+- Herd (for local `.test` domain proxy)
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun install
+bun run dev       # starts on https://localhost:3010
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For the custom domain:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+herd proxy ecom-front.test http://localhost:3010
+open https://ecom-front.test
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Environment
 
-## Learn More
+```bash
+# .env
+NEXT_PUBLIC_API_URL="https://ecomkit.test/api"
+```
 
-To learn more about Next.js, take a look at the following resources:
+The `NEXT_PUBLIC_API_URL` points to the EcomKit backend at `https://ecomkit.test/api`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Dev Notes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Server Actions are cached** after compilation — restart `bun run dev` after
+  editing any file under `src/app/actions/`.
+- **`.test` domains use self-signed SSL.** `NODE_TLS_REJECT_UNAUTHORIZED=0` is
+  set in the dev script so server-side fetches work. This is dev-only.
+- The `(public)` route group is intentionally dynamic (`ƒ`) — the SSR layout
+  calls `headers()` for the per-request business bootstrap on every navigation.
 
-## Deploy on Vercel
+## Architecture
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+See [`project-description-latest.md`](./project-description-latest.md) for the
+full architecture, API reference, data flow, and conventions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Linting & Type Checking
+
+```bash
+bun run lint     # ESLint 10 flat config
+npx tsc --noEmit # TypeScript check
+```
+
+## Backend
+
+The companion backend lives at `../laravel13/EcomKit` — a Laravel 13 multi-tenant
+API with Filament 5 admin. Connect to it via the `backend-laravel-boost` MCP
+server defined in `opencode.json`.

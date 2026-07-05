@@ -3,21 +3,25 @@ import type { CartState, CartItem } from "./initialState";
 
 export interface CartAction {
   addItem: (item: CartItem) => void;
-  removeItem: (nanoId: string) => void;
-  updateQuantity: (nanoId: string, quantity: number) => void;
+  removeItem: (id: number) => void;
+  updateQuantity: (id: number, quantity: number) => void;
   clearCart: () => void;
+  setCartItems: (items: CartItem[]) => void;
 }
 
-export const createCartSlice: StateCreator<CartState & CartAction, [], [], CartAction> = (
-  set,
-) => ({
+export const createCartSlice: StateCreator<
+  CartState & CartAction,
+  [],
+  [],
+  CartAction
+> = (set) => ({
   addItem: (item) =>
     set((state) => {
-      const existing = state.items.find((i) => i.nanoId === item.nanoId);
+      const existing = state.items.find((i) => i.skuId === item.skuId);
       if (existing) {
         return {
           items: state.items.map((i) =>
-            i.nanoId === item.nanoId
+            i.skuId === item.skuId
               ? { ...i, quantity: i.quantity + item.quantity }
               : i,
           ),
@@ -25,15 +29,16 @@ export const createCartSlice: StateCreator<CartState & CartAction, [], [], CartA
       }
       return { items: [...state.items, item] };
     }),
-  removeItem: (nanoId) =>
+  removeItem: (id) =>
     set((state) => ({
-      items: state.items.filter((i) => i.nanoId !== nanoId),
+      items: state.items.filter((i) => i.id !== id),
     })),
-  updateQuantity: (nanoId, quantity) =>
+  updateQuantity: (id, quantity) =>
     set((state) => ({
       items: state.items.map((i) =>
-        i.nanoId === nanoId ? { ...i, quantity } : i,
+        i.id === id ? { ...i, quantity } : i,
       ),
     })),
   clearCart: () => set({ items: [] }),
+  setCartItems: (items) => set({ items }),
 });

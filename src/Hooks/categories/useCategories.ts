@@ -1,27 +1,41 @@
-import { useMemo } from "react";
-import { getCategories } from "@biz11/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "@biz11/lib/api-client";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import type { CategoryResource } from "@biz11/Types/Api";
 
 export function useCategories() {
-  const data = useMemo<CategoryResource[]>(() => getCategories(), []);
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-  return { data, isLoading: false, error: null };
+  const query = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => apiGet<CategoryResource[]>("/v1/categories"),
+    enabled: isBizLoaded,
+  });
+
+  return {
+    data: query.data?.data ?? [],
+    isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
+    error: query.error,
+  };
 }
 
-export function useCategory(nanoId: string | null) {
-  const data = useMemo<CategoryResource | undefined>(() => {
-    if (!nanoId) return undefined;
-    function find(cats: CategoryResource[]): CategoryResource | undefined {
-      for (const c of cats) {
-        if (c.nanoId === nanoId) return c;
-        if (c.children) {
-          const found = find(c.children);
-          if (found) return found;
-        }
-      }
-    }
-    return find(getCategories());
-  }, [nanoId]);
+export function useCategory(slug: string | null) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-  return { data, isLoading: false, error: null };
+  const query = useQuery({
+    queryKey: ["category", slug],
+    queryFn: () => apiGet<CategoryResource>(`/v1/categories/${slug}`),
+    enabled: !!slug && isBizLoaded,
+  });
+
+  return {
+    data: query.data?.data ?? null,
+    isLoading: query.isLoading,
+    isPending: query.isPending,
+    isError: query.isError,
+    error: query.error,
+  };
 }

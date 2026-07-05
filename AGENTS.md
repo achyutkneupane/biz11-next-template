@@ -24,11 +24,24 @@ EcomKit-powered Next.js front app.
 ## Commands
 
 ```bash
-npm run dev      # next dev
-npm run build    # next build
-npm run start    # next start (prod)
-npm run lint     # eslint (ESLint 10, NOT next lint)
+bun run dev      # next dev -p 3010 (project-specific port)
+bun run build    # next build
+bun run start    # next start (prod)
+bun run lint     # eslint (ESLint 10, NOT next lint)
 ```
+
+### Dev server with custom domain
+```bash
+bun run dev                         # starts on :3010
+herd proxy ecom-front.test http://localhost:3010   # Herd nginx → port 3010
+```
+Open [http://ecom-front.test](http://ecom-front.test) in browser.
+
+### Notes
+
+- **Restart dev server after changing Server Actions** (`app/actions/*.ts`) — they are cached in compiled chunks until a full restart.
+- Local `.test` domains use self-signed SSL. Server-side fetch calls use HTTP automatically. If an API shows `fetch failed` → restart dev server.
+- `(public)` routes are dynamic (`ƒ`) — they use `headers()` from `next/headers` for server-side business bootstrap. This is intentional; the `/v1/business` call runs during SSR and never appears in the browser's Network tab.
 
 ## Project Layout
 
@@ -110,20 +123,81 @@ RFC 9457 Problem Details: `{ type, title, status, detail }`.
 
 Business, Brand, Category (recursive children), Product, Sku — all typed in `frontend-guideline.md` section 3.3.
 
+## Visitor Integration — Signed Guest Token
+
+Every device/browser gets a signed visitor token on the first API call for cart, checkout, orders, and addresses **without requiring login**.
+
+### Bootstrap
+
+`GET /api/v1/business` returns visitor tokens in the JSON body:
+
+```json
+{
+  "data": {
+    "nanoId": "...",
+    "name": "...",
+    "currency": "...",
+    "timezone": "...",
+    "visitorId": "r56Wf8qAiMKS...",
+    "visitorSignature": "a1b2c3d4e5..."
+  }
+}
+```
+
+Both are stored in the zustand business slice alongside `bizId`.
+
+### Headers
+
+Every API call includes:
+- `X-BIZID` — from zustand (`selectBizId`)
+- `X-Visitor-Id` — from zustand (`selectVisitorId`)
+- `X-Visitor-Signature` — from zustand (`selectVisitorSignature`)
+- `Authorization: Bearer {token}` — only when logged in (`selectToken`)
+
+### Flow
+
+```
+1. Page load → GET /v1/business → store bizId + visitor tokens in zustand
+2. All subsequent calls include X-BIZID + X-Visitor-Id + X-Visitor-Signature
+3. Backend verifies HMAC-SHA256 signature against visitor ID
+4. Guest cart/orders are scoped to the visitor
+5. On login → backend merges guest data into authenticated user automatically
+```
+
+### Persistence
+
+Visitor tokens are stored in **both** zustand (runtime) and **sessionStorage** (cross-reload).
+
+- **zustand**: Used by `getHeaders()` for all API calls during the current session.
+- **sessionStorage**: Persists across page reloads. On reload, the bootstrap reads stored tokens from sessionStorage and sends them on the `/business` call. The backend reuses the existing guest identity instead of creating a new one.
+
+```
+1. First visit → /business (no visitor headers) → backend creates guest
+                 → store visitorId/visitorSignature in zustand + sessionStorage
+2. Page reload → read from sessionStorage → /business (with visitor headers)
+                 → backend reuses same guest → cart/orders preserved
+3. New tab    → no sessionStorage (tab-scoped) → /business → new guest
+```
+
+**Why sessionStorage not localStorage:** Each tab gets a fresh guest identity. Cart is ephemeral — merged on login anyway.
+
 ## Skills (load from `.agents/skills/`)
 
-| Skill                           | Load when                                                                                 |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `next-best-practices`           | Every task — file conventions, RSC, async, metadata, error handling, routes, images/fonts |
-| `next-cache-components`         | Using `'use cache'`, `cacheLife()`, `cacheTag()`, `updateTag()`                           |
-| `vercel-react-best-practices`   | Writing React components — 70 perf rules across 8 categories                              |
-| `vercel-react-view-transitions` | Page transitions or `<ViewTransition>`                                                    |
-| `frontend-design`               | Visual/design decisions — typography, palette, layout                                     |
-| `ui-ux-pro-max`                 | Python-based design system generator for design tokens                                    |
-| `web-design-guidelines`         | Before shipping UI — compliance checker                                                   |
-| `writing-guidelines`            | Writing docs or prose                                                                     |
-| `atomic-semantics-commits`      | Every commit — strict conventional commit format                                          |
-| `zustand`	                      | For global state management                                                               | 
+| Skill                           | Load when                                                                                                  |
+|---------------------------------|------------------------------------------------------------------------------------------------------------|
+| `next-best-practices`           | Every task — file conventions, RSC, async, metadata, error handling, routes, images/fonts                  |
+| `next-cache-components`         | Using `'use cache'`, `cacheLife()`, `cacheTag()`, `updateTag()`                                            |
+| `vercel-react-best-practices`   | Writing React components — 70 perf rules across 8 categories                                               |
+| `vercel-react-view-transitions` | Page transitions or `<ViewTransition>`                                                                     |
+| `frontend-design`               | Visual/design decisions — typography, palette, layout                                                      |
+| `ui-ux-pro-max`                 | Python-based design system generator for design tokens                                                     |
+| `web-design-guidelines`         | Before shipping UI — compliance checker                                                                    |
+| `writing-guidelines`            | Writing docs or prose                                                                                      |
+| `atomic-semantics-commits`      | Every commit — strict conventional commit format                                                           |
+| `zustand`	                      | For global state management                                                                                |
+| `autonomous-loop-engineering`	  | Strict guidelines for autonomous iteration, self-correction, and tool-driven feedback loops for AI agents. |
+
+Alongside, we have stripe skills which we can use when stripe is needed.
 
 ## Coding Standards
 
@@ -139,6 +213,8 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 - **Providers:** Compose via `WrappersHandler.tsx` in `src/Wrappers/`
 - **No component library** — build UI from scratch using existing packages (Mantine React Table, react-icons,
   react-toastify)
+- **Component size:** Extract sub-components when they manage their own state or form a distinct visual section.
+  Route-colocated sub-components use `_ComponentName.tsx` prefix. Each component file should tell one clear story.
 - **Commit format:** `type: verb in third-person present` — no scopes, ≤72 char title, no emojis. See
   `atomic-semantics-commits` skill.
 
@@ -164,6 +240,7 @@ Business, Brand, Category (recursive children), Product, Sku — all typed in `f
 
 ## References
 
+- [Project Description](./.agents/rules/project-description.md)
 - [Frontend guideline](./.agents/rules/frontend-guideline.md)
 - [Folder Structure](./.agents/rules/folder-structure.md)
 - [Skills](./.agents/skills)

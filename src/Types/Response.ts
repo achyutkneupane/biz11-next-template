@@ -3,6 +3,14 @@ export interface PaginationMeta {
   prevCursor: string | null;
   perPage: number;
   hasMore: boolean;
+  total?: number;
+}
+
+export interface OrdersMeta {
+  currentPage: number;
+  lastPage: number;
+  perPage: number;
+  total: number;
 }
 
 export interface DataResponse<T> {
@@ -15,4 +23,5 @@ export interface ApiError {
   title: string;
   status: number;
   detail: string;
+  errors?: Record<string, string[]>;
 }

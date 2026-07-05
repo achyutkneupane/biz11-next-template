@@ -1,96 +1,95 @@
 import { useMemo } from "react";
-import {
-  products,
-  getFeaturedProducts,
-  getLatestProducts,
-  getPopularProducts,
-  getProductBySlug,
-} from "@biz11/lib/mock-data";
+import { useQuery } from "@tanstack/react-query";
+import { apiGet } from "@biz11/lib/api-client";
+import { useStore } from "@biz11/store";
+import { selectIsBizLoaded } from "@biz11/store/business/selectors";
 import type { ProductResource } from "@biz11/Types/Api";
 
-export type SortMode = "featured" | "latest" | "popular";
+export type SortMode = "all" | "featured" | "latest";
 
 export type ProductFilters = {
-  categoryNanoId?: string;
-  brandNanoIds?: string[];
+  brandId?: number;
+  categoryId?: number;
   search?: string;
   sort?: SortMode;
 };
 
-function filterProducts(
-  filters: ProductFilters,
-): ProductResource[] {
-  const pool = (() => {
-    switch (filters.sort) {
-      case "latest":
-        return getLatestProducts();
-      case "popular":
-        return getPopularProducts();
-      default:
-        return getFeaturedProducts();
-    }
-  })();
+export function useFeaturedProducts(cursor?: string, enabled = true) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-  return pool.filter((p) => {
-    if (
-      filters.categoryNanoId &&
-      !p.categories.some((c) => c.nanoId === filters.categoryNanoId)
-    )
-      return false;
-    if (
-      filters.brandNanoIds &&
-      filters.brandNanoIds.length > 0 &&
-      !filters.brandNanoIds.includes(p.brand.nanoId!)
-    )
-      return false;
-    if (filters.search) {
-      const q = filters.search.toLowerCase();
-      if (
-        !p.name.toLowerCase().includes(q) &&
-        !p.brand.name.toLowerCase().includes(q) &&
-        !p.description?.toLowerCase().includes(q)
-      )
-        return false;
-    }
-    return true;
+  return useQuery({
+    queryKey: ["products", "featured", cursor],
+    queryFn: () =>
+      apiGet<ProductResource[]>("/v1/products/featured", {
+        params: { perPage: 12, cursor },
+      }),
+    enabled: isBizLoaded && enabled,
   });
 }
 
-export type UseProductsResult = {
-  data: ProductResource[];
-  total: number;
-  isLoading: boolean;
-  error: null;
-};
+export function useLatestProducts(cursor?: string, enabled = true) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-export function useProducts(filters: ProductFilters): UseProductsResult {
-  const data = useMemo(() => filterProducts(filters), [
-    filters.categoryNanoId,
-    filters.brandNanoIds,
-    filters.search,
-    filters.sort,
-  ]);
+  return useQuery({
+    queryKey: ["products", "latest", cursor],
+    queryFn: () =>
+      apiGet<ProductResource[]>("/v1/products/latest", {
+        params: { perPage: 12, cursor },
+      }),
+    enabled: isBizLoaded && enabled,
+  });
+}
 
-  return { data, total: data.length, isLoading: false, error: null };
+export function useAllProducts(cursor?: string, enabled = true) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
+
+  return useQuery({
+    queryKey: ["products", "all", cursor],
+    queryFn: () =>
+      apiGet<ProductResource[]>("/v1/products", {
+        params: { perPage: 12, cursor },
+      }),
+    enabled: isBizLoaded && enabled,
+  });
 }
 
 export function useProduct(slug: string) {
-  const data = useMemo(() => getProductBySlug(slug), [slug]);
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-  return { data, isLoading: false, error: null };
+  return useQuery({
+    queryKey: ["product", slug],
+    queryFn: () => apiGet<ProductResource>(`/v1/products/${slug}`),
+    enabled: isBizLoaded,
+  });
 }
 
-export function useRelatedProducts(product: ProductResource) {
-  const data = useMemo(
-    () =>
-      products.filter(
-        (p) =>
-          p.categories.some((c) =>
-            product.categories.some((pc) => pc.nanoId === c.nanoId),
-          ) && p.nanoId !== product.nanoId,
-      ).slice(0, 3),
-    [product],
-  );
+export function useRelatedProducts(product: ProductResource | null) {
+  const isBizLoaded = useStore(selectIsBizLoaded);
 
-  return { data, isLoading: false, error: null };
+  const allProducts = useQuery({
+    queryKey: ["products", "list"],
+    queryFn: () =>
+      apiGet<ProductResource[]>("/v1/products", {
+        params: { perPage: 6 },
+      }),
+    enabled: !!product && isBizLoaded,
+  });
+
+  return useMemo(() => {
+    if (!product || !allProducts.data?.data) {
+      return { data: [] as ProductResource[], isLoading: allProducts.isLoading, error: null };
+    }
+    return {
+      data: allProducts.data.data
+        .filter(
+          (p) =>
+            p.categories.some((c) =>
+              product.categories.some((pc) => pc.nanoId === c.nanoId),
+            ) && p.nanoId !== product.nanoId,
+        )
+        .slice(0, 3),
+      isLoading: false,
+      error: null,
+    };
+  }, [product, allProducts.data, allProducts.isLoading]);
 }

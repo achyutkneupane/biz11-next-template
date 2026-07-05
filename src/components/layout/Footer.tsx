@@ -51,12 +51,16 @@ export function Footer() {
               <ul className="space-y-3">
                 {section.links.map((link) => (
                   <li key={link.label}>
-                    <Link
-                      href={link.href}
-                      className="text-sm text-white/80 transition-colors duration-200 hover:text-white"
-                    >
-                      {link.label}
-                    </Link>
+                    {link.href === "#" ? (
+                      <span className="text-sm text-white/80 cursor-default">{link.label}</span>
+                    ) : (
+                      <Link
+                        href={link.href}
+                        className="text-sm text-white/80 transition-colors duration-200 hover:text-white"
+                      >
+                        {link.label}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
